@@ -1,4 +1,4 @@
-%global rel 0.9
+%global rel 0.9.1
 
 # As per packaging guidelines, since dpdk is pre-release, this is the git hash
 # that I used with git archive to build the source tarball and the date on which
@@ -21,6 +21,8 @@ Source3: common_linuxapp
 # This can be dropped when upstream makes this configurable
 #
 Patch0: dpdk-1.7.0-igb_uio_disable.patch
+Patch1: dpdk-debug.patch
+Patch2: dpdk-link-using-cc.patch
 
 Summary: Data Plane Development Kit core
 
@@ -36,9 +38,15 @@ License: BSD and LGPLv2 and GPLv2
 # other techniques, carefully crafted x86 assembly instructions.  As such it
 # currently (and likely never will) run on non-x86 platforms
 #
-ExclusiveArch: i386 x86_64 
+ExclusiveArch: %{ix86} x86_64 
 
-%global target %{_arch}-default-linuxapp-gcc
+%ifarch x86_64
+%global target x86_64-default-linuxapp-gcc
+%else
+%global target i686-default-linuxapp-gcc
+%endif
+
+
 %global machine default
 
 BuildRequires: kernel-devel, kernel-headers, libpcap-devel, doxygen
@@ -77,10 +85,12 @@ cp %{SOURCE1} ./config/
 cp %{SOURCE2} ./config/
 cp %{SOURCE3} ./config/
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 # need to enable debuginfo
-export CPU_CFLAGS=-g
+
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 make V=1 O=%{target} %{?_smp_mflags}
 make V=1 O=%{target} %{?_smp_mflags} doc
@@ -130,6 +140,9 @@ cp -a            tools                 %{buildroot}%{datadir}
 %exclude %{docdir}/html
 
 %changelog
+* Tue Jul 01 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.0.7-0.9.1.20140603git5ebbb1728
+- Fixed some build errors (empty debuginfo, bad 32 bit build)
+
 * Wed Jun 11 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.0.7-0.9.20140603git5ebbb1728
 - Fix another build dependency
 

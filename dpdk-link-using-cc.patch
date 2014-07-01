@@ -1,0 +1,25 @@
+diff -up ./mk/rte.lib.mk.orig ./mk/rte.lib.mk
+--- ./mk/rte.lib.mk.orig	2014-05-29 05:43:11.000000000 -0400
++++ ./mk/rte.lib.mk	2014-07-01 10:21:36.827871451 -0400
+@@ -60,8 +60,10 @@ build: _postbuild
+ exe2cmd = $(strip $(call dotfile,$(patsubst %,%.cmd,$(1))))
+ 
+ ifeq ($(LINK_USING_CC),1)
+-# Override the definition of LD here, since we're linking with CC
+-LD := $(CC)
++CPU_LDFLAGS := $(call linkerprefix,$(CPU_LDFLAGS))
++O_TO_S = $(CC) $(CPU_LDFLAGS) -z muldefs -shared $(OBJS-y) -o $(LIB)
++else
++O_TO_S = $(LD) $(CPU_LDFLAGS) -z muldefs -shared $(OBJS-y) -o $(LIB)
+ endif
+ 
+ O_TO_A = $(AR) crus $(LIB) $(OBJS-y)
+@@ -73,8 +75,6 @@ O_TO_A_DO = @set -e; \
+ 	$(O_TO_A) && \
+ 	echo $(O_TO_A_CMD) > $(call exe2cmd,$(@))
+ 
+-O_TO_S = $(LD) $(CPU_LDFLAGS) -z muldefs -shared $(OBJS-y) -o $(LIB)
+-O_TO_S_STR = $(subst ','\'',$(O_TO_S)) #'# fix syntax highlight
+ O_TO_S_DISP = $(if $(V),"$(O_TO_S_STR)","  LD $(@)")
+ O_TO_S_DO = @set -e; \
+ 	echo $(O_TO_S_DISP); \

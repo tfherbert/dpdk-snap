@@ -1,0 +1,9 @@
+diff -up ./mk/rte.vars.mk.orig ./mk/rte.vars.mk
+--- ./mk/rte.vars.mk.orig	2014-06-30 11:24:24.379944369 -0400
++++ ./mk/rte.vars.mk	2014-06-30 11:24:34.544237841 -0400
+@@ -138,3 +138,5 @@ include $(RTE_SDK)/mk/target/$(RTE_TARGE
+ else
+ include $(RTE_SDK)/mk/target/generic/rte.vars.mk
+ endif
++
++CFLAGS+=-g
