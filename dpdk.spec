@@ -1,4 +1,4 @@
-%global rel 0.9.1
+%global rel 0.10
 
 # As per packaging guidelines, since dpdk is pre-release, this is the git hash
 # that I used with git archive to build the source tarball and the date on which
@@ -91,6 +91,8 @@ cp %{SOURCE3} ./config/
 %build
 # need to enable debuginfo
 
+#Note that RPM_OPT_FLAGS is not being used here as it conflicts with
+#Flags that the package sets.
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 make V=1 O=%{target} %{?_smp_mflags}
 make V=1 O=%{target} %{?_smp_mflags} doc
@@ -140,6 +142,9 @@ cp -a            tools                 %{buildroot}%{datadir}
 %exclude %{docdir}/html
 
 %changelog
+* Wed Jul 03 2014 - Neil Horman <nhorman@tuxdriver.com>
+- Fixing up release numbering
+
 * Tue Jul 01 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.0.7-0.9.1.20140603git5ebbb1728
 - Fixed some build errors (empty debuginfo, bad 32 bit build)
 
