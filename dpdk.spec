@@ -1,28 +1,20 @@
-%global rel 0.10
+%global rel 1.0
 
 # As per packaging guidelines, since dpdk is pre-release, this is the git hash
 # that I used with git archive to build the source tarball and the date on which
 # I did it
-%global upstreamtag 20140603git5ebbb1728
 
 Name: dpdk
 Version: 1.7.0 
-Release: %{rel}.%{upstreamtag}%{?dist}
+Release: %{rel}%{?dist}
 URL: http://dpdk.org
-Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}-%{upstreamtag}.tgz
-Source1: defconfig_x86_64-default-linuxapp-gcc
-Source2: defconfig_i686-default-linuxapp-gcc
+Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
+Source1: defconfig_x86_64-native-linuxapp-gcc
+Source2: defconfig_i686-native-linuxapp-gcc
 Source3: common_linuxapp
 
-#
-# Currently the igb_uio module doesn't have a configuration option to disable
-# itself in dpdk.  Since we don't build kernel modules as part of user space
-# pacakges, this patch manually removes the Makefile directives to build it
-# This can be dropped when upstream makes this configurable
-#
-Patch0: dpdk-1.7.0-igb_uio_disable.patch
-Patch1: dpdk-debug.patch
-Patch2: dpdk-link-using-cc.patch
+Patch0: dpdk-debug.patch
+
 
 Summary: Data Plane Development Kit core
 
@@ -40,14 +32,15 @@ License: BSD and LGPLv2 and GPLv2
 #
 ExclusiveArch: %{ix86} x86_64 
 
+%global machine native
+
 %ifarch x86_64
-%global target x86_64-default-linuxapp-gcc
+%global target x86_64-%{machine}-linuxapp-gcc
 %else
-%global target i686-default-linuxapp-gcc
+%global target i686-%{machine}-linuxapp-gcc
 %endif
 
 
-%global machine default
 
 BuildRequires: kernel-devel, kernel-headers, libpcap-devel, doxygen
 
@@ -85,20 +78,19 @@ cp %{SOURCE1} ./config/
 cp %{SOURCE2} ./config/
 cp %{SOURCE3} ./config/
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
 # need to enable debuginfo
 
 #Note that RPM_OPT_FLAGS is not being used here as it conflicts with
 #Flags that the package sets.
-make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
-make V=1 O=%{target} %{?_smp_mflags}
-make V=1 O=%{target} %{?_smp_mflags} doc
+make V=1 O=%{target} T=%{target} config
+make V=1 O=%{target} 
+make V=1 O=%{target} doc
 
 %install
 make V=1   O=%{target}     DESTDIR=%{destdir}
+find %{destdir} -name '*.orig' | xargs rm -f
 mkdir -p                               %{buildroot}%{_sbindir}
 mkdir -p                               %{buildroot}%{_libdir}/%{name}-%{version}
 mkdir -p                               %{buildroot}%{_includedir}/%{name}-%{version}
@@ -142,7 +134,10 @@ cp -a            tools                 %{buildroot}%{datadir}
 %exclude %{docdir}/html
 
 %changelog
-* Wed Jul 03 2014 - Neil Horman <nhorman@tuxdriver.com>
+* Thu Jul 10 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.0.7-1.0
+- Update source to official 1.7.0 release 
+
+* Thu Jul 03 2014 - Neil Horman <nhorman@tuxdriver.com>
 - Fixing up release numbering
 
 * Tue Jul 01 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.0.7-0.9.1.20140603git5ebbb1728
