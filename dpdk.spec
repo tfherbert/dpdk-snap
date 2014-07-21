@@ -1,19 +1,11 @@
-%global rel 1.0
-
-# As per packaging guidelines, since dpdk is pre-release, this is the git hash
-# that I used with git archive to build the source tarball and the date on which
-# I did it
-
 Name: dpdk
 Version: 1.7.0 
-Release: %{rel}%{?dist}
+Release: 2%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
-Source1: defconfig_x86_64-native-linuxapp-gcc
-Source2: defconfig_i686-native-linuxapp-gcc
-Source3: common_linuxapp
 
 Patch0: dpdk-debug.patch
+Patch1: dpdk-config.patch
 
 
 Summary: Data Plane Development Kit core
@@ -30,15 +22,11 @@ License: BSD and LGPLv2 and GPLv2
 # other techniques, carefully crafted x86 assembly instructions.  As such it
 # currently (and likely never will) run on non-x86 platforms
 #
-ExclusiveArch: %{ix86} x86_64 
+ExclusiveArch: x86_64 
 
 %global machine native
 
-%ifarch x86_64
 %global target x86_64-%{machine}-linuxapp-gcc
-%else
-%global target i686-%{machine}-linuxapp-gcc
-%endif
 
 
 
@@ -74,41 +62,37 @@ DPDK core library API programming documentation
 
 %prep
 %setup -q
-cp %{SOURCE1} ./config/
-cp %{SOURCE2} ./config/
-cp %{SOURCE3} ./config/
-%patch0 -p1
+%patch0 -p1 -z .debug
+%patch1 -p1 -z .config
 
 %build
-# need to enable debuginfo
+export EXTRA_CFLAGS="%{optflags}"
 
-#Note that RPM_OPT_FLAGS is not being used here as it conflicts with
-#Flags that the package sets.
-make V=1 O=%{target} T=%{target} config
-make V=1 O=%{target} 
-make V=1 O=%{target} doc
+# DPDK defaults to using builder-specific compiler flags.  However,
+# the config has been changed by specifying CONFIG_RTE_MACHINE=default
+# in order to build for a more generic host.  NOTE: It is possible that
+# the compiler flags used still won't work for all Fedora-supported
+# machines, but runtime checks in DPDK will catch those situations.
+
+make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
+make V=1 O=%{target} %{?_smp_mflags}
+make V=1 O=%{target} %{?_smp_mflags} doc
 
 %install
-make V=1   O=%{target}     DESTDIR=%{destdir}
-find %{destdir} -name '*.orig' | xargs rm -f
-mkdir -p                               %{buildroot}%{_sbindir}
-mkdir -p                               %{buildroot}%{_libdir}/%{name}-%{version}
-mkdir -p                               %{buildroot}%{_includedir}/%{name}-%{version}
-mkdir -p                               %{buildroot}%{_bindir}
-mv    %{destdir}/%{target}/app/testpmd %{buildroot}%{_bindir}/testpmd-%{version}
-rmdir %{destdir}/%{target}/app
-mv    %{destdir}/%{target}/include/*   %{buildroot}%{_includedir}/%{name}-%{version}
-mv    %{destdir}/%{target}/lib/*       %{buildroot}%{_libdir}/%{name}-%{version}
-mkdir -p                               %{buildroot}%{docdir}
-mv    %{destdir}/%{target}/doc/*       %{buildroot}%{docdir}
-rmdir %{destdir}/%{target}/doc
-mkdir -p                               %{buildroot}%{datadir}
-mv    %{destdir}/%{target}/.config     %{buildroot}%{datadir}/config
-rm -rf %{destdir}/%{target}/kmod
-mv    %{destdir}/%{target}             %{buildroot}%{datadir}
-rm -rf %{destdir}/mk
-rm -rf %{destdir}/scripts
-cp -a            tools                 %{buildroot}%{datadir}
+
+# DPDK's "make install" seems a bit broken -- do things manually...
+
+mkdir -p                     %{buildroot}%{_bindir}
+cp -a  %{target}/app/testpmd %{buildroot}%{_bindir}/testpmd-%{version}
+mkdir -p                     %{buildroot}%{_includedir}/%{name}-%{version}
+cp -a  %{target}/include/*   %{buildroot}%{_includedir}/%{name}-%{version}
+mkdir -p                     %{buildroot}%{_libdir}/%{name}-%{version}
+cp -a  %{target}/lib/*       %{buildroot}%{_libdir}/%{name}-%{version}
+mkdir -p                     %{buildroot}%{docdir}
+cp -a  %{target}/doc/*       %{buildroot}%{docdir}
+mkdir -p                     %{buildroot}%{datadir}
+cp -a  %{target}/.config     %{buildroot}%{datadir}/config
+cp -a  tools                 %{buildroot}%{datadir}
 
 %files
 # BSD
@@ -130,28 +114,35 @@ cp -a            tools                 %{buildroot}%{datadir}
 %files devel
 #BSD
 %{_includedir}/*
-#%{datadir}/%{target}
-%exclude %{docdir}/html
 
 %changelog
-* Thu Jul 10 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.0.7-1.0
+* Thu Jul 17 2014 - John W. Linville <linville@redhat.com> - 1.7.0-2
+- Use EXTRA_CFLAGS to include standard Fedora compiler flags in build
+- Set CONFIG_RTE_MACHINE=default to build for least-common-denominator machines
+- Turn-off build of librte_acl, since it does not build on default machines
+- Turn-off build of physical device PMDs that require kernel support
+- Clean-up the install rules to match current packaging
+- Correct changelog versions 1.0.7 -> 1.7.0
+- Remove ix86 from ExclusiveArch -- it does not build with above changes
+
+* Thu Jul 10 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.7.0-1.0
 - Update source to official 1.7.0 release 
 
 * Thu Jul 03 2014 - Neil Horman <nhorman@tuxdriver.com>
 - Fixing up release numbering
 
-* Tue Jul 01 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.0.7-0.9.1.20140603git5ebbb1728
+* Tue Jul 01 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.7.0-0.9.1.20140603git5ebbb1728
 - Fixed some build errors (empty debuginfo, bad 32 bit build)
 
-* Wed Jun 11 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.0.7-0.9.20140603git5ebbb1728
+* Wed Jun 11 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.7.0-0.9.20140603git5ebbb1728
 - Fix another build dependency
 
-* Mon Jun 09 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.0.7-0.8.20140603git5ebbb1728
+* Mon Jun 09 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.7.0-0.8.20140603git5ebbb1728
 - Fixed doc arch versioning issue
 
-* Mon Jun 09 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.0.7-0.7.20140603git5ebbb1728
+* Mon Jun 09 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.7.0-0.7.20140603git5ebbb1728
 - Added verbose output to build
 
-* Tue May 13 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.0.7-0.6.20140603git5ebbb1728
+* Tue May 13 2014 - Neil Horman <nhorman@tuxdriver.com> - 1.7.0-0.6.20140603git5ebbb1728
 - Initial Build
 
