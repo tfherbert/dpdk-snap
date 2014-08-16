@@ -1,6 +1,6 @@
 Name: dpdk
 Version: 1.7.0 
-Release: 2%{?dist}
+Release: 3%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -116,6 +116,9 @@ cp -a  tools                 %{buildroot}%{datadir}
 %{_includedir}/*
 
 %changelog
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Thu Jul 17 2014 - John W. Linville <linville@redhat.com> - 1.7.0-2
 - Use EXTRA_CFLAGS to include standard Fedora compiler flags in build
 - Set CONFIG_RTE_MACHINE=default to build for least-common-denominator machines
