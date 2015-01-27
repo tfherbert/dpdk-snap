@@ -1,6 +1,6 @@
 Name: dpdk
 Version: 1.7.0 
-Release: 4%{?dist}
+Release: 5%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -24,9 +24,9 @@ License: BSD and LGPLv2 and GPLv2
 #
 ExclusiveArch: x86_64 
 
-%global machine native
+%define machine native
 
-%global target x86_64-%{machine}-linuxapp-gcc
+%define target x86_64-%{machine}-linuxapp-gcc
 
 
 
@@ -51,9 +51,8 @@ BuildArch: noarch
 %description doc
 API programming documentation for the Data Plane Development Kit.
 
-%global destdir %{buildroot}%{_prefix}
-%global datadir %{_datadir}/%{name}-%{version}
-%global docdir  %{_docdir}/%{name}-%{version}
+%define datadir %{_datadir}/%{name}-%{version}
+%define docdir  %{_docdir}/%{name}-%{version}
 
 %prep
 %setup -q
@@ -113,6 +112,10 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 %{_includedir}/*
 
 %changelog
+* Tue Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-5
+- Avoid unnecessary use of %%global, lazy expansion is normally better
+- Drop unused destdir macro while at it
+
 * Tue Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-4
 - Copy the headers instead of broken symlinks into -devel package
 - Force sane mode on the headers
