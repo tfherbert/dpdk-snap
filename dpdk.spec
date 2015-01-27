@@ -30,7 +30,7 @@ ExclusiveArch: x86_64
 
 
 
-BuildRequires: kernel-devel, kernel-headers, libpcap-devel, doxygen
+BuildRequires: kernel-headers, libpcap-devel, doxygen
 
 %description
 The Data Plane Development Kit is a set of libraries and drivers for
@@ -118,6 +118,7 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 - Force sane mode on the headers
 - Avoid unnecessary %%exclude by not copying unpackaged content to buildroot
 - Clean up summaries and descriptions
+- Drop unnecessary kernel-devel BR, we are not building kernel modules
 
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
