@@ -51,7 +51,7 @@ BuildArch: noarch
 %description doc
 API programming documentation for the Data Plane Development Kit.
 
-%define datadir %{_datadir}/%{name}-%{version}
+%define sdkdir  %{_libdir}/%{name}-%{version}-sdk
 %define docdir  %{_docdir}/%{name}-%{version}
 
 %prep
@@ -84,8 +84,33 @@ mkdir -p                     %{buildroot}%{_libdir}/%{name}-%{version}
 cp -a  %{target}/lib/*       %{buildroot}%{_libdir}/%{name}-%{version}
 mkdir -p                     %{buildroot}%{docdir}
 cp -a  %{target}/doc/*       %{buildroot}%{docdir}
-mkdir -p                     %{buildroot}%{datadir}
-cp -a  %{target}/.config     %{buildroot}%{datadir}/config
+
+# DPDK apps expect a particular (and somewhat peculiar) directory layout
+# for building, arrange for that
+mkdir -p                     %{buildroot}%{sdkdir}/%{target}
+cp -a  %{target}/.config     %{buildroot}%{sdkdir}/%{target}
+ln -s  ../../../%{_lib}/%{name}-%{version} %{buildroot}%{sdkdir}/%{target}/lib
+ln -s  ../../../include/%{name}-%{version} %{buildroot}%{sdkdir}/%{target}/include
+cp -a  mk/                   %{buildroot}%{sdkdir}
+
+# Setup RTE_SDK environment as expected by apps etc
+mkdir -p %{buildroot}/%{_sysconfdir}/profile.d
+cat << EOF > %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk-%{_arch}.sh
+if [ -z "${RTE_SDK}" ]; then
+    export RTE_SDK="%{sdkdir}"
+    export RTE_TARGET="%{target}"
+    export RTE_INCLUDE="%{_includedir}/%{name}-%{version}"
+fi
+EOF
+
+cat << EOF > %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk-%{_arch}.csh
+if ( ! $RTE_SDK ) then
+    setenv RTE_SDK "%{sdkdir}"
+    setenv RTE_TARGET "%{target}"
+    setenv RTE_INCLUDE "%{_includedir}/%{name}-%{version}"
+endif
+EOF
+
 # Theres no point in packaging any of the tools
 # We currently don't need the igb uio script, there
 # are several uio scripts already available
@@ -98,8 +123,6 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 
 %files
 # BSD
-%dir %{datadir}
-%{datadir}/config
 %{_bindir}/*
 %{_libdir}/%{name}-%{version}
 
@@ -110,11 +133,15 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 %files devel
 #BSD
 %{_includedir}/*
+%{sdkdir}
+%{_sysconfdir}/profile.d/dpdk-sdk-*.*
 
 %changelog
 * Tue Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-5
 - Avoid unnecessary use of %%global, lazy expansion is normally better
 - Drop unused destdir macro while at it
+- Arrange for RTE_SDK environment + directory layout expected by DPDK apps
+- Drop config from main package, it shouldn't be needed at runtime
 
 * Tue Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-4
 - Copy the headers instead of broken symlinks into -devel package
