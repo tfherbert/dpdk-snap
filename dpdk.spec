@@ -1,6 +1,6 @@
 Name: dpdk
 Version: 1.7.0 
-Release: 3%{?dist}
+Release: 4%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -85,7 +85,7 @@ make V=1 O=%{target} %{?_smp_mflags} doc
 mkdir -p                     %{buildroot}%{_bindir}
 cp -a  %{target}/app/testpmd %{buildroot}%{_bindir}/testpmd-%{version}
 mkdir -p                     %{buildroot}%{_includedir}/%{name}-%{version}
-cp -a  %{target}/include/*   %{buildroot}%{_includedir}/%{name}-%{version}
+cp -Lr  %{target}/include/*   %{buildroot}%{_includedir}/%{name}-%{version}
 mkdir -p                     %{buildroot}%{_libdir}/%{name}-%{version}
 cp -a  %{target}/lib/*       %{buildroot}%{_libdir}/%{name}-%{version}
 mkdir -p                     %{buildroot}%{docdir}
@@ -116,6 +116,9 @@ cp -a  tools                 %{buildroot}%{datadir}
 %{_includedir}/*
 
 %changelog
+* Tue Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-4
+- Copy the headers instead of broken symlinks into -devel package
+
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
