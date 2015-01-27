@@ -92,7 +92,12 @@ mkdir -p                     %{buildroot}%{docdir}
 cp -a  %{target}/doc/*       %{buildroot}%{docdir}
 mkdir -p                     %{buildroot}%{datadir}
 cp -a  %{target}/.config     %{buildroot}%{datadir}/config
-cp -a  tools                 %{buildroot}%{datadir}
+# Theres no point in packaging any of the tools
+# We currently don't need the igb uio script, there
+# are several uio scripts already available
+# And the cpu_layout script functionality is
+# covered by lscpu
+#cp -a  tools                 %{buildroot}%{datadir}
 
 # Fixup irregular modes in headers
 find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
@@ -101,12 +106,6 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 # BSD
 %dir %{datadir}
 %{datadir}/config
-# Theres no point in packaging any of the tools
-# We currently don't need the igb uio script, there 
-# are several uio scripts already available
-# And the cpu_layout script functionality is 
-# covered by lscpu
-%exclude %{datadir}/tools
 %{_bindir}/*
 %{_libdir}/%{name}-%{version}
 
@@ -122,6 +121,7 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 * Tue Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-4
 - Copy the headers instead of broken symlinks into -devel package
 - Force sane mode on the headers
+- Avoid unnecessary %%exclude by not copying unpackaged content to buildroot
 
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
