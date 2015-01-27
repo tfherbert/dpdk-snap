@@ -8,7 +8,7 @@ Patch0: dpdk-debug.patch
 Patch1: dpdk-config.patch
 
 
-Summary: Data Plane Development Kit core
+Summary: Set of libraries and drivers for fast packet processing
 
 #
 # Note that, while this is dual licensed, all code that is included with this
@@ -33,28 +33,23 @@ ExclusiveArch: x86_64
 BuildRequires: kernel-devel, kernel-headers, libpcap-devel, doxygen
 
 %description
-DPDK core includes kernel modules, core libraries and tools.
-testpmd application allows to test fast packet processing environments
-on x86 platforms. For instance, it can be used to check that environment
-can support fast path applications such as 6WINDGate, pktgen, rumptcpip, etc.
-More libraries are available as extensions in other packages.
-
+The Data Plane Development Kit is a set of libraries and drivers for
+fast packet processing in the user space.
 
 %package devel
-Summary: Data Plane Development Kit core for development
+Summary: Data Plane Development Kit development files
 Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %description devel
-DPDK core-devel is a set of makefiles, headers, examples and documentation
-for fast packet processing on x86 platforms.
-More libraries are available as extensions in other packages.
+This package contains the headers and other files needed for developing
+applications with the Data Plane Development Kit.
 
 %package doc
-Summary: Data Plane Development Kit core programming API documentation
+Summary: Data Plane Development Kit API documentation
 BuildArch: noarch
 
 %description doc
-DPDK core library API programming documentation
+API programming documentation for the Data Plane Development Kit.
 
 %global destdir %{buildroot}%{_prefix}
 %global datadir %{_datadir}/%{name}-%{version}
@@ -122,6 +117,7 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 - Copy the headers instead of broken symlinks into -devel package
 - Force sane mode on the headers
 - Avoid unnecessary %%exclude by not copying unpackaged content to buildroot
+- Clean up summaries and descriptions
 
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
