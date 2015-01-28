@@ -1,6 +1,6 @@
 Name: dpdk
 Version: 1.7.0 
-Release: 5%{?dist}
+Release: 6%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -96,7 +96,7 @@ cp -a  mk/                   %{buildroot}%{sdkdir}
 # Setup RTE_SDK environment as expected by apps etc
 mkdir -p %{buildroot}/%{_sysconfdir}/profile.d
 cat << EOF > %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk-%{_arch}.sh
-if [ -z "${RTE_SDK}" ]; then
+if [ -z "\${RTE_SDK}" ]; then
     export RTE_SDK="%{sdkdir}"
     export RTE_TARGET="%{target}"
     export RTE_INCLUDE="%{_includedir}/%{name}-%{version}"
@@ -104,7 +104,7 @@ fi
 EOF
 
 cat << EOF > %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk-%{_arch}.csh
-if ( ! $RTE_SDK ) then
+if ( ! \$RTE_SDK ) then
     setenv RTE_SDK "%{sdkdir}"
     setenv RTE_TARGET "%{target}"
     setenv RTE_INCLUDE "%{_includedir}/%{name}-%{version}"
@@ -137,6 +137,9 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 %{_sysconfdir}/profile.d/dpdk-sdk-*.*
 
 %changelog
+* Wed Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-6
+- Avoid variable expansion in the spec here-documents during build
+
 * Tue Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-5
 - Avoid unnecessary use of %%global, lazy expansion is normally better
 - Drop unused destdir macro while at it
