@@ -4,7 +4,6 @@ Release: 6%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
-Patch0: dpdk-debug.patch
 Patch1: dpdk-config.patch
 
 
@@ -56,7 +55,6 @@ API programming documentation for the Data Plane Development Kit.
 
 %prep
 %setup -q
-%patch0 -p1 -z .debug
 %patch1 -p1 -z .config
 
 %build
@@ -139,6 +137,7 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 %changelog
 * Wed Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-6
 - Avoid variable expansion in the spec here-documents during build
+- Drop now unnecessary debug flags patch
 
 * Tue Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-5
 - Avoid unnecessary use of %%global, lazy expansion is normally better
