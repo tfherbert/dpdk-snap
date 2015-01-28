@@ -5,7 +5,7 @@
 
 Name: dpdk
 Version: 1.7.0 
-Release: 7%{?dist}
+Release: 8%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -71,7 +71,7 @@ sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' confi
 
 
 %build
-export EXTRA_CFLAGS="%{optflags}"
+export EXTRA_CFLAGS="%{optflags} -fPIC"
 
 # DPDK defaults to using builder-specific compiler flags.  However,
 # the config has been changed by specifying CONFIG_RTE_MACHINE=default
@@ -174,6 +174,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %endif
 
 %changelog
+* Wed Jan 28 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-8
+- Always build with -fPIC
+
 * Wed Jan 28 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-7
 - Policy compliance: move static libraries to -devel, provide dpdk-static
 - Add a spec option to build as shared libraries
