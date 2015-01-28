@@ -5,7 +5,7 @@
 
 Name: dpdk
 Version: 1.7.0 
-Release: 6%{?dist}
+Release: 7%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -174,11 +174,11 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %endif
 
 %changelog
-* Wed Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-7
+* Wed Jan 28 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-7
 - Policy compliance: move static libraries to -devel, provide dpdk-static
 - Add a spec option to build as shared libraries
 
-* Wed Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-6
+* Wed Jan 28 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-6
 - Avoid variable expansion in the spec here-documents during build
 - Drop now unnecessary debug flags patch
 - Add a spec option to build a combined library
