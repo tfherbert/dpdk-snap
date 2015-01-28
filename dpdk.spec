@@ -1,5 +1,7 @@
 # Add option to enable combined library (--with combined)
 %bcond_with combined
+# Add option to build as shared libraries (--with shared)
+%bcond_with shared
 
 Name: dpdk
 Version: 1.7.0 
@@ -41,7 +43,9 @@ fast packet processing in the user space.
 %package devel
 Summary: Data Plane Development Kit development files
 Requires: %{name}%{?_isa} = %{version}-%{release}
+%if ! %{with shared}
 Provides: %{name}-static = %{version}-%{release}
+%endif
 
 %description devel
 This package contains the headers and other files needed for developing
@@ -60,6 +64,11 @@ API programming documentation for the Data Plane Development Kit.
 %prep
 %setup -q
 %patch1 -p1 -z .config
+
+%if %{with shared}
+sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' config/common_linuxapp
+%endif
+
 
 %build
 export EXTRA_CFLAGS="%{optflags}"
@@ -127,7 +136,13 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 # with symbol/library versioning once it lands. Use a linker script to
 # avoid the issue.
 %if %{with combined}
+
+%if %{with shared}
+libext=so
+%else
 libext=a
+%endif
+
 comblib=libintel_dpdk.${libext}
 
 echo "GROUP (" > ${comblib}
@@ -141,6 +156,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 # BSD
 %{_bindir}/*
 %dir %{_libdir}/%{name}-%{version}
+%if %{with shared}
+%{_libdir}/%{name}-%{version}/*.so
+%endif
 
 %files doc
 #BSD
@@ -151,11 +169,14 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %{_includedir}/*
 %{sdkdir}
 %{_sysconfdir}/profile.d/dpdk-sdk-*.*
+%if ! %{with shared}
 %{_libdir}/%{name}-%{version}/*.a
+%endif
 
 %changelog
 * Wed Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-7
 - Policy compliance: move static libraries to -devel, provide dpdk-static
+- Add a spec option to build as shared libraries
 
 * Wed Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-6
 - Avoid variable expansion in the spec here-documents during build
