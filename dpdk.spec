@@ -41,6 +41,7 @@ fast packet processing in the user space.
 %package devel
 Summary: Data Plane Development Kit development files
 Requires: %{name}%{?_isa} = %{version}-%{release}
+Provides: %{name}-static = %{version}-%{release}
 
 %description devel
 This package contains the headers and other files needed for developing
@@ -139,7 +140,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %files
 # BSD
 %{_bindir}/*
-%{_libdir}/%{name}-%{version}
+%dir %{_libdir}/%{name}-%{version}
 
 %files doc
 #BSD
@@ -150,8 +151,12 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %{_includedir}/*
 %{sdkdir}
 %{_sysconfdir}/profile.d/dpdk-sdk-*.*
+%{_libdir}/%{name}-%{version}/*.a
 
 %changelog
+* Wed Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-7
+- Policy compliance: move static libraries to -devel, provide dpdk-static
+
 * Wed Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-6
 - Avoid variable expansion in the spec here-documents during build
 - Drop now unnecessary debug flags patch
