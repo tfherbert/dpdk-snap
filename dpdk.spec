@@ -1,3 +1,6 @@
+# Add option to enable combined library (--with combined)
+%bcond_with combined
+
 Name: dpdk
 Version: 1.7.0 
 Release: 6%{?dist}
@@ -119,6 +122,20 @@ EOF
 # Fixup irregular modes in headers
 find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 
+# Upstream has an option to build a combined library but it'll clash
+# with symbol/library versioning once it lands. Use a linker script to
+# avoid the issue.
+%if %{with combined}
+libext=a
+comblib=libintel_dpdk.${libext}
+
+echo "GROUP (" > ${comblib}
+find %{buildroot}/%{_libdir}/%{name}-%{version}/ -name "*.${libext}" |\
+	sed -e "s:^%{buildroot}/:  :g" >> ${comblib}
+echo ")" >> ${comblib}
+install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
+%endif
+
 %files
 # BSD
 %{_bindir}/*
@@ -138,6 +155,7 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 * Wed Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-6
 - Avoid variable expansion in the spec here-documents during build
 - Drop now unnecessary debug flags patch
+- Add a spec option to build a combined library
 
 * Tue Jan 27 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-5
 - Avoid unnecessary use of %%global, lazy expansion is normally better
