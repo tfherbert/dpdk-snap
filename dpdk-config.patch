@@ -1,16 +1,7 @@
-diff -up dpdk-1.7.0/config/common_linuxapp.config dpdk-1.7.0/config/common_linuxapp
---- dpdk-1.7.0/config/common_linuxapp.config	2014-07-04 04:18:07.000000000 -0400
-+++ dpdk-1.7.0/config/common_linuxapp	2014-07-17 14:43:44.359455939 -0400
-@@ -52,7 +52,7 @@ CONFIG_RTE_EXEC_ENV_LINUXAPP=y
- ## Note: if your compiler does not support the relevant -march options,
- ## it will be compiled with whatever latest processor the compiler supports!
- ##
--#CONFIG_RTE_MACHINE="native"
-+CONFIG_RTE_MACHINE="default"
- #
- ##
- ## define the architecture we compile for.
-@@ -123,7 +123,7 @@ CONFIG_RTE_LOG_HISTORY=256
+diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linuxapp
+--- dpdk-1.8.0/config/common_linuxapp.config	2014-12-20 01:38:39.000000000 +0200
++++ dpdk-1.8.0/config/common_linuxapp	2015-01-29 12:30:19.511586064 +0200
+@@ -98,7 +98,7 @@ CONFIG_RTE_LOG_HISTORY=256
  CONFIG_RTE_LIBEAL_USE_HPET=n
  CONFIG_RTE_EAL_ALLOW_INV_SOCKET_ID=n
  CONFIG_RTE_EAL_ALWAYS_PANIC_ON_ERROR=n
@@ -19,7 +10,7 @@ diff -up dpdk-1.7.0/config/common_linuxapp.config dpdk-1.7.0/config/common_linux
  CONFIG_RTE_EAL_VFIO=y
  
  #
-@@ -170,8 +170,8 @@ CONFIG_RTE_NIC_BYPASS=n
+@@ -140,8 +140,8 @@ CONFIG_RTE_NIC_BYPASS=n
  #
  # Compile burst-oriented IGB & EM PMD drivers
  #
@@ -30,7 +21,7 @@ diff -up dpdk-1.7.0/config/common_linuxapp.config dpdk-1.7.0/config/common_linux
  CONFIG_RTE_LIBRTE_E1000_DEBUG_INIT=n
  CONFIG_RTE_LIBRTE_E1000_DEBUG_RX=n
  CONFIG_RTE_LIBRTE_E1000_DEBUG_TX=n
-@@ -182,7 +182,7 @@ CONFIG_RTE_LIBRTE_E1000_PF_DISABLE_STRIP
+@@ -152,7 +152,7 @@ CONFIG_RTE_LIBRTE_E1000_PF_DISABLE_STRIP
  #
  # Compile burst-oriented IXGBE PMD driver
  #
@@ -39,7 +30,7 @@ diff -up dpdk-1.7.0/config/common_linuxapp.config dpdk-1.7.0/config/common_linux
  CONFIG_RTE_LIBRTE_IXGBE_DEBUG_INIT=n
  CONFIG_RTE_LIBRTE_IXGBE_DEBUG_RX=n
  CONFIG_RTE_LIBRTE_IXGBE_DEBUG_TX=n
-@@ -197,7 +197,7 @@ CONFIG_RTE_IXGBE_RX_OLFLAGS_ENABLE=y
+@@ -166,7 +166,7 @@ CONFIG_RTE_IXGBE_RX_OLFLAGS_ENABLE=y
  #
  # Compile burst-oriented I40E PMD driver
  #
@@ -48,7 +39,16 @@ diff -up dpdk-1.7.0/config/common_linuxapp.config dpdk-1.7.0/config/common_linux
  CONFIG_RTE_LIBRTE_I40E_DEBUG_INIT=n
  CONFIG_RTE_LIBRTE_I40E_DEBUG_RX=n
  CONFIG_RTE_LIBRTE_I40E_DEBUG_TX=n
-@@ -241,7 +241,7 @@ CONFIG_RTE_PMD_RING_MAX_TX_RINGS=16
+@@ -182,7 +182,7 @@ CONFIG_RTE_LIBRTE_I40E_ITR_INTERVAL=-1
+ #
+ # Compile burst-oriented Cisco ENIC PMD driver
+ #
+-CONFIG_RTE_LIBRTE_ENIC_PMD=y
++CONFIG_RTE_LIBRTE_ENIC_PMD=n
+ 
+ #
+ # Compile burst-oriented VIRTIO PMD driver
+@@ -214,7 +214,7 @@ CONFIG_RTE_PMD_RING_MAX_TX_RINGS=16
  #
  # Compile software PMD backed by PCAP files
  #
@@ -57,7 +57,7 @@ diff -up dpdk-1.7.0/config/common_linuxapp.config dpdk-1.7.0/config/common_linux
  
  #
  # Compile link bonding PMD library
-@@ -320,7 +320,7 @@ CONFIG_RTE_LIBRTE_LPM_DEBUG=n
+@@ -298,7 +298,7 @@ CONFIG_RTE_LIBRTE_LPM_DEBUG=n
  #
  # Compile librte_acl
  #
@@ -66,7 +66,7 @@ diff -up dpdk-1.7.0/config/common_linuxapp.config dpdk-1.7.0/config/common_linux
  CONFIG_RTE_LIBRTE_ACL_DEBUG=n
  CONFIG_RTE_LIBRTE_ACL_STANDALONE=n
  
-@@ -381,7 +381,7 @@ CONFIG_RTE_LIBRTE_PIPELINE=y
+@@ -359,7 +359,7 @@ CONFIG_RTE_LIBRTE_PIPELINE=y
  #
  # Compile librte_kni
  #
@@ -75,15 +75,16 @@ diff -up dpdk-1.7.0/config/common_linuxapp.config dpdk-1.7.0/config/common_linux
  CONFIG_RTE_KNI_KO_DEBUG=n
  CONFIG_RTE_KNI_VHOST=n
  CONFIG_RTE_KNI_VHOST_MAX_CACHE_SIZE=1024
-diff -up dpdk-1.7.0/config/defconfig_x86_64-native-linuxapp-gcc.config dpdk-1.7.0/config/defconfig_x86_64-native-linuxapp-gcc
---- dpdk-1.7.0/config/defconfig_x86_64-native-linuxapp-gcc.config	2014-07-04 04:18:07.000000000 -0400
-+++ dpdk-1.7.0/config/defconfig_x86_64-native-linuxapp-gcc	2014-07-17 14:40:09.881651791 -0400
-@@ -46,7 +46,7 @@
- # Note: if your compiler does not support the relevant -march options,
- # it will be compiled with whatever latest processor the compiler supports!
- #
--CONFIG_RTE_MACHINE="native"
-+#CONFIG_RTE_MACHINE="native"
+diff -up dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc.config dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc
+--- dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc.config	2014-12-20 01:38:39.000000000 +0200
++++ dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc	2015-01-29 12:23:39.210618412 +0200
+@@ -32,7 +32,7 @@
  
- #
- # define the architecture we compile for.
+ #include "common_linuxapp"
+ 
+-CONFIG_RTE_MACHINE="native"
++CONFIG_RTE_MACHINE="default"
+ 
+ CONFIG_RTE_ARCH="x86_64"
+ CONFIG_RTE_ARCH_X86_64=y
+diff -up dpdk-1.8.0/x86_64-native-linuxapp-gcc/.config dpdk-1.8.0/x86_64-native-linuxapp-gcc/

@@ -4,8 +4,8 @@
 %bcond_with shared
 
 Name: dpdk
-Version: 1.7.0 
-Release: 8%{?dist}
+Version: 1.8.0
+Release: 1%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -34,7 +34,8 @@ ExclusiveArch: x86_64
 
 
 
-BuildRequires: kernel-headers, libpcap-devel, doxygen
+BuildRequires: kernel-headers, libpcap-devel
+BuildRequires: doxygen, python-sphinx
 
 %description
 The Data Plane Development Kit is a set of libraries and drivers for
@@ -174,6 +175,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %endif
 
 %changelog
+* Thu Jan 29 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-1
+- Update to 1.8.0
+
 * Wed Jan 28 2015 Panu Matilainen <pmatilai@redhat.com> - 1.7.0-8
 - Always build with -fPIC
 
