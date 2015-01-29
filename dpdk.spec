@@ -5,7 +5,7 @@
 
 Name: dpdk
 Version: 1.8.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -107,6 +107,8 @@ cp -a  %{target}/.config     %{buildroot}%{sdkdir}/%{target}
 ln -s  ../../../%{_lib}/%{name}-%{version} %{buildroot}%{sdkdir}/%{target}/lib
 ln -s  ../../../include/%{name}-%{version} %{buildroot}%{sdkdir}/%{target}/include
 cp -a  mk/                   %{buildroot}%{sdkdir}
+mkdir -p                     %{buildroot}%{sdkdir}/scripts
+cp -a  scripts/*.sh          %{buildroot}%{sdkdir}/scripts
 
 # Setup RTE_SDK environment as expected by apps etc
 mkdir -p %{buildroot}/%{_sysconfdir}/profile.d
@@ -178,6 +180,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %endif
 
 %changelog
+* Thu Jan 29 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-4
+- Include scripts directory in the "sdk" too
+
 * Thu Jan 29 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-3
 - Fix -Wformat clash preventing i40e driver build, enable it
 - Fix -Wall clash preventing enic driver build, enable it
