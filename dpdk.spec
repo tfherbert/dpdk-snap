@@ -73,7 +73,9 @@ sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' confi
 
 
 %build
-export EXTRA_CFLAGS="%{optflags} -fPIC"
+# Avoid appending second -Wall to everything, it breaks hand-picked
+# disablers like per-file -Wno-strict-aliasing
+export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
 
 # DPDK defaults to using builder-specific compiler flags.  However,
 # the config has been changed by specifying CONFIG_RTE_MACHINE=default
@@ -178,6 +180,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %changelog
 * Thu Jan 29 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-3
 - Fix -Wformat clash preventing i40e driver build, enable it
+- Fix -Wall clash preventing enic driver build, enable it
 
 * Thu Jan 29 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-2
 - Enable librte_vhost, which buildrequires fuse-devel

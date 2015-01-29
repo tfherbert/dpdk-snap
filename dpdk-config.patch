@@ -10,15 +10,6 @@ diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linux
  CONFIG_RTE_EAL_VFIO=y
  
  #
-@@ -182,7 +182,7 @@ CONFIG_RTE_LIBRTE_I40E_ITR_INTERVAL=-1
- #
- # Compile burst-oriented Cisco ENIC PMD driver
- #
--CONFIG_RTE_LIBRTE_ENIC_PMD=y
-+CONFIG_RTE_LIBRTE_ENIC_PMD=n
- 
- #
- # Compile burst-oriented VIRTIO PMD driver
 @@ -214,7 +214,7 @@ CONFIG_RTE_PMD_RING_MAX_TX_RINGS=16
  #
  # Compile software PMD backed by PCAP files
