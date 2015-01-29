@@ -1,6 +1,6 @@
 diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linuxapp
 --- dpdk-1.8.0/config/common_linuxapp.config	2014-12-20 01:38:39.000000000 +0200
-+++ dpdk-1.8.0/config/common_linuxapp	2015-01-29 12:30:19.511586064 +0200
++++ dpdk-1.8.0/config/common_linuxapp	2015-01-29 12:49:12.907658747 +0200
 @@ -98,7 +98,7 @@ CONFIG_RTE_LOG_HISTORY=256
  CONFIG_RTE_LIBEAL_USE_HPET=n
  CONFIG_RTE_EAL_ALLOW_INV_SOCKET_ID=n
@@ -75,9 +75,18 @@ diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linux
  CONFIG_RTE_KNI_KO_DEBUG=n
  CONFIG_RTE_KNI_VHOST=n
  CONFIG_RTE_KNI_VHOST_MAX_CACHE_SIZE=1024
+@@ -372,7 +372,7 @@ CONFIG_RTE_KNI_VHOST_DEBUG_TX=n
+ # fuse-devel is needed to run vhost.
+ # fuse-devel enables user space char driver development
+ #
+-CONFIG_RTE_LIBRTE_VHOST=n
++CONFIG_RTE_LIBRTE_VHOST=y
+ CONFIG_RTE_LIBRTE_VHOST_DEBUG=n
+ 
+ #
 diff -up dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc.config dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc
 --- dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc.config	2014-12-20 01:38:39.000000000 +0200
-+++ dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc	2015-01-29 12:23:39.210618412 +0200
++++ dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc	2015-01-29 12:48:30.205768858 +0200
 @@ -32,7 +32,7 @@
  
  #include "common_linuxapp"

@@ -5,7 +5,7 @@
 
 Name: dpdk
 Version: 1.8.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -34,7 +34,7 @@ ExclusiveArch: x86_64
 
 
 
-BuildRequires: kernel-headers, libpcap-devel
+BuildRequires: kernel-headers, libpcap-devel, fuse-devel
 BuildRequires: doxygen, python-sphinx
 
 %description
@@ -175,6 +175,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %endif
 
 %changelog
+* Thu Jan 29 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-2
+- Enable librte_vhost, which buildrequires fuse-devel
+
 * Thu Jan 29 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-1
 - Update to 1.8.0
 
