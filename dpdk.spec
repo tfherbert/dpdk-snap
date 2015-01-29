@@ -177,6 +177,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %changelog
 * Thu Jan 29 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-2
 - Enable librte_vhost, which buildrequires fuse-devel
+- Enable physical NIC drivers that build (e1000, ixgbe) for VFIO use
 
 * Thu Jan 29 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-1
 - Update to 1.8.0
