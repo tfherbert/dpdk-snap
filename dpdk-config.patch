@@ -10,15 +10,6 @@ diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linux
  CONFIG_RTE_EAL_VFIO=y
  
  #
-@@ -166,7 +166,7 @@ CONFIG_RTE_IXGBE_RX_OLFLAGS_ENABLE=y
- #
- # Compile burst-oriented I40E PMD driver
- #
--CONFIG_RTE_LIBRTE_I40E_PMD=y
-+CONFIG_RTE_LIBRTE_I40E_PMD=n
- CONFIG_RTE_LIBRTE_I40E_DEBUG_INIT=n
- CONFIG_RTE_LIBRTE_I40E_DEBUG_RX=n
- CONFIG_RTE_LIBRTE_I40E_DEBUG_TX=n
 @@ -182,7 +182,7 @@ CONFIG_RTE_LIBRTE_I40E_ITR_INTERVAL=-1
  #
  # Compile burst-oriented Cisco ENIC PMD driver
