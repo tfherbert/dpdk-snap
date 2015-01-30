@@ -1,7 +1,7 @@
 # Add option to disable combined library (--without combined)
 %bcond_without combined
-# Add option to build as shared libraries (--with shared)
-%bcond_with shared
+# Add option to build as static libraries (--without shared)
+%bcond_without shared
 
 Name: dpdk
 Version: 1.8.0
@@ -185,6 +185,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 * Fri Jan 30 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-5
 - Add DT_NEEDED for external dependencies (pcap, fuse, dl, pthread)
 - Enable combined library creation, needed for OVS
+- Enable shared library creation, needed for sanity
 
 * Thu Jan 29 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-4
 - Include scripts directory in the "sdk" too
