@@ -1,5 +1,5 @@
-# Add option to enable combined library (--with combined)
-%bcond_with combined
+# Add option to disable combined library (--without combined)
+%bcond_without combined
 # Add option to build as shared libraries (--with shared)
 %bcond_with shared
 
@@ -184,6 +184,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %changelog
 * Fri Jan 30 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-5
 - Add DT_NEEDED for external dependencies (pcap, fuse, dl, pthread)
+- Enable combined library creation, needed for OVS
 
 * Thu Jan 29 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-4
 - Include scripts directory in the "sdk" too
