@@ -5,7 +5,7 @@
 
 Name: dpdk
 Version: 1.8.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -160,12 +160,23 @@ echo ")" >> ${comblib}
 install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %endif
 
+%if %{with shared}
+mkdir -p %{_sysconfdir}/ld.so.conf.d
+cat << EOF > %{_sysconfdir}/ld.so.conf.d/%{name}-%{version}-%{arch}.conf
+%{_libdir}/%{name}-%{version}
+EOF
+
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+%endif
+
 %files
 # BSD
 %{_bindir}/*
 %dir %{_libdir}/%{name}-%{version}
 %if %{with shared}
 %{_libdir}/%{name}-%{version}/*.so
+%{_sysconfdir}/ld.so.conf.d/*.conf
 %endif
 
 %files doc
@@ -182,6 +193,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %endif
 
 %changelog
+* Tue Feb 03 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-6
+- Add our libraries to ld path, run ldconfig
+
 * Fri Jan 30 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-5
 - Add DT_NEEDED for external dependencies (pcap, fuse, dl, pthread)
 - Enable combined library creation, needed for OVS
