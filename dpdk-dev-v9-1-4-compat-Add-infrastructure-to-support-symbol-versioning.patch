@@ -1,0 +1,237 @@
+From patchwork Mon Feb  2 17:40:19 2015
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [dpdk-dev, v9,
+ 1/4] compat: Add infrastructure to support symbol versioning
+From: Neil Horman <nhorman@tuxdriver.com>
+X-Patchwork-Id: 2916
+Message-Id: <1422898822-16422-1-git-send-email-nhorman@tuxdriver.com>
+To: dev@dpdk.org
+Date: Mon,  2 Feb 2015 12:40:19 -0500
+
+Add initial pass header files to support symbol versioning.
+
+Signed-off-by: Neil Horman <nhorman@tuxdriver.com>
+CC: Thomas Monjalon <thomas.monjalon@6wind.com>
+CC: "Richardson, Bruce" <bruce.richardson@intel.com>
+CC: "Gonzalez Monroy, Sergio" <sergio.gonzalez.monroy@intel.com>
+
+---
+Change Notes:
+V2)
+	Moved ifeq to _INSTALL target
+
+V3)
+	Undo V2 changes and make librte_compat use the rte.install.mk file
+instead
+
+v4)
+	changed --version-script to accept SRCDIR in this patch at per request
+	documented versioning macros
+	cleaned up macro parameter consistency
+	converted SA macro to RTE_STR macro
+	fixed copyright
+v9)	Fixed some typos in copyright
+---
+ lib/Makefile                   |   1 +
+ lib/librte_compat/Makefile     |  38 ++++++++++++++
+ lib/librte_compat/rte_compat.h | 114 +++++++++++++++++++++++++++++++++++++++++
+ mk/rte.lib.mk                  |   4 ++
+ 4 files changed, 157 insertions(+)
+ create mode 100644 lib/librte_compat/Makefile
+ create mode 100644 lib/librte_compat/rte_compat.h
+
+diff --git a/lib/Makefile b/lib/Makefile
+index 0ffc982..d617d81 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -31,6 +31,7 @@
+ 
+ include $(RTE_SDK)/mk/rte.vars.mk
+ 
++DIRS-y += librte_compat
+ DIRS-$(CONFIG_RTE_LIBRTE_EAL) += librte_eal
+ DIRS-$(CONFIG_RTE_LIBRTE_MALLOC) += librte_malloc
+ DIRS-$(CONFIG_RTE_LIBRTE_RING) += librte_ring
+diff --git a/lib/librte_compat/Makefile b/lib/librte_compat/Makefile
+new file mode 100644
+index 0000000..0bab870
+--- /dev/null
++++ b/lib/librte_compat/Makefile
+@@ -0,0 +1,38 @@
++#   BSD LICENSE
++#
++#   Copyright(c) 2013 Neil Horman <nhorman@tuxdriver.com>
++#   All rights reserved.
++#
++#   Redistribution and use in source and binary forms, with or without
++#   modification, are permitted provided that the following conditions
++#   are met:
++#
++#     * Redistributions of source code must retain the above copyright
++#       notice, this list of conditions and the following disclaimer.
++#     * Redistributions in binary form must reproduce the above copyright
++#       notice, this list of conditions and the following disclaimer in
++#       the documentation and/or other materials provided with the
++#       distribution.
++#     * Neither the name of Intel Corporation nor the names of its
++#       contributors may be used to endorse or promote products derived
++#       from this software without specific prior written permission.
++#
++#   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++#   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++#   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++#   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++#   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++#   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++#   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++#   DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++#   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++#   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++#   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++
++include $(RTE_SDK)/mk/rte.vars.mk
++
++
++# install includes
++SYMLINK-y-include := rte_compat.h
++
++include $(RTE_SDK)/mk/rte.install.mk
+diff --git a/lib/librte_compat/rte_compat.h b/lib/librte_compat/rte_compat.h
+new file mode 100644
+index 0000000..33bb55f
+--- /dev/null
++++ b/lib/librte_compat/rte_compat.h
+@@ -0,0 +1,114 @@
++/*-
++ *   BSD LICENSE
++ *
++ *   Copyright(c) 2015 Neil Horman <nhorman@tuxdriver.com>.
++ *   All rights reserved.
++ *
++ *   Redistribution and use in source and binary forms, with or without
++ *   modification, are permitted provided that the following conditions
++ *   are met:
++ *
++ *     * Redistributions of source code must retain the above copyright
++ *       notice, this list of conditions and the following disclaimer.
++ *     * Redistributions in binary form must reproduce the above copyright
++ *       notice, this list of conditions and the following disclaimer in
++ *       the documentation and/or other materials provided with the
++ *       distribution.
++ *
++ *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ *   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ *   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ *   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ *   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ *   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ *   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ *   DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ *   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ *   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ *   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ */
++
++#ifndef _RTE_COMPAT_H_
++#define _RTE_COMPAT_H_
++#include <rte_common.h>
++
++#ifdef RTE_BUILD_SHARED_LIB
++
++/*
++ * Provides backwards compatibility when updating exported functions.
++ * When a symol is exported from a library to provide an API, it also provides a
++ * calling convention (ABI) that is embodied in its name, return type,
++ * arguments, etc.  On occasion that function may need to change to accomodate
++ * new functionality, behavior, etc.  When that occurs, it is desireable to
++ * allow for backwards compatibility for a time with older binaries that are
++ * dynamically linked to the dpdk.  To support that, the __vsym and
++ * VERSION_SYMBOL macros are created.  They, in conjunction with the
++ * <library>_version.map file for a given library allow for multiple versions of
++ * a symbol to exist in a shared library so that older binaries need not be
++ * immediately recompiled. Their use is outlined in the following example:
++ * Assumptions: DPDK 1.(X) contains a function int foo(char *string)
++ *              DPDK 1.(X+1) needs to change foo to be int foo(int index)
++ *
++ * To accomplish this:
++ * 1) Edit lib/<library>/library_version.map to add a DPDK_1.(X+1) node, in which
++ * foo is exported as a global symbol.
++ *
++ * 2) rename the existing function int foo(char *string) to 
++ * 	int __vsym foo_v18(char *string)
++ *
++ * 3) Add this macro immediately below the function
++ * 	VERSION_SYMBOL(foo, _v18, 1.8);
++ *
++ * 4) Implement a new version of foo.
++ * 	char foo(int value, int otherval) { ...}
++ *
++ * 5) Mark the newest version as the default version
++ * 	BIND_DEFAULT_SYMBOL(foo, 1.9);
++ *
++ */
++
++/* 
++ * Macro Parameters:
++ * b - function base name
++ * e - function version extension, to be concatenated with base name
++ * n - function symbol version string to be applied
++ */
++
++/*
++ * VERSION_SYMBOL
++ * Creates a symbol version table entry binding symbol <b>@DPDK_<n> to the internal
++ * function name <b>_<e>
++ */ 
++#define VERSION_SYMBOL(b, e, n) __asm__(".symver " RTE_STR(b) RTE_STR(e) ", "RTE_STR(b)"@DPDK_"RTE_STR(n))
++
++/*
++ * BASE_SYMBOL
++ * Creates a symbol version table entry binding unversioned symbol <b> 
++ * to the internal function <b>_<e>
++ */ 
++#define BASE_SYMBOL(b, e) __asm__(".symver " RTE_STR(b) RTE_STR(e) ", "RTE_STR(b)"@")
++
++/*
++ * BNID_DEFAULT_SYMBOL
++ * Creates a symbol version entry instructing the linker to bind references to
++ * symbol <b> to the internal symbol <b>_<e>
++ */
++#define BIND_DEFAULT_SYMBOL(b, e, n) __asm__(".symver " RTE_STR(b) RTE_STR(e) ", "RTE_STR(b)"@@DPDK_"RTE_STR(n))
++#define __vsym __attribute__((used))
++
++#else
++/*
++ * No symbol versioning in use
++ */
++#define VERSION_SYMBOL(b, e, v)
++#define __vsym
++#define BASE_SYMBOL(b, n)
++#define BIND_DEFAULT_SYMBOL(b, v)
++
++/*
++ * RTE_BUILD_SHARED_LIB=n
++ */
++#endif
++
++
++#endif /* _RTE_COMPAT_H_ */
+diff --git a/mk/rte.lib.mk b/mk/rte.lib.mk
+index 81bf8e1..1d3b646 100644
+--- a/mk/rte.lib.mk
++++ b/mk/rte.lib.mk
+@@ -40,8 +40,12 @@ VPATH += $(SRCDIR)
+ 
+ ifeq ($(RTE_BUILD_SHARED_LIB),y)
+ LIB := $(patsubst %.a,%.so,$(LIB))
++
++CPU_LDFLAGS += --version-script=$(SRCDIR)/$(EXPORT_MAP)
++
+ endif
+ 
++
+ _BUILD = $(LIB)
+ _INSTALL = $(INSTALL-FILES-y) $(SYMLINK-FILES-y) $(RTE_OUTPUT)/lib/$(LIB)
+ _CLEAN = doclean

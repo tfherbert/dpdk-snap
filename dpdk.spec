@@ -2,16 +2,23 @@
 %bcond_without combined
 # Add option to build as static libraries (--without shared)
 %bcond_without shared
+# Library versioning
+%bcond_without versioned
 
 Name: dpdk
 Version: 1.8.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
 Patch1: dpdk-config.patch
 Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-dtneeded.patch
+
+Patch100: dpdk-dev-v9-1-4-compat-Add-infrastructure-to-support-symbol-versioning.patch
+Patch101: dpdk-dev-v9-2-4-Provide-initial-versioning-for-all-DPDK-libraries.patch
+Patch102: dpdk-dev-v9-3-4-Add-library-version-extenstion.patch
+Patch103: dpdk-dev-v9-4-4-docs-Add-ABI-documentation.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -68,6 +75,13 @@ API programming documentation for the Data Plane Development Kit.
 %patch1 -p1 -z .config
 %patch2 -p1 -z .i40e-wformat
 %patch3 -p1 -z .dtneeded
+
+%if %{with versioned}
+%patch100 -p1
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
+%endif
 
 %if %{with shared}
 sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' config/common_linuxapp
@@ -161,8 +175,8 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 %endif
 
 %if %{with shared}
-mkdir -p %{_sysconfdir}/ld.so.conf.d
-cat << EOF > %{_sysconfdir}/ld.so.conf.d/%{name}-%{version}-%{arch}.conf
+mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
+cat << EOF > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{version}-%{arch}.conf
 %{_libdir}/%{name}-%{version}
 EOF
 
@@ -175,7 +189,7 @@ EOF
 %{_bindir}/*
 %dir %{_libdir}/%{name}-%{version}
 %if %{with shared}
-%{_libdir}/%{name}-%{version}/*.so
+%{_libdir}/%{name}-%{version}/*.so%{?with_versioned:.*}
 %{_sysconfdir}/ld.so.conf.d/*.conf
 %endif
 
@@ -188,13 +202,18 @@ EOF
 %{_includedir}/*
 %{sdkdir}
 %{_sysconfdir}/profile.d/dpdk-sdk-*.*
-%if ! %{with shared}
+%if %{with shared} && %{with versioned}
+%{_libdir}/%{name}-%{version}/*.so
+%else
 %{_libdir}/%{name}-%{version}/*.a
 %endif
 
 %changelog
+* Tue Feb 03 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-7
+- Add library versioning patches as another build option, enable by default
+
 * Tue Feb 03 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-6
-- Add our libraries to ld path, run ldconfig
+- Add our libraries to ld path & run ldconfig when using shared libs
 
 * Fri Jan 30 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-5
 - Add DT_NEEDED for external dependencies (pcap, fuse, dl, pthread)
