@@ -7,7 +7,7 @@
 
 Name: dpdk
 Version: 1.8.0
-Release: 7%{?dist}
+Release: 8%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -176,7 +176,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
 
 %if %{with shared}
 mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
-cat << EOF > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{version}-%{arch}.conf
+cat << EOF > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{version}-%{_arch}.conf
 %{_libdir}/%{name}-%{version}
 EOF
 
@@ -209,6 +209,10 @@ EOF
 %endif
 
 %changelog
+* Tue Feb 03 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-8
+- Set soname of the shared libraries
+- Fixup typo in ld path config file name
+
 * Tue Feb 03 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-7
 - Add library versioning patches as another build option, enable by default
 
