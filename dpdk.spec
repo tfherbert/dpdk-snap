@@ -7,7 +7,7 @@
 
 Name: dpdk
 Version: 1.8.0
-Release: 8%{?dist}
+Release: 9%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -19,6 +19,7 @@ Patch100: dpdk-dev-v9-1-4-compat-Add-infrastructure-to-support-symbol-versioning
 Patch101: dpdk-dev-v9-2-4-Provide-initial-versioning-for-all-DPDK-libraries.patch
 Patch102: dpdk-dev-v9-3-4-Add-library-version-extenstion.patch
 Patch103: dpdk-dev-v9-4-4-docs-Add-ABI-documentation.patch
+Patch104: dpdk-cmdline-symver.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -81,6 +82,7 @@ API programming documentation for the Data Plane Development Kit.
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
+%patch104 -p1 -b .symver
 %endif
 
 %if %{with shared}
@@ -209,6 +211,9 @@ EOF
 %endif
 
 %changelog
+* Wed Feb 04 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-9
+- Add missing symbol version to librte_cmdline
+
 * Tue Feb 03 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-8
 - Set soname of the shared libraries
 - Fixup typo in ld path config file name

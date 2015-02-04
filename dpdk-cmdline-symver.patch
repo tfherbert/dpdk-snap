@@ -1,0 +1,11 @@
+diff -up dpdk-1.8.0/lib/librte_cmdline/rte_cmdline_version.map.symver dpdk-1.8.0/lib/librte_cmdline/rte_cmdline_version.map
+--- dpdk-1.8.0/lib/librte_cmdline/rte_cmdline_version.map.symver	2015-02-04 09:15:58.950576841 +0200
++++ dpdk-1.8.0/lib/librte_cmdline/rte_cmdline_version.map	2015-02-04 09:16:48.351457911 +0200
+@@ -25,6 +25,7 @@ DPDK_1.8 {
+ 	cmdline_get_help_portlist;
+ 	cmdline_token_string_ops;
+ 	cmdline_token_num_ops;
++	cmdline_token_portlist_ops;
+ 	cmdline_token_string_ops;
+ 	cmdline_token_ipaddr_ops;
+ 	cmdline_token_etheraddr_ops;
