@@ -144,7 +144,9 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 
 # Upstream has an option to build a combined library but it'll clash
 # with symbol/library versioning once it lands. Use a linker script to
-# avoid the issue.
+# avoid the issue. Linking against the script during build resolves
+# into links to the actual used libraries which is just fine for us,
+# so this combined library is a build-time only construct now.
 %if %{with combined}
 
 %if %{with shared}
@@ -199,6 +201,7 @@ EOF
 %changelog
 * Thu Feb 05 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-10
 - Drop symbol versioning patches, always do library version for shared
+- Add comment on the combined library thing
 
 * Wed Feb 04 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-9
 - Add missing symbol version to librte_cmdline
