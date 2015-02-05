@@ -5,7 +5,7 @@
 
 Name: dpdk
 Version: 1.8.0
-Release: 10%{?dist}
+Release: 11%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -99,20 +99,32 @@ mkdir -p                     %{buildroot}%{_bindir}
 cp -a  %{target}/app/testpmd %{buildroot}%{_bindir}/testpmd-%{version}
 mkdir -p                     %{buildroot}%{_includedir}/%{name}-%{version}
 cp -Lr  %{target}/include/*   %{buildroot}%{_includedir}/%{name}-%{version}
-mkdir -p                     %{buildroot}%{_libdir}/%{name}-%{version}
-cp -a  %{target}/lib/*       %{buildroot}%{_libdir}/%{name}-%{version}
+mkdir -p                     %{buildroot}%{_libdir}
+cp -a  %{target}/lib/*       %{buildroot}%{_libdir}
 mkdir -p                     %{buildroot}%{docdir}
 cp -a  %{target}/doc/*       %{buildroot}%{docdir}
 
+%if %{with shared}
+libext=so
+%else
+libext=a
+%endif
+
 # DPDK apps expect a particular (and somewhat peculiar) directory layout
 # for building, arrange for that
+mkdir -p                     %{buildroot}%{sdkdir}/lib
 mkdir -p                     %{buildroot}%{sdkdir}/%{target}
 cp -a  %{target}/.config     %{buildroot}%{sdkdir}/%{target}
-ln -s  ../../../%{_lib}/%{name}-%{version} %{buildroot}%{sdkdir}/%{target}/lib
 ln -s  ../../../include/%{name}-%{version} %{buildroot}%{sdkdir}/%{target}/include
 cp -a  mk/                   %{buildroot}%{sdkdir}
 mkdir -p                     %{buildroot}%{sdkdir}/scripts
 cp -a  scripts/*.sh          %{buildroot}%{sdkdir}/scripts
+
+# Create library symlinks for the "sdk"
+for f in %{buildroot}/%{_libdir}/*.${libext}; do
+    l=`basename ${f}`
+    ln -s ../../${l} %{buildroot}/%{sdkdir}/lib/${l}
+done
 
 # Setup RTE_SDK environment as expected by apps etc
 mkdir -p %{buildroot}/%{_sysconfdir}/profile.d
@@ -148,28 +160,16 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 # into links to the actual used libraries which is just fine for us,
 # so this combined library is a build-time only construct now.
 %if %{with combined}
-
-%if %{with shared}
-libext=so
-%else
-libext=a
-%endif
-
 comblib=libintel_dpdk.${libext}
 
 echo "GROUP (" > ${comblib}
-find %{buildroot}/%{_libdir}/%{name}-%{version}/ -name "*.${libext}" |\
+find %{buildroot}/%{_libdir}/ -name "*.${libext}" |\
 	sed -e "s:^%{buildroot}/:  :g" >> ${comblib}
 echo ")" >> ${comblib}
-install -m 644 ${comblib} %{buildroot}/%{_libdir}/%{name}-%{version}/${comblib}
+install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %if %{with shared}
-mkdir -p %{buildroot}%{_sysconfdir}/ld.so.conf.d
-cat << EOF > %{buildroot}%{_sysconfdir}/ld.so.conf.d/%{name}-%{version}-%{_arch}.conf
-%{_libdir}/%{name}-%{version}
-EOF
-
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 %endif
@@ -177,10 +177,8 @@ EOF
 %files
 # BSD
 %{_bindir}/*
-%dir %{_libdir}/%{name}-%{version}
 %if %{with shared}
-%{_libdir}/%{name}-%{version}/*.so.*
-%{_sysconfdir}/ld.so.conf.d/*.conf
+%{_libdir}/*.so.*
 %endif
 
 %files doc
@@ -193,12 +191,15 @@ EOF
 %{sdkdir}
 %{_sysconfdir}/profile.d/dpdk-sdk-*.*
 %if %{with shared}
-%{_libdir}/%{name}-%{version}/*.so
+%{_libdir}/*.so
 %else
-%{_libdir}/%{name}-%{version}/*.a
+%{_libdir}/*.a
 %endif
 
 %changelog
+* Thu Feb 05 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-11
+- Drop the private libdir, not needed with versioned libs
+
 * Thu Feb 05 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-10
 - Drop symbol versioning patches, always do library version for shared
 - Add comment on the combined library thing
