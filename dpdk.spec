@@ -2,24 +2,17 @@
 %bcond_without combined
 # Add option to build as static libraries (--without shared)
 %bcond_without shared
-# Library versioning
-%bcond_without versioned
 
 Name: dpdk
 Version: 1.8.0
-Release: 9%{?dist}
+Release: 10%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
 Patch1: dpdk-config.patch
 Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-dtneeded.patch
-
-Patch100: dpdk-dev-v9-1-4-compat-Add-infrastructure-to-support-symbol-versioning.patch
-Patch101: dpdk-dev-v9-2-4-Provide-initial-versioning-for-all-DPDK-libraries.patch
-Patch102: dpdk-dev-v9-3-4-Add-library-version-extenstion.patch
-Patch103: dpdk-dev-v9-4-4-docs-Add-ABI-documentation.patch
-Patch104: dpdk-cmdline-symver.patch
+Patch4: dpdk-1.8-libext.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -76,14 +69,7 @@ API programming documentation for the Data Plane Development Kit.
 %patch1 -p1 -z .config
 %patch2 -p1 -z .i40e-wformat
 %patch3 -p1 -z .dtneeded
-
-%if %{with versioned}
-%patch100 -p1
-%patch101 -p1
-%patch102 -p1
-%patch103 -p1
-%patch104 -p1 -b .symver
-%endif
+%patch4 -p1 -b .libext
 
 %if %{with shared}
 sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' config/common_linuxapp
@@ -191,7 +177,7 @@ EOF
 %{_bindir}/*
 %dir %{_libdir}/%{name}-%{version}
 %if %{with shared}
-%{_libdir}/%{name}-%{version}/*.so%{?with_versioned:.*}
+%{_libdir}/%{name}-%{version}/*.so.*
 %{_sysconfdir}/ld.so.conf.d/*.conf
 %endif
 
@@ -204,13 +190,16 @@ EOF
 %{_includedir}/*
 %{sdkdir}
 %{_sysconfdir}/profile.d/dpdk-sdk-*.*
-%if %{with shared} && %{with versioned}
+%if %{with shared}
 %{_libdir}/%{name}-%{version}/*.so
 %else
 %{_libdir}/%{name}-%{version}/*.a
 %endif
 
 %changelog
+* Thu Feb 05 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-10
+- Drop symbol versioning patches, always do library version for shared
+
 * Wed Feb 04 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-9
 - Add missing symbol version to librte_cmdline
 
