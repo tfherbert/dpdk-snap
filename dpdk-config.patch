@@ -1,6 +1,6 @@
 diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linuxapp
 --- dpdk-1.8.0/config/common_linuxapp.config	2014-12-20 01:38:39.000000000 +0200
-+++ dpdk-1.8.0/config/common_linuxapp	2015-01-29 12:49:12.907658747 +0200
++++ dpdk-1.8.0/config/common_linuxapp	2015-02-06 13:47:46.381327982 +0200
 @@ -98,7 +98,7 @@ CONFIG_RTE_LOG_HISTORY=256
  CONFIG_RTE_LIBEAL_USE_HPET=n
  CONFIG_RTE_EAL_ALLOW_INV_SOCKET_ID=n
@@ -37,6 +37,24 @@ diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linux
  CONFIG_RTE_LIBRTE_VHOST_DEBUG=n
  
  #
+@@ -381,6 +381,17 @@ CONFIG_RTE_LIBRTE_VHOST_DEBUG=n
+ CONFIG_RTE_LIBRTE_XEN_DOM0=n
+ 
+ #
++# Compile IVSHMEM library
++#
++CONFIG_RTE_LIBRTE_IVSHMEM=y
++CONFIG_RTE_LIBRTE_IVSHMEM_DEBUG=n
++CONFIG_RTE_LIBRTE_IVSHMEM_MAX_PCI_DEVS=4
++CONFIG_RTE_LIBRTE_IVSHMEM_MAX_ENTRIES=128
++CONFIG_RTE_LIBRTE_IVSHMEM_MAX_METADATA_FILES=32
++
++# Set EAL to single file segments
++CONFIG_RTE_EAL_SINGLE_FILE_SEGMENTS=y
++#
+ # Enable warning directives
+ #
+ CONFIG_RTE_INSECURE_FUNCTION_WARNING=n
 diff -up dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc.config dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc
 --- dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc.config	2014-12-20 01:38:39.000000000 +0200
 +++ dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc	2015-01-29 12:48:30.205768858 +0200

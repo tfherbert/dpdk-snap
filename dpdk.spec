@@ -199,6 +199,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %changelog
 * Fri Feb 06 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-12
 - Enable librte_acl build
+- Enable librte_ivshmem build
 
 * Thu Feb 05 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-11
 - Drop the private libdir, not needed with versioned libs
