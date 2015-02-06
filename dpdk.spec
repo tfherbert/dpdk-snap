@@ -5,7 +5,7 @@
 
 Name: dpdk
 Version: 1.8.0
-Release: 11%{?dist}
+Release: 12%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -197,6 +197,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Feb 06 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-12
+- Enable librte_acl build
+
 * Thu Feb 05 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-11
 - Drop the private libdir, not needed with versioned libs
 
