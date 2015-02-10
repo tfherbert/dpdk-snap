@@ -11,8 +11,8 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
 Patch1: dpdk-config.patch
 Patch2: dpdk-i40e-wformat.patch
-Patch3: dpdk-dtneeded.patch
-Patch4: dpdk-1.8-libext.patch
+Patch3: dpdk-1.8-libext.patch
+Patch4: dpdk-dtneeded.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -68,8 +68,8 @@ API programming documentation for the Data Plane Development Kit.
 %setup -q
 %patch1 -p1 -z .config
 %patch2 -p1 -z .i40e-wformat
-%patch3 -p1 -z .dtneeded
-%patch4 -p1 -b .libext
+%patch3 -p1 -b .libext
+%patch4 -p1 -z .dtneeded
 
 %if %{with shared}
 sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' config/common_linuxapp
