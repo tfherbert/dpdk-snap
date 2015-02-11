@@ -29,7 +29,7 @@ diff -up dpdk-1.8.0/lib/librte_vhost/Makefile.dtneeded dpdk-1.8.0/lib/librte_vho
  #   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
  include $(RTE_SDK)/mk/rte.vars.mk
-+LDIBS += -lfuse
++LDLIBS += -lfuse
  
  # library name
  LIB = librte_vhost.a

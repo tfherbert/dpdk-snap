@@ -7,7 +7,7 @@
 
 Name: dpdk
 Version: 1.8.0
-Release: 13%{?dist}
+Release: 14%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -228,6 +228,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Feb 11 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-14
+- Fix typo causing librte_vhost missing DT_NEEDED on fuse
+
 * Wed Feb 11 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-13
 - Fix vhost library linkage
 - Add spec option to build example applications, enable by default
