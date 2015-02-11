@@ -2,6 +2,8 @@
 %bcond_without combined
 # Add option to build as static libraries (--without shared)
 %bcond_without shared
+# Add option to build without examples
+%bcond_without examples
 
 Name: dpdk
 Version: 1.8.0
@@ -62,6 +64,16 @@ BuildArch: noarch
 %description doc
 API programming documentation for the Data Plane Development Kit.
 
+%if %{with examples}
+%package examples
+Summary: Data Plane Development Kit example applications
+BuildRequires: libvirt-devel
+
+%description examples
+Example applications utilizing the Data Plane Development Kit, such
+as L2 and L3 forwarding.
+%endif
+
 %define sdkdir  %{_libdir}/%{name}-%{version}-sdk
 %define docdir  %{_docdir}/%{name}-%{version}
 
@@ -93,6 +105,10 @@ make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 make V=1 O=%{target} %{?_smp_mflags}
 make V=1 O=%{target} %{?_smp_mflags} doc
 
+%if %{with examples}
+make V=1 O=%{target}/examples T=%{target} %{?_smp_mflags} examples
+%endif
+
 %install
 
 # DPDK's "make install" seems a bit broken -- do things manually...
@@ -121,6 +137,14 @@ ln -s  ../../../include/%{name}-%{version} %{buildroot}%{sdkdir}/%{target}/inclu
 cp -a  mk/                   %{buildroot}%{sdkdir}
 mkdir -p                     %{buildroot}%{sdkdir}/scripts
 cp -a  scripts/*.sh          %{buildroot}%{sdkdir}/scripts
+
+%if %{with examples}
+find %{target}/examples/ -name "*.map" | xargs rm -f
+for f in %{target}/examples/*/%{target}/app/*; do
+    bn=`basename ${f}`
+    cp -p ${f} %{buildroot}%{_bindir}/dpdk_${bn}
+done
+%endif
 
 # Create library symlinks for the "sdk"
 for f in %{buildroot}/%{_libdir}/*.${libext}; do
@@ -178,7 +202,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 
 %files
 # BSD
-%{_bindir}/*
+%{_bindir}/testpmd*
 %if %{with shared}
 %{_libdir}/*.so.*
 %endif
@@ -198,9 +222,15 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %{_libdir}/*.a
 %endif
 
+%if %{with examples}
+%files examples
+%{_bindir}/dpdk_*
+%endif
+
 %changelog
 * Wed Feb 11 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-13
 - Fix vhost library linkage
+- Add spec option to build example applications, enable by default
 
 * Fri Feb 06 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-12
 - Enable librte_acl build
