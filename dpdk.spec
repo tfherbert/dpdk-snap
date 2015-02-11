@@ -5,7 +5,7 @@
 
 Name: dpdk
 Version: 1.8.0
-Release: 12%{?dist}
+Release: 13%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -13,6 +13,7 @@ Patch1: dpdk-config.patch
 Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-1.8-libext.patch
 Patch4: dpdk-dtneeded.patch
+Patch5: dpdk-vhost-make.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -70,6 +71,7 @@ API programming documentation for the Data Plane Development Kit.
 %patch2 -p1 -z .i40e-wformat
 %patch3 -p1 -b .libext
 %patch4 -p1 -z .dtneeded
+%patch5 -p1 -z .vhost-make
 
 %if %{with shared}
 sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' config/common_linuxapp
@@ -197,6 +199,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Feb 11 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-13
+- Fix vhost library linkage
+
 * Fri Feb 06 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-12
 - Enable librte_acl build
 - Enable librte_ivshmem build
