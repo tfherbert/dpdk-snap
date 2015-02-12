@@ -7,7 +7,7 @@
 
 Name: dpdk
 Version: 1.8.0
-Release: 14%{?dist}
+Release: 15%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
 
@@ -93,7 +93,7 @@ sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' confi
 %build
 # Avoid appending second -Wall to everything, it breaks hand-picked
 # disablers like per-file -Wno-strict-aliasing
-export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
+export EXTRA_CFLAGS="-Wno-error `echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
 
 # DPDK defaults to using builder-specific compiler flags.  However,
 # the config has been changed by specifying CONFIG_RTE_MACHINE=default
@@ -228,6 +228,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Feb 12 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-15
+- Disable -Werror, this is not useful behavior for released versions
+
 * Wed Feb 11 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-14
 - Fix typo causing librte_vhost missing DT_NEEDED on fuse
 
