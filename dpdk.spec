@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 2
+%define rel 3
 %define snapver 1695.gitc2ce3924
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
@@ -27,6 +27,7 @@ Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-1.8-libext.patch
 Patch4: dpdk-dtneeded.patch
 Patch5: dpdk-vhost-make.patch
+Patch6: dpdk-2.0-symver-1.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -100,6 +101,7 @@ as L2 and L3 forwarding.
 %if 0%{!?snapver}
 %patch5 -p1 -z .vhost-make
 %endif
+%patch6 -p1 -z .symver
 
 %if %{with shared}
 sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' config/common_linuxapp
@@ -205,7 +207,7 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 comblib=libintel_dpdk.${libext}
 
 echo "GROUP (" > ${comblib}
-find %{buildroot}/%{_libdir}/ -name "*.${libext}" |\
+find %{buildroot}/%{_libdir}/ -maxdepth 1 -name "*.${libext}" |\
 	sed -e "s:^%{buildroot}/:  :g" >> ${comblib}
 echo ")" >> ${comblib}
 install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
@@ -244,6 +246,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Feb 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1695.gitc2ce3924.3
+- Fix missing symbol export for rte_eal_iopl_init()
+- Only mention libs once in the linker script
+
 * Wed Feb 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1695.gitc2ce3924.2
 - Fix gcc version logic to work with 5.0 too
 

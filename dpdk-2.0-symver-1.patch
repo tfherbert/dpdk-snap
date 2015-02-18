@@ -1,0 +1,32 @@
+commit 3056549e6665c8dd2e22199fb92ec983f9e4b8eb
+Author: Panu Matilainen <pmatilai@redhat.com>
+Date:   Wed Feb 18 16:15:29 2015 +0200
+
+    eal: add missing symbol export for rte_eal_iopl_init()
+    
+    Signed-off-by: Panu Matilainen <pmatilai@redhat.com>
+
+diff --git a/lib/librte_eal/bsdapp/eal/rte_eal_version.map b/lib/librte_eal/bsdapp/eal/rte_eal_version.map
+index d36286e..5ed6e4d 100644
+--- a/lib/librte_eal/bsdapp/eal/rte_eal_version.map
++++ b/lib/librte_eal/bsdapp/eal/rte_eal_version.map
+@@ -33,6 +33,7 @@ DPDK_2.0 {
+ 	rte_eal_has_hugepages;
+ 	rte_eal_hpet_init;
+ 	rte_eal_init;
++	rte_eal_iopl_init;
+ 	rte_eal_lcore_role;
+ 	rte_eal_mp_remote_launch;
+ 	rte_eal_mp_wait_lcore;
+diff --git a/lib/librte_eal/linuxapp/eal/rte_eal_version.map b/lib/librte_eal/linuxapp/eal/rte_eal_version.map
+index d36286e..5ed6e4d 100644
+--- a/lib/librte_eal/linuxapp/eal/rte_eal_version.map
++++ b/lib/librte_eal/linuxapp/eal/rte_eal_version.map
+@@ -33,6 +33,7 @@ DPDK_2.0 {
+ 	rte_eal_has_hugepages;
+ 	rte_eal_hpet_init;
+ 	rte_eal_init;
++	rte_eal_iopl_init;
+ 	rte_eal_lcore_role;
+ 	rte_eal_mp_remote_launch;
+ 	rte_eal_mp_wait_lcore;
