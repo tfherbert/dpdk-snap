@@ -19,5 +19,5 @@ diff -up dpdk-1.8.0/lib/librte_pmd_i40e/Makefile.i40e-wformat dpdk-1.8.0/lib/lib
  CFLAGS_BASE_DRIVER += -Wno-format-nonliteral
 -CFLAGS_BASE_DRIVER += -Wno-format-security
  
- ifeq ($(shell test $(GCC_MAJOR_VERSION) -ge 4 -a $(GCC_MINOR_VERSION) -ge 4 && echo 1), 1)
+ ifeq ($(shell test $(GCC_VERSION) -ge 440 && echo 1), 1)
  CFLAGS_BASE_DRIVER += -Wno-unused-but-set-variable

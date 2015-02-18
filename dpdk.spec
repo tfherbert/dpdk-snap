@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 1
+%define rel 2
 %define snapver 1695.gitc2ce3924
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
@@ -21,6 +21,7 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
 
+Patch0: dpdk-2.0-gcc-version.patch
 Patch1: dpdk-config.patch
 Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-1.8-libext.patch
@@ -89,6 +90,7 @@ as L2 and L3 forwarding.
 
 %prep
 %setup -q -n %{name}-%{version}%{?snapver:-%{snapver}}
+%patch0 -p1 -z .gcc5
 %patch1 -p1 -z .config
 %patch2 -p1 -z .i40e-wformat
 %if 0%{!?snapver}
@@ -242,6 +244,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Feb 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1695.gitc2ce3924.2
+- Fix gcc version logic to work with 5.0 too
+
 * Wed Feb 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1695.gitc2ce3924.1
 - Add spec magic to easily switch between stable and snapshot versions
 - Add tarball snapshot script for reference
