@@ -5,11 +5,21 @@
 # Add option to build without examples
 %bcond_without examples
 
+# Dont edit Version: and Release: directly, only these:
+%define ver 2.0.0
+%define rel 1
+%define snapver 1695.gitc2ce3924
+
+%define srcver %{ver}%{?snapver:-%{snapver}}
+
 Name: dpdk
-Version: 1.8.0
-Release: 15%{?dist}
+Version: %{ver}
+Release: %{?snapver:0.%{snapver}.}%{rel}%{?dist}
 URL: http://dpdk.org
-Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{version}.tar.gz
+Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
+
+# Only needed for creating snapshot tarballs, not used in build itself
+Source100: dpdk-snapshot.sh
 
 Patch1: dpdk-config.patch
 Patch2: dpdk-i40e-wformat.patch
@@ -78,12 +88,16 @@ as L2 and L3 forwarding.
 %define docdir  %{_docdir}/%{name}-%{version}
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}%{?snapver:-%{snapver}}
 %patch1 -p1 -z .config
 %patch2 -p1 -z .i40e-wformat
+%if 0%{!?snapver}
 %patch3 -p1 -b .libext
+%endif
 %patch4 -p1 -z .dtneeded
+%if 0%{!?snapver}
 %patch5 -p1 -z .vhost-make
+%endif
 
 %if %{with shared}
 sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' config/common_linuxapp
@@ -228,6 +242,11 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Feb 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1695.gitc2ce3924.1
+- Add spec magic to easily switch between stable and snapshot versions
+- Add tarball snapshot script for reference
+- Update to pre-2.0 git snapshot
+
 * Thu Feb 12 2015 Panu Matilainen <pmatilai@redhat.com> - 1.8.0-15
 - Disable -Werror, this is not useful behavior for released versions
 
