@@ -7,8 +7,8 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 3
-%define snapver 1695.gitc2ce3924
+%define rel 1
+%define snapver 1717.gitd3aa5274
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -111,7 +111,7 @@ sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' confi
 %build
 # Avoid appending second -Wall to everything, it breaks hand-picked
 # disablers like per-file -Wno-strict-aliasing
-export EXTRA_CFLAGS="-Wno-error `echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
+export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
 
 # DPDK defaults to using builder-specific compiler flags.  However,
 # the config has been changed by specifying CONFIG_RTE_MACHINE=default
@@ -223,6 +223,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %{_bindir}/testpmd*
 %if %{with shared}
 %{_libdir}/*.so.*
+%{_libdir}/*_pmd_*.so
 %endif
 
 %files doc
@@ -236,6 +237,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %{_sysconfdir}/profile.d/dpdk-sdk-*.*
 %if %{with shared}
 %{_libdir}/*.so
+%exclude %{_libdir}/*_pmd_*.so
 %else
 %{_libdir}/*.a
 %endif
@@ -246,6 +248,13 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Feb 19 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1717.gitd3aa5274.1
+- New snapshot
+
+* Wed Feb 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1698.gitc07691ae.1
+- Move the unversioned .so links for plugins into main package
+- New snapshot
+
 * Wed Feb 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1695.gitc2ce3924.3
 - Fix missing symbol export for rte_eal_iopl_init()
 - Only mention libs once in the linker script
