@@ -1,0 +1,28 @@
+diff --git a/lib/librte_pmd_i40e/i40e_rxtx.c b/lib/librte_pmd_i40e/i40e_rxtx.c
+index c9f1026..ede5405 100644
+--- a/lib/librte_pmd_i40e/i40e_rxtx.c
++++ b/lib/librte_pmd_i40e/i40e_rxtx.c
+@@ -613,7 +613,7 @@ check_rx_burst_bulk_alloc_preconditions(__rte_unused struct i40e_rx_queue *rxq)
+ 			     "rxq->nb_rx_desc=%d",
+ 			     rxq->rx_free_thresh, rxq->nb_rx_desc);
+ 		ret = -EINVAL;
+-	} else if (!(rxq->nb_rx_desc % rxq->rx_free_thresh) == 0) {
++	} else if (!(rxq->nb_rx_desc % rxq->rx_free_thresh == 0)) {
+ 		PMD_INIT_LOG(DEBUG, "Rx Burst Bulk Alloc Preconditions: "
+ 			     "rxq->nb_rx_desc=%d, "
+ 			     "rxq->rx_free_thresh=%d",
+diff --git a/lib/librte_pmd_ixgbe/ixgbe/ixgbe_common.c b/lib/librte_pmd_ixgbe/ixgbe/ixgbe_common.c
+index 37e5bae..93a6a00 100644
+--- a/lib/librte_pmd_ixgbe/ixgbe/ixgbe_common.c
++++ b/lib/librte_pmd_ixgbe/ixgbe/ixgbe_common.c
+@@ -2898,8 +2898,8 @@ STATIC s32 ixgbe_fc_autoneg_fiber(struct ixgbe_hw *hw)
+ 	 */
+ 
+ 	linkstat = IXGBE_READ_REG(hw, IXGBE_PCS1GLSTA);
+-	if ((!!(linkstat & IXGBE_PCS1GLSTA_AN_COMPLETE) == 0) ||
+-	    (!!(linkstat & IXGBE_PCS1GLSTA_AN_TIMED_OUT) == 1)) {
++	if (((!!(linkstat & IXGBE_PCS1GLSTA_AN_COMPLETE)) == 0) ||
++	    ((!!(linkstat & IXGBE_PCS1GLSTA_AN_TIMED_OUT)) == 1)) {
+ 		ERROR_REPORT1(IXGBE_ERROR_POLLING,
+ 			     "Auto-Negotiation did not complete or timed out");
+ 		goto out;
