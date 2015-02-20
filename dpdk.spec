@@ -7,8 +7,8 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 2
-%define snapver 1717.gitd3aa5274
+%define rel 1
+%define snapver 1720.gita8c50a37
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -27,7 +27,6 @@ Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-1.8-libext.patch
 Patch4: dpdk-dtneeded.patch
 Patch5: dpdk-vhost-make.patch
-Patch6: dpdk-2.0-symver-1.patch
 Patch7: dpdk-2.0-gcc5-logic.patch
 
 Summary: Set of libraries and drivers for fast packet processing
@@ -102,7 +101,6 @@ as L2 and L3 forwarding.
 %if 0%{!?snapver}
 %patch5 -p1 -z .vhost-make
 %endif
-%patch6 -p1 -z .symver
 %patch7 -p1 -z .gcc5
 
 %if %{with shared}
@@ -250,6 +248,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Feb 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1720.gita8c50a37.1
+- New snapshot
+- Drop no longer needed symver patch
+
 * Thu Feb 19 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1717.gitd3aa5274.2
 - Fix warnings tripping up build with gcc 5, remove -Wno-error
 
