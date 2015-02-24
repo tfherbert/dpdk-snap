@@ -8,7 +8,7 @@
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
 %define rel 1
-%define snapver 1838.gite14b969a
+%define snapver 1842.git6052e07a
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -26,7 +26,7 @@ Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-1.8-libext.patch
 Patch4: dpdk-dtneeded.patch
 Patch5: dpdk-vhost-make.patch
-Patch7: dpdk-2.0-gcc5-logic.patch
+Patch7: dpdk-2.0-gcc5-logical-not.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -246,6 +246,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Feb 24 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1842.git6052e07a.1
+- New snapshot
+- Upstreamable ixgbe build fix
+
 * Tue Feb 24 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1838.gite14b969a.1
 - New snapshot, including eg vhost-user support
 

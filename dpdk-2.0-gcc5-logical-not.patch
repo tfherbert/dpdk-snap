@@ -1,0 +1,15 @@
+diff --git a/lib/librte_pmd_ixgbe/Makefile b/lib/librte_pmd_ixgbe/Makefile
+index 43870f7..5382d91 100644
+--- a/lib/librte_pmd_ixgbe/Makefile
++++ b/lib/librte_pmd_ixgbe/Makefile
+@@ -71,6 +71,10 @@ CFLAGS_ixgbe_common.o += -Wno-unused-but-set-variable
+ CFLAGS_ixgbe_x550.o += -Wno-unused-but-set-variable -Wno-maybe-uninitialized
+ endif
+ 
++ifeq ($(shell test $(GCC_VERSION) -ge 50 && echo 1), 1)
++CFLAGS_ixgbe_common.o += -Wno-logical-not-parentheses
++endif
++
+ ifeq ($(shell test $(GCC_VERSION) -le 46 && echo 1), 1)
+ CFLAGS_ixgbe_x550.o += -Wno-uninitialized
+ CFLAGS_ixgbe_phy.o += -Wno-uninitialized
