@@ -8,7 +8,7 @@
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
 %define rel 1
-%define snapver 1720.gita8c50a37
+%define snapver 1838.gite14b969a
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -21,7 +21,6 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
 
-Patch0: dpdk-2.0-gcc-version.patch
 Patch1: dpdk-config.patch
 Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-1.8-libext.patch
@@ -91,7 +90,6 @@ as L2 and L3 forwarding.
 
 %prep
 %setup -q -n %{name}-%{version}%{?snapver:-%{snapver}}
-%patch0 -p1 -z .gcc5
 %patch1 -p1 -z .config
 %patch2 -p1 -z .i40e-wformat
 %if 0%{!?snapver}
@@ -248,6 +246,15 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Feb 24 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1838.gite14b969a.1
+- New snapshot, including eg vhost-user support
+
+* Mon Feb 23 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1790.git7a18146d.1
+- New snapshot, including eg unified virtio support
+
+* Fri Feb 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1726.git3c210048.1
+- New snapshot
+
 * Fri Feb 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1720.gita8c50a37.1
 - New snapshot
 - Drop no longer needed symver patch

@@ -1,6 +1,6 @@
-diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linuxapp
---- dpdk-1.8.0/config/common_linuxapp.config	2014-12-20 01:38:39.000000000 +0200
-+++ dpdk-1.8.0/config/common_linuxapp	2015-02-06 13:47:46.381327982 +0200
+diff -up dpdk-2.0.0-1838.gite14b969a/config/common_linuxapp.config dpdk-2.0.0-1838.gite14b969a/config/common_linuxapp
+--- dpdk-2.0.0-1838.gite14b969a/config/common_linuxapp.config	2015-02-24 05:05:27.000000000 +0200
++++ dpdk-2.0.0-1838.gite14b969a/config/common_linuxapp	2015-02-24 08:31:04.850505484 +0200
 @@ -98,7 +98,7 @@ CONFIG_RTE_LOG_HISTORY=256
  CONFIG_RTE_LIBEAL_USE_HPET=n
  CONFIG_RTE_EAL_ALLOW_INV_SOCKET_ID=n
@@ -10,7 +10,7 @@ diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linux
  CONFIG_RTE_EAL_VFIO=y
  
  #
-@@ -214,7 +214,7 @@ CONFIG_RTE_PMD_RING_MAX_TX_RINGS=16
+@@ -226,7 +226,7 @@ CONFIG_RTE_PMD_RING_MAX_TX_RINGS=16
  #
  # Compile software PMD backed by PCAP files
  #
@@ -19,16 +19,16 @@ diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linux
  
  #
  # Compile link bonding PMD library
-@@ -359,7 +359,7 @@ CONFIG_RTE_LIBRTE_PIPELINE=y
+@@ -376,7 +376,7 @@ CONFIG_RTE_LIBRTE_PIPELINE=y
  #
  # Compile librte_kni
  #
 -CONFIG_RTE_LIBRTE_KNI=y
 +CONFIG_RTE_LIBRTE_KNI=n
+ CONFIG_RTE_KNI_PREEMPT_DEFAULT=y
  CONFIG_RTE_KNI_KO_DEBUG=n
  CONFIG_RTE_KNI_VHOST=n
- CONFIG_RTE_KNI_VHOST_MAX_CACHE_SIZE=1024
-@@ -372,7 +372,7 @@ CONFIG_RTE_KNI_VHOST_DEBUG_TX=n
+@@ -390,7 +390,7 @@ CONFIG_RTE_KNI_VHOST_DEBUG_TX=n
  # fuse-devel is needed to run vhost.
  # fuse-devel enables user space char driver development
  #
@@ -37,7 +37,7 @@ diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linux
  CONFIG_RTE_LIBRTE_VHOST_DEBUG=n
  
  #
-@@ -381,6 +381,17 @@ CONFIG_RTE_LIBRTE_VHOST_DEBUG=n
+@@ -399,6 +399,17 @@ CONFIG_RTE_LIBRTE_VHOST_DEBUG=n
  CONFIG_RTE_LIBRTE_XEN_DOM0=n
  
  #
@@ -55,9 +55,9 @@ diff -up dpdk-1.8.0/config/common_linuxapp.config dpdk-1.8.0/config/common_linux
  # Enable warning directives
  #
  CONFIG_RTE_INSECURE_FUNCTION_WARNING=n
-diff -up dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc.config dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc
---- dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc.config	2014-12-20 01:38:39.000000000 +0200
-+++ dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc	2015-01-29 12:48:30.205768858 +0200
+diff -up dpdk-2.0.0-1838.gite14b969a/config/defconfig_x86_64-native-linuxapp-gcc.config dpdk-2.0.0-1838.gite14b969a/config/defconfig_x86_64-native-linuxapp-gcc
+--- dpdk-2.0.0-1838.gite14b969a/config/defconfig_x86_64-native-linuxapp-gcc.config	2015-02-24 05:05:27.000000000 +0200
++++ dpdk-2.0.0-1838.gite14b969a/config/defconfig_x86_64-native-linuxapp-gcc	2015-02-24 08:30:33.400571087 +0200
 @@ -32,7 +32,7 @@
  
  #include "common_linuxapp"
@@ -67,4 +67,3 @@ diff -up dpdk-1.8.0/config/defconfig_x86_64-native-linuxapp-gcc.config dpdk-1.8.
  
  CONFIG_RTE_ARCH="x86_64"
  CONFIG_RTE_ARCH_X86_64=y
-diff -up dpdk-1.8.0/x86_64-native-linuxapp-gcc/.config dpdk-1.8.0/x86_64-native-linuxapp-gcc/
