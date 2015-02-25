@@ -8,7 +8,7 @@
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
 %define rel 1
-%define snapver 1842.git6052e07a
+%define snapver 1872.git1c29883c
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -27,6 +27,8 @@ Patch3: dpdk-1.8-libext.patch
 Patch4: dpdk-dtneeded.patch
 Patch5: dpdk-vhost-make.patch
 Patch7: dpdk-2.0-gcc5-logical-not.patch
+Patch8: dpdk-dev-v1-1-2-eal-linux-fix-symbol-missing-in-version-map.patch
+Patch9: dpdk-2.0-jobstats-ex.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -100,6 +102,8 @@ as L2 and L3 forwarding.
 %patch5 -p1 -z .vhost-make
 %endif
 %patch7 -p1 -z .gcc5
+%patch8 -p1 -z .symver
+%patch9 -p1 -z .jobstats-ex
 
 %if %{with shared}
 sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' config/common_linuxapp
@@ -246,6 +250,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Feb 25 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1872.git1c29883c.1
+- New snapshot
+- Disable broken jobstats example, fix missing symbols
+
 * Tue Feb 24 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1842.git6052e07a.1
 - New snapshot
 - Upstreamable ixgbe build fix
