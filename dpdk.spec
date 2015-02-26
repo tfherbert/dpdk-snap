@@ -6,8 +6,8 @@
 %bcond_without examples
 # Add option to disable single file mem segments (IVSHMEM needs?)
 %bcond_without ivshmem
-# Add option to build kernel modules as well
-%bcond_with kmods
+# Add option to build without kernel module
+%bcond_without kmods
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
@@ -323,7 +323,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 
 %changelog
 * Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.3
-- Add spec option to build kernel modules too, but not by default
+- Add spec option to build kernel modules too
 - Build eventfd-link module too if kernel modules enabled
 
 * Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.2
