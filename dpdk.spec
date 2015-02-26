@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 1
+%define rel 2
 %define snapver 1903.gitb67578cc
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
@@ -99,12 +99,12 @@ as L2 and L3 forwarding.
 %patch5 -p1 -z .vhost-make
 %endif
 
-%if %{with shared}
-sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' config/common_linuxapp
-%endif
-
-
 %build
+function setconf()
+{
+    sed -i "s:^$1=.$:$1=$2:g" %{target}/.config
+}
+
 # Avoid appending second -Wall to everything, it breaks hand-picked
 # disablers like per-file -Wno-strict-aliasing
 export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
@@ -116,6 +116,11 @@ export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
 # machines, but runtime checks in DPDK will catch those situations.
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
+
+%if %{with shared}
+setconf CONFIG_RTE_BUILD_SHARED_LIB y
+%endif
+
 make V=1 O=%{target} %{?_smp_mflags}
 make V=1 O=%{target} %{?_smp_mflags} doc
 
@@ -244,6 +249,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.2
+- Move config changes from spec after "make config" to simplify things
+
 * Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.1
 - New day, new snapshot...
 
