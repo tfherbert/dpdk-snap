@@ -175,6 +175,15 @@ make V=1 O=%{target} %{?_smp_mflags} doc
 make V=1 O=%{target}/examples T=%{target} %{?_smp_mflags} examples
 %endif
 
+%if %{with kmods}
+# this little puppy isn't integrated with dpdk's make system, sigh
+(
+unset EXTRA_CFLAGS
+cd lib/librte_vhost/eventfd_link/
+make V=1 %{?_smp_mflags}
+)
+%endif
+
 %install
 
 # DPDK's "make install" seems a bit broken -- do things manually...
@@ -207,6 +216,7 @@ cp -a  scripts/*.sh          %{buildroot}%{sdkdir}/scripts
 %if %{with kmods}
 mkdir -p %{buildroot}/%{kmoddir}
 cp -p %{target}/kmod/*.ko %{buildroot}/%{kmoddir}
+cp -p lib/librte_vhost/eventfd_link/*.ko %{buildroot}/%{kmoddir}
 %endif
 
 %if %{with examples}
@@ -314,6 +324,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %changelog
 * Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.3
 - Add spec option to build kernel modules too, but not by default
+- Build eventfd-link module too if kernel modules enabled
 
 * Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.2
 - Move config changes from spec after "make config" to simplify things
