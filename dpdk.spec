@@ -4,6 +4,8 @@
 %bcond_without shared
 # Add option to build without examples
 %bcond_without examples
+# Add option to disable single file mem segments (IVSHMEM needs?)
+%bcond_without ivshmem
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
@@ -21,7 +23,6 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
 
-Patch1: dpdk-config.patch
 Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-1.8-libext.patch
 Patch4: dpdk-dtneeded.patch
@@ -89,7 +90,6 @@ as L2 and L3 forwarding.
 
 %prep
 %setup -q -n %{name}-%{version}%{?snapver:-%{snapver}}
-%patch1 -p1 -z .config
 %patch2 -p1 -z .i40e-wformat
 %if 0%{!?snapver}
 %patch3 -p1 -b .libext
@@ -102,7 +102,12 @@ as L2 and L3 forwarding.
 %build
 function setconf()
 {
-    sed -i "s:^$1=.*$:$1=$2:g" %{target}/.config
+    cf=%{target}/.config
+    if grep -q $1 $cf; then
+        sed -i "s:^$1=.*$:$1=$2:g" $cf
+    else
+        echo $1=$2 >> $cf
+    fi
 }
 
 # Avoid appending second -Wall to everything, it breaks hand-picked
@@ -126,6 +131,17 @@ setconf CONFIG_RTE_LIBRTE_KNI n
 # enable pcap and vhost build, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
 setconf CONFIG_RTE_LIBRTE_VHOST y
+
+# always build ivshmem library
+setconf CONFIG_RTE_LIBRTE_IVSHMEM y
+setconf CONFIG_RTE_LIBRTE_IVSHMEM_DEBUG n
+setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_PCI_DEVS 4
+setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_ENTRIES 128
+setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_METADATA_FILES 32
+# but this affects all hugepage usage, dunno...
+%if %{with ivshmem}
+    setconf CONFIG_RTE_EAL_SINGLE_FILE_SEGMENTS y
+%endif
 
 %if %{with shared}
 setconf CONFIG_RTE_BUILD_SHARED_LIB y
@@ -261,7 +277,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %changelog
 * Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.2
 - Move config changes from spec after "make config" to simplify things
-- Move most of config changes from dpdk-config patch to the spec
+- Move config changes from dpdk-config patch to the spec
 
 * Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.1
 - New day, new snapshot...
