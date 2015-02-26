@@ -19,15 +19,3 @@ diff -up dpdk-2.0.0-1838.gite14b969a/config/common_linuxapp.config dpdk-2.0.0-18
  # Enable warning directives
  #
  CONFIG_RTE_INSECURE_FUNCTION_WARNING=n
-diff -up dpdk-2.0.0-1838.gite14b969a/config/defconfig_x86_64-native-linuxapp-gcc.config dpdk-2.0.0-1838.gite14b969a/config/defconfig_x86_64-native-linuxapp-gcc
---- dpdk-2.0.0-1838.gite14b969a/config/defconfig_x86_64-native-linuxapp-gcc.config	2015-02-24 05:05:27.000000000 +0200
-+++ dpdk-2.0.0-1838.gite14b969a/config/defconfig_x86_64-native-linuxapp-gcc	2015-02-24 08:30:33.400571087 +0200
-@@ -32,7 +32,7 @@
- 
- #include "common_linuxapp"
- 
--CONFIG_RTE_MACHINE="native"
-+CONFIG_RTE_MACHINE="default"
- 
- CONFIG_RTE_ARCH="x86_64"
- CONFIG_RTE_ARCH_X86_64=y

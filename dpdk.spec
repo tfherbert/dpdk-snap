@@ -102,7 +102,7 @@ as L2 and L3 forwarding.
 %build
 function setconf()
 {
-    sed -i "s:^$1=.$:$1=$2:g" %{target}/.config
+    sed -i "s:^$1=.*$:$1=$2:g" %{target}/.config
 }
 
 # Avoid appending second -Wall to everything, it breaks hand-picked
@@ -116,6 +116,9 @@ export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
 # machines, but runtime checks in DPDK will catch those situations.
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
+
+# dont optimize for this particular machine
+setconf CONFIG_RTE_MACHINE default
 
 # disable kernel modules
 setconf CONFIG_RTE_EAL_IGB_UIO n
