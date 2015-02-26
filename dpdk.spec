@@ -6,10 +6,12 @@
 %bcond_without examples
 # Add option to disable single file mem segments (IVSHMEM needs?)
 %bcond_without ivshmem
+# Add option to build kernel modules as well
+%bcond_with kmods
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 2
+%define rel 3
 %define snapver 1903.gitb67578cc
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
@@ -48,7 +50,12 @@ ExclusiveArch: x86_64
 
 %define target x86_64-%{machine}-linuxapp-gcc
 
-
+%if %{with kmods}
+%define kunamer %(uname -r)
+%define kmoddir /lib/modules/%{kunamer}/extra/dpdk
+%define kbuilddir /lib/modules/%{kunamer}/build/
+%define kmodname kmod-%{name}
+%endif
 
 BuildRequires: kernel-headers, libpcap-devel, fuse-devel
 BuildRequires: doxygen, python-sphinx
@@ -83,6 +90,17 @@ BuildRequires: libvirt-devel
 %description examples
 Example applications utilizing the Data Plane Development Kit, such
 as L2 and L3 forwarding.
+%endif
+
+%if %{with kmods}
+%package -n %{kmodname}
+Summary: Extra kernel modules for Data Plane Development Kit
+BuildRequires: kernel-devel-uname-r = %{kunamer}
+Requires(post,postun): /usr/sbin/depmod
+Provides: installonlypkg(%{kmodname})
+
+%description -n %{kmodname}
+%{summary}
 %endif
 
 %define sdkdir  %{_libdir}/%{name}-%{version}-sdk
@@ -125,9 +143,6 @@ make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 # dont optimize for this particular machine
 setconf CONFIG_RTE_MACHINE default
 
-# disable kernel modules
-setconf CONFIG_RTE_EAL_IGB_UIO n
-setconf CONFIG_RTE_LIBRTE_KNI n
 # enable pcap and vhost build, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
 setconf CONFIG_RTE_LIBRTE_VHOST y
@@ -147,7 +162,13 @@ setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_METADATA_FILES 32
 setconf CONFIG_RTE_BUILD_SHARED_LIB y
 %endif
 
-make V=1 O=%{target} %{?_smp_mflags}
+# disable kernel modules
+%if ! %{with kmods}
+    setconf CONFIG_RTE_EAL_IGB_UIO n
+    setconf CONFIG_RTE_LIBRTE_KNI n
+%endif
+
+make V=1 O=%{target} %{?_smp_mflags} %{?kmoddir:RTE_KERNELDIR=%{kbuilddir}}
 make V=1 O=%{target} %{?_smp_mflags} doc
 
 %if %{with examples}
@@ -182,6 +203,11 @@ ln -s  ../../../include/%{name}-%{version} %{buildroot}%{sdkdir}/%{target}/inclu
 cp -a  mk/                   %{buildroot}%{sdkdir}
 mkdir -p                     %{buildroot}%{sdkdir}/scripts
 cp -a  scripts/*.sh          %{buildroot}%{sdkdir}/scripts
+
+%if %{with kmods}
+mkdir -p %{buildroot}/%{kmoddir}
+cp -p %{target}/kmod/*.ko %{buildroot}/%{kmoddir}
+%endif
 
 %if %{with examples}
 find %{target}/examples/ -name "*.map" | xargs rm -f
@@ -274,7 +300,21 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %{_bindir}/dpdk_*
 %endif
 
+%if %{with kmods}
+%post -n %{kmodname}
+/usr/sbin/depmod -aeF "/boot/System.map-%{kunamer}" "%{kunamer}" > /dev/null ||:
+
+%postun -n %{kmodname}
+/usr/sbin/depmod -aeF "/boot/System.map-%{kunamer}" "%{kunamer}" > /dev/null ||:
+
+%files -n %{kmodname}
+%{kmoddir}/
+%endif
+
 %changelog
+* Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.3
+- Add spec option to build kernel modules too, but not by default
+
 * Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.2
 - Move config changes from spec after "make config" to simplify things
 - Move config changes from dpdk-config patch to the spec
