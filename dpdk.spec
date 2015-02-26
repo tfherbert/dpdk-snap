@@ -8,7 +8,7 @@
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
 %define rel 1
-%define snapver 1872.git1c29883c
+%define snapver 1903.gitb67578cc
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -26,9 +26,6 @@ Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-1.8-libext.patch
 Patch4: dpdk-dtneeded.patch
 Patch5: dpdk-vhost-make.patch
-Patch7: dpdk-2.0-gcc5-logical-not.patch
-Patch8: dpdk-dev-v1-1-2-eal-linux-fix-symbol-missing-in-version-map.patch
-Patch9: dpdk-2.0-jobstats-ex.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -101,9 +98,6 @@ as L2 and L3 forwarding.
 %if 0%{!?snapver}
 %patch5 -p1 -z .vhost-make
 %endif
-%patch7 -p1 -z .gcc5
-%patch8 -p1 -z .symver
-%patch9 -p1 -z .jobstats-ex
 
 %if %{with shared}
 sed -i 's:^CONFIG_RTE_BUILD_SHARED_LIB=n$:CONFIG_RTE_BUILD_SHARED_LIB=y:g' config/common_linuxapp
@@ -250,6 +244,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.1
+- New day, new snapshot...
+
 * Wed Feb 25 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1872.git1c29883c.1
 - New snapshot
 - Disable broken jobstats example, fix missing symbols
