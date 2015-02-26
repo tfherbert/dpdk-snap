@@ -1,42 +1,6 @@
 diff -up dpdk-2.0.0-1838.gite14b969a/config/common_linuxapp.config dpdk-2.0.0-1838.gite14b969a/config/common_linuxapp
 --- dpdk-2.0.0-1838.gite14b969a/config/common_linuxapp.config	2015-02-24 05:05:27.000000000 +0200
 +++ dpdk-2.0.0-1838.gite14b969a/config/common_linuxapp	2015-02-24 08:31:04.850505484 +0200
-@@ -98,7 +98,7 @@ CONFIG_RTE_LOG_HISTORY=256
- CONFIG_RTE_LIBEAL_USE_HPET=n
- CONFIG_RTE_EAL_ALLOW_INV_SOCKET_ID=n
- CONFIG_RTE_EAL_ALWAYS_PANIC_ON_ERROR=n
--CONFIG_RTE_EAL_IGB_UIO=y
-+CONFIG_RTE_EAL_IGB_UIO=n
- CONFIG_RTE_EAL_VFIO=y
- 
- #
-@@ -226,7 +226,7 @@ CONFIG_RTE_PMD_RING_MAX_TX_RINGS=16
- #
- # Compile software PMD backed by PCAP files
- #
--CONFIG_RTE_LIBRTE_PMD_PCAP=n
-+CONFIG_RTE_LIBRTE_PMD_PCAP=y
- 
- #
- # Compile link bonding PMD library
-@@ -376,7 +376,7 @@ CONFIG_RTE_LIBRTE_PIPELINE=y
- #
- # Compile librte_kni
- #
--CONFIG_RTE_LIBRTE_KNI=y
-+CONFIG_RTE_LIBRTE_KNI=n
- CONFIG_RTE_KNI_PREEMPT_DEFAULT=y
- CONFIG_RTE_KNI_KO_DEBUG=n
- CONFIG_RTE_KNI_VHOST=n
-@@ -390,7 +390,7 @@ CONFIG_RTE_KNI_VHOST_DEBUG_TX=n
- # fuse-devel is needed to run vhost.
- # fuse-devel enables user space char driver development
- #
--CONFIG_RTE_LIBRTE_VHOST=n
-+CONFIG_RTE_LIBRTE_VHOST=y
- CONFIG_RTE_LIBRTE_VHOST_DEBUG=n
- 
- #
 @@ -399,6 +399,17 @@ CONFIG_RTE_LIBRTE_VHOST_DEBUG=n
  CONFIG_RTE_LIBRTE_XEN_DOM0=n
  

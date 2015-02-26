@@ -117,6 +117,13 @@ export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 
+# disable kernel modules
+setconf CONFIG_RTE_EAL_IGB_UIO n
+setconf CONFIG_RTE_LIBRTE_KNI n
+# enable pcap and vhost build, the added deps are ok for us
+setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
+setconf CONFIG_RTE_LIBRTE_VHOST y
+
 %if %{with shared}
 setconf CONFIG_RTE_BUILD_SHARED_LIB y
 %endif
@@ -251,6 +258,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %changelog
 * Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.2
 - Move config changes from spec after "make config" to simplify things
+- Move most of config changes from dpdk-config patch to the spec
 
 * Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.1
 - New day, new snapshot...
