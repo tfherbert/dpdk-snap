@@ -11,8 +11,8 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 3
-%define snapver 1903.gitb67578cc
+%define rel 1
+%define snapver 1906.git00c68563
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -25,6 +25,7 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
 
+Patch1: dpdk-2.0-eventlink.patch
 Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-1.8-libext.patch
 Patch4: dpdk-dtneeded.patch
@@ -108,6 +109,7 @@ Provides: installonlypkg(%{kmodname})
 
 %prep
 %setup -q -n %{name}-%{version}%{?snapver:-%{snapver}}
+%patch1 -p1 -z .eventlink-alias
 %patch2 -p1 -z .i40e-wformat
 %if 0%{!?snapver}
 %patch3 -p1 -b .libext
@@ -180,7 +182,7 @@ make V=1 O=%{target}/examples T=%{target} %{?_smp_mflags} examples
 (
 unset EXTRA_CFLAGS
 cd lib/librte_vhost/eventfd_link/
-make V=1 %{?_smp_mflags}
+make V=1 %{?_smp_mflags} %{?kmoddir:RTE_KERNELDIR=%{kbuilddir}}
 )
 %endif
 
@@ -322,6 +324,11 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Feb 27 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1906.git00c68563.1
+- New snapshot
+- Remove bogus devname module alias from eventfd-link module
+- Whack evenfd-link to honor RTE_KERNELDIR too
+
 * Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.3
 - Add spec option to build kernel modules too
 - Build eventfd-link module too if kernel modules enabled
