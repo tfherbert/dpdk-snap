@@ -4,6 +4,8 @@
 %bcond_without shared
 # Add option to build without examples
 %bcond_without examples
+# Add option to build without tools
+%bcond_without tools
 # Add option to disable single file mem segments (IVSHMEM needs?)
 %bcond_without ivshmem
 # Add option to build with kernel modules
@@ -14,7 +16,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 1
+%define rel 2
 %define snapver 1911.gitffc468ff
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
@@ -86,6 +88,14 @@ BuildArch: noarch
 
 %description doc
 API programming documentation for the Data Plane Development Kit.
+
+%if %{with tools}
+%package tools
+Summary: Tools for setting up Data Plane Development Kit environment
+
+%description tools
+%{summary}
+%endif
 
 %if %{with examples}
 %package examples
@@ -228,6 +238,10 @@ cp -p %{target}/kmod/*.ko %{buildroot}/%{kmoddir}
 cp -p lib/librte_vhost/eventfd_link/*.ko %{buildroot}/%{kmoddir}
 %endif
 
+%if %{with tools}
+cp -p  tools/*.py            %{buildroot}%{_bindir}
+%endif
+
 %if %{with examples}
 find %{target}/examples/ -name "*.map" | xargs rm -f
 for f in %{target}/examples/*/%{target}/app/*; do
@@ -259,13 +273,6 @@ if ( ! \$RTE_SDK ) then
     setenv RTE_INCLUDE "%{_includedir}/%{name}-%{version}"
 endif
 EOF
-
-# Theres no point in packaging any of the tools
-# We currently don't need the igb uio script, there
-# are several uio scripts already available
-# And the cpu_layout script functionality is
-# covered by lscpu
-#cp -a  tools                 %{buildroot}%{datadir}
 
 # Fixup irregular modes in headers
 find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
@@ -317,6 +324,12 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %if %{with examples}
 %files examples
 %{_bindir}/dpdk_*
+%exclude %{_bindir}/*.py
+%endif
+
+%if %{with tools}
+%files tools
+%{_bindir}/*.py
 %endif
 
 %if %{with kmods}
@@ -331,6 +344,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Mar 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1911.gitffc468ff.2
+- Optionally package tools too, some binding script is needed for many setups
+
 * Mon Mar 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1911.gitffc468ff.1
 - New snapshot
 - Disable kernel module build by default
