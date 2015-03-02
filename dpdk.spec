@@ -9,6 +9,9 @@
 # Add option to build with kernel modules
 %bcond_with kmods
 
+# parallel build is broken in copr, wtf?
+%define _smp_ncpus_max 1
+
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
 %define rel 1
