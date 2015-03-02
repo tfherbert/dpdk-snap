@@ -6,13 +6,13 @@
 %bcond_without examples
 # Add option to disable single file mem segments (IVSHMEM needs?)
 %bcond_without ivshmem
-# Add option to build without kernel module
-%bcond_without kmods
+# Add option to build with kernel modules
+%bcond_with kmods
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
 %define rel 1
-%define snapver 1906.git00c68563
+%define snapver 1911.gitffc468ff
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -30,6 +30,7 @@ Patch2: dpdk-i40e-wformat.patch
 Patch3: dpdk-1.8-libext.patch
 Patch4: dpdk-dtneeded.patch
 Patch5: dpdk-vhost-make.patch
+Patch6: dpdk-dev-External-app-builds-need-to-locate-common-make-fragments-and-includes..patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -118,6 +119,7 @@ Provides: installonlypkg(%{kmodname})
 %if 0%{!?snapver}
 %patch5 -p1 -z .vhost-make
 %endif
+%patch6 -p1 -z .extmk
 
 %build
 function setconf()
@@ -129,6 +131,8 @@ function setconf()
         echo $1=$2 >> $cf
     fi
 }
+# In case dpdk-devel is installed
+unset RTE_SDK RTE_INCLUDE RTE_TARGET
 
 # Avoid appending second -Wall to everything, it breaks hand-picked
 # disablers like per-file -Wno-strict-aliasing
@@ -324,6 +328,11 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Mar 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1911.gitffc468ff.1
+- New snapshot
+- Disable kernel module build by default
+- Add patch to fix missing defines/includes for external applications
+
 * Fri Feb 27 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1906.git00c68563.1
 - New snapshot
 - Remove bogus devname module alias from eventfd-link module
