@@ -11,13 +11,14 @@
 # Add option to build with kernel modules
 %bcond_with kmods
 
-# parallel build is broken in copr, wtf?
-%define _smp_ncpus_max 1
+# Copr exhibits strange problems with parallel build. It also overrides
+# _smp_mflags with a version that doesn't grok _smp_ncpus_max. Grumble.
+%define _smp_mflags %{nil}
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 2
-%define snapver 1911.gitffc468ff
+%define rel 1
+%define snapver 1916.gita001589e
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -344,6 +345,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Mar 03 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1916.gita001589e.1
+- New snapshot
+- Work around #1198009
+
 * Mon Mar 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1911.gitffc468ff.2
 - Optionally package tools too, some binding script is needed for many setups
 
