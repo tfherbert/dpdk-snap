@@ -17,7 +17,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 1
+%define rel 2
 %define snapver 1916.gita001589e
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
@@ -93,6 +93,7 @@ API programming documentation for the Data Plane Development Kit.
 %if %{with tools}
 %package tools
 Summary: Tools for setting up Data Plane Development Kit environment
+Requires: %{name} = %{version}-%{release}
 
 %description tools
 %{summary}
@@ -345,6 +346,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Mar 03 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1916.gita001589e.2
+- Add missing dependency to tools -subpackage
+
 * Tue Mar 03 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1916.gita001589e.1
 - New snapshot
 - Work around #1198009
