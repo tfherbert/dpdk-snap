@@ -17,7 +17,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 2
+%define rel 3
 %define snapver 1916.gita001589e
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
@@ -37,6 +37,7 @@ Patch3: dpdk-1.8-libext.patch
 Patch4: dpdk-dtneeded.patch
 Patch5: dpdk-vhost-make.patch
 Patch6: dpdk-dev-External-app-builds-need-to-locate-common-make-fragments-and-includes..patch
+Patch7: dpdk-2.0-symver.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -135,6 +136,7 @@ Provides: installonlypkg(%{kmodname})
 %patch5 -p1 -z .vhost-make
 %endif
 %patch6 -p1 -z .extmk
+%patch7 -p1 -z .symver
 
 %build
 function setconf()
@@ -346,6 +348,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Mar 04 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1916.gita001589e.3
+- Fix yet another missing symbol export
+
 * Tue Mar 03 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1916.gita001589e.2
 - Add missing dependency to tools -subpackage
 
