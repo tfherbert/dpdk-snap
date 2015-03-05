@@ -125,7 +125,7 @@ Provides: installonlypkg(%{kmodname})
 %define docdir  %{_docdir}/%{name}-%{version}
 
 %prep
-%setup -q -n %{name}-%{version}%{?snapver:-%{snapver}}
+%setup -q -n %{name}-%{srcver}
 %patch1 -p1 -z .eventlink-alias
 %patch2 -p1 -z .i40e-wformat
 %if 0%{!?snapver}
