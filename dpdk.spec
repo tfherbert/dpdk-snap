@@ -17,8 +17,8 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 3
-%define snapver 1916.gita001589e
+%define rel 1
+%define snapver 1933.gitf2cae314
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -348,6 +348,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Mar 05 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1933.gitf2cae314.1
+- Another day, another snapshot
+
 * Wed Mar 04 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1916.gita001589e.3
 - Fix yet another missing symbol export
 
