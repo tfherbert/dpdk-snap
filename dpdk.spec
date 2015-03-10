@@ -18,7 +18,7 @@
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
 %define rel 1
-%define snapver 1955.gitf2552cd5
+%define snapver 1959.git4d2c67be
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -344,6 +344,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Mar 10 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1959.git4d2c67be.1
+- Another day, another snapshot
+
 * Mon Mar 09 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1955.gitf2552cd5.1
 - Another day, another snapshot
 
