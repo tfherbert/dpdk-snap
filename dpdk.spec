@@ -18,7 +18,7 @@
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
 %define rel 1
-%define snapver 1959.git4d2c67be
+%define snapver 2022.gitfe4810a0
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -188,7 +188,7 @@ setconf CONFIG_RTE_BUILD_SHARED_LIB y
 %endif
 
 make V=1 O=%{target} %{?_smp_mflags} %{?kmoddir:RTE_KERNELDIR=%{kbuilddir}}
-make V=1 O=%{target} %{?_smp_mflags} doc
+make V=1 O=%{target} %{?_smp_mflags} doc-api-html doc-guides-html
 
 %if %{with examples}
 make V=1 O=%{target}/examples T=%{target} %{?_smp_mflags} examples
@@ -344,6 +344,13 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Mar 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2022.gitfe4810a0.1
+- Another day, another snapshot
+- Avoid building pdf docs
+
+* Wed Mar 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2014.git1a5994ac.1
+- Another day, another snapshot
+
 * Tue Mar 10 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1959.git4d2c67be.1
 - Another day, another snapshot
 
