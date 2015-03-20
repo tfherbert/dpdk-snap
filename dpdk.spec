@@ -17,7 +17,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 1
+%define rel 2
 %define snapver 2022.gitfe4810a0
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
@@ -149,7 +149,7 @@ unset RTE_SDK RTE_INCLUDE RTE_TARGET
 
 # Avoid appending second -Wall to everything, it breaks hand-picked
 # disablers like per-file -Wno-strict-aliasing
-export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
+export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC -Wno-error=array-bounds"
 
 # DPDK defaults to using builder-specific compiler flags.  However,
 # the config has been changed by specifying CONFIG_RTE_MACHINE=default
@@ -344,6 +344,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Mar 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2022.gitfe4810a0.2
+- Dont fail build for array bounds warnings for now, gcc 5 is emitting a bunch
+
 * Fri Mar 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2022.gitfe4810a0.1
 - Another day, another snapshot
 - Avoid building pdf docs
