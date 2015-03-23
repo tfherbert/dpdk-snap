@@ -17,8 +17,8 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 2
-%define snapver 2022.gitfe4810a0
+%define rel 1
+%define snapver 2034.gitb79a038d
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -344,6 +344,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Mar 23 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2034.gitb79a038d.1
+- Another day, another snapshot
+
 * Fri Mar 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2022.gitfe4810a0.2
 - Dont fail build for array bounds warnings for now, gcc 5 is emitting a bunch
 
