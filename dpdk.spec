@@ -6,8 +6,8 @@
 %bcond_without examples
 # Add option to build without tools
 %bcond_without tools
-# Add option to disable single file mem segments (IVSHMEM needs?)
-%bcond_without ivshmem
+# Add option to build with IVSHMEM support (clashes with other stuff?)
+%bcond_with ivshmem
 # Add option to build with kernel modules
 %bcond_with kmods
 
@@ -18,7 +18,7 @@
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
 %define rel 1
-%define snapver 2034.gitb79a038d
+%define snapver 2038.git91a8743e
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -166,14 +166,13 @@ setconf CONFIG_RTE_MACHINE default
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
 setconf CONFIG_RTE_LIBRTE_VHOST y
 
-# always build ivshmem library
-setconf CONFIG_RTE_LIBRTE_IVSHMEM y
-setconf CONFIG_RTE_LIBRTE_IVSHMEM_DEBUG n
-setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_PCI_DEVS 4
-setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_ENTRIES 128
-setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_METADATA_FILES 32
-# but this affects all hugepage usage, dunno...
+# if IVSHMEM enabled...
 %if %{with ivshmem}
+    setconf CONFIG_RTE_LIBRTE_IVSHMEM y
+    setconf CONFIG_RTE_LIBRTE_IVSHMEM_DEBUG n
+    setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_PCI_DEVS 4
+    setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_ENTRIES 128
+    setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_METADATA_FILES 32
     setconf CONFIG_RTE_EAL_SINGLE_FILE_SEGMENTS y
 %endif
 
@@ -344,6 +343,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Mar 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2038.git91a8743e.1
+- Another day, another snapshot
+- Disable IVSHMEM support for now, it seems to break other stuff
+
 * Mon Mar 23 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2034.gitb79a038d.1
 - Another day, another snapshot
 
