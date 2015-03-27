@@ -17,7 +17,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 1
+%define rel 2
 %define snapver 2038.git91a8743e
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
@@ -93,6 +93,7 @@ API programming documentation for the Data Plane Development Kit.
 %package tools
 Summary: Tools for setting up Data Plane Development Kit environment
 Requires: %{name} = %{version}-%{release}
+Requires: kmod pciutils findutils iproute
 
 %description tools
 %{summary}
@@ -343,6 +344,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Mar 27 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2038.git91a8743e.2
+- Add a bunch of missing dependencies to -tools
+
 * Thu Mar 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2038.git91a8743e.1
 - Another day, another snapshot
 - Disable IVSHMEM support for now, it seems to break other stuff
