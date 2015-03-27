@@ -17,7 +17,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 2
+%define rel 3
 %define snapver 2038.git91a8743e
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
@@ -166,6 +166,8 @@ setconf CONFIG_RTE_MACHINE default
 # enable pcap and vhost build, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
 setconf CONFIG_RTE_LIBRTE_VHOST y
+# vhost-user and vhost-cuse are mutually exclusive, we need cuse for now
+setconf CONFIG_RTE_LIBRTE_VHOST_USER n
 
 # if IVSHMEM enabled...
 %if %{with ivshmem}
@@ -344,6 +346,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Mar 27 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2038.git91a8743e.3
+- Disable vhost-user for now to get vhost-cuse support, argh.
+
 * Fri Mar 27 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2038.git91a8743e.2
 - Add a bunch of missing dependencies to -tools
 
