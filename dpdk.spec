@@ -10,6 +10,8 @@
 %bcond_with ivshmem
 # Add option to build with kernel modules
 %bcond_with kmods
+# Add option to build with vhost-user 
+%bcond_with vhost_user
 
 # Copr exhibits strange problems with parallel build. It also overrides
 # _smp_mflags with a version that doesn't grok _smp_ncpus_max. Grumble.
@@ -17,8 +19,8 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 3
-%define snapver 2038.git91a8743e
+%define rel 1
+%define snapver 2049.git2f95a470
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -27,6 +29,13 @@ Version: %{ver}
 Release: %{?snapver:0.%{snapver}.}%{rel}%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
+
+%if %{with vhost_user}
+Provides: dpdk(vhost_user) = %{version}
+%else
+Provides: dpdk(vhost_cuse) = %{version}
+BuildRequires: fuse-devel
+%endif
 
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
@@ -64,7 +73,7 @@ ExclusiveArch: x86_64
 %define kmodname kmod-%{name}
 %endif
 
-BuildRequires: kernel-headers, libpcap-devel, fuse-devel
+BuildRequires: kernel-headers, libpcap-devel
 BuildRequires: doxygen, python-sphinx
 
 %description
@@ -167,7 +176,9 @@ setconf CONFIG_RTE_MACHINE default
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
 setconf CONFIG_RTE_LIBRTE_VHOST y
 # vhost-user and vhost-cuse are mutually exclusive, we need cuse for now
+%if ! %{with vhost_user}
 setconf CONFIG_RTE_LIBRTE_VHOST_USER n
+%endif
 
 # if IVSHMEM enabled...
 %if %{with ivshmem}
@@ -346,6 +357,12 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Mar 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2049.git2f95a470.1
+- New snapshot
+- Add spec option for enabling vhost-user instead of vhost-cuse
+- Build requires fuse-devel only with vhost-cuse
+- Add virtual provide for vhost user/cuse tracking 
+
 * Fri Mar 27 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2038.git91a8743e.3
 - Disable vhost-user for now to get vhost-cuse support, argh.
 
