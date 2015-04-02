@@ -10,8 +10,8 @@
 %bcond_with ivshmem
 # Add option to build with kernel modules
 %bcond_with kmods
-# Add option to build with vhost-user 
-%bcond_with vhost_user
+# Add option to build with vhost-user/vhost-cuse
+%bcond_without vhost_user
 
 # Copr exhibits strange problems with parallel build. It also overrides
 # _smp_mflags with a version that doesn't grok _smp_ncpus_max. Grumble.
@@ -19,7 +19,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 1
+%define rel 2
 %define snapver 2086.git263333bb
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
@@ -357,6 +357,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Apr 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2086.git263333bb.2
+- Switch (back) to vhost-user, thus disabling vhost-cuse support
+
 * Thu Apr 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2086.git263333bb.1
 - New snapshot
 
