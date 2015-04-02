@@ -34,7 +34,6 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 Provides: dpdk(vhost_user) = %{version}
 %else
 Provides: dpdk(vhost_cuse) = %{version}
-BuildRequires: fuse-devel
 %endif
 
 # Only needed for creating snapshot tarballs, not used in build itself
@@ -75,6 +74,8 @@ ExclusiveArch: x86_64
 
 BuildRequires: kernel-headers, libpcap-devel
 BuildRequires: doxygen, python-sphinx
+# FIXME: fuse is required for building even if unused otherwise
+BuildRequires: fuse-devel
 
 %description
 The Data Plane Development Kit is a set of libraries and drivers for
@@ -359,6 +360,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %changelog
 * Thu Apr 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2086.git263333bb.2
 - Switch (back) to vhost-user, thus disabling vhost-cuse support
+- Build requires fuse-devel for now even when fuse is unused
 
 * Thu Apr 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2086.git263333bb.1
 - New snapshot
