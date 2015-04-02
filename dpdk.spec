@@ -20,7 +20,7 @@
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
 %define rel 1
-%define snapver 2049.git2f95a470
+%define snapver 2086.git263333bb
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -357,6 +357,12 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Apr 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2086.git263333bb.1
+- New snapshot
+
+* Tue Mar 31 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2081.gitf14db469.1
+- New snapshot
+
 * Mon Mar 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2049.git2f95a470.1
 - New snapshot
 - Add spec option for enabling vhost-user instead of vhost-cuse
