@@ -19,8 +19,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 2
-%define snapver 2086.git263333bb
+%define rel 1
+# Define when building git snapshots
+#define snapver 2086.git263333bb
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -358,6 +359,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Apr 07 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-1
+- Update to 2.0 final (http://dpdk.org/doc/guides-2.0/rel_notes/index.html)
+
 * Thu Apr 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2086.git263333bb.2
 - Switch (back) to vhost-user, thus disabling vhost-cuse support
 - Build requires fuse-devel for now even when fuse is unused
