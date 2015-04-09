@@ -8,8 +8,6 @@
 %bcond_without tools
 # Add option to build with IVSHMEM support (clashes with other stuff?)
 %bcond_with ivshmem
-# Add option to build with kernel modules
-%bcond_with kmods
 # Add option to build with vhost-user/vhost-cuse
 %bcond_without vhost_user
 
@@ -19,7 +17,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 #define snapver 2086.git263333bb
 
@@ -35,6 +33,7 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 Provides: dpdk(vhost_user) = %{version}
 %else
 Provides: dpdk(vhost_cuse) = %{version}
+Requires: dpdk-eventfd_link = %{version}-%{release}
 %endif
 
 # Only needed for creating snapshot tarballs, not used in build itself
@@ -65,13 +64,6 @@ ExclusiveArch: x86_64
 %define machine native
 
 %define target x86_64-%{machine}-linuxapp-gcc
-
-%if %{with kmods}
-%define kunamer %(uname -r)
-%define kmoddir /lib/modules/%{kunamer}/extra/dpdk
-%define kbuilddir /lib/modules/%{kunamer}/build/
-%define kmodname kmod-%{name}
-%endif
 
 BuildRequires: kernel-headers, libpcap-devel
 BuildRequires: doxygen, python-sphinx
@@ -120,14 +112,12 @@ Example applications utilizing the Data Plane Development Kit, such
 as L2 and L3 forwarding.
 %endif
 
-%if %{with kmods}
-%package -n %{kmodname}
-Summary: Extra kernel modules for Data Plane Development Kit
-BuildRequires: kernel-devel-uname-r = %{kunamer}
-Requires(post,postun): /usr/sbin/depmod
-Provides: installonlypkg(%{kmodname})
+%if ! %{with vhost_user}
+%package eventfd_link
+Summary: Extra kernel module required for vhost-cuse
+Requires(post,preun): dkms
 
-%description -n %{kmodname}
+%description eventfd_link
 %{summary}
 %endif
 
@@ -197,25 +187,14 @@ setconf CONFIG_RTE_BUILD_SHARED_LIB y
 %endif
 
 # disable kernel modules
-%if ! %{with kmods}
-    setconf CONFIG_RTE_EAL_IGB_UIO n
-    setconf CONFIG_RTE_LIBRTE_KNI n
-%endif
+setconf CONFIG_RTE_EAL_IGB_UIO n
+setconf CONFIG_RTE_LIBRTE_KNI n
 
-make V=1 O=%{target} %{?_smp_mflags} %{?kmoddir:RTE_KERNELDIR=%{kbuilddir}}
+make V=1 O=%{target} %{?_smp_mflags} 
 make V=1 O=%{target} %{?_smp_mflags} doc-api-html doc-guides-html
 
 %if %{with examples}
 make V=1 O=%{target}/examples T=%{target} %{?_smp_mflags} examples
-%endif
-
-%if %{with kmods}
-# this little puppy isn't integrated with dpdk's make system, sigh
-(
-unset EXTRA_CFLAGS
-cd lib/librte_vhost/eventfd_link/
-make V=1 %{?_smp_mflags} %{?kmoddir:RTE_KERNELDIR=%{kbuilddir}}
-)
 %endif
 
 %install
@@ -246,12 +225,6 @@ ln -s  ../../../include/%{name}-%{version} %{buildroot}%{sdkdir}/%{target}/inclu
 cp -a  mk/                   %{buildroot}%{sdkdir}
 mkdir -p                     %{buildroot}%{sdkdir}/scripts
 cp -a  scripts/*.sh          %{buildroot}%{sdkdir}/scripts
-
-%if %{with kmods}
-mkdir -p %{buildroot}/%{kmoddir}
-cp -p %{target}/kmod/*.ko %{buildroot}/%{kmoddir}
-cp -p lib/librte_vhost/eventfd_link/*.ko %{buildroot}/%{kmoddir}
-%endif
 
 %if %{with tools}
 cp -p  tools/*.py            %{buildroot}%{_bindir}
@@ -307,9 +280,45 @@ echo ")" >> ${comblib}
 install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
+%if ! %{with vhost_user}
+%define dkms_name eventfd_link
+%define dkms_vers %{version}-%{release}
+%define dkms_dir %{_usrsrc}/%{dkms_name}-%{dkms_vers}
+%define quiet -q
+
+mkdir -p %{buildroot}%{dkms_dir}/
+cp -avp lib/librte_vhost/eventfd_link %{buildroot}%{dkms_dir}/
+# override the broken makefile
+cat << 'EOF' > %{buildroot}%{dkms_dir}/eventfd_link/Makefile
+obj-m += eventfd_link.o
+EOF
+
+# dkms config
+cat << 'EOF' > %{buildroot}%{dkms_dir}/dkms.conf
+PACKAGE_NAME=%{dkms_name}
+PACKAGE_VERSION=%{dkms_vers}
+MAKE[0]="make -C ${kernel_source_dir} M=%{dkms_dir}/eventfd_link modules"
+CLEAN[0]="make -C ${kernel_source_dir} M=%{dkms_dir}/eventfd_link clean"
+BUILT_MODULE_NAME[0]=eventfd_link
+BUILT_MODULE_LOCATION[0]=eventfd_link/
+DEST_MODULE_LOCATION[0]=/extra/dpdk/
+AUTOINSTALL="YES"
+EOF
+%endif
+
 %if %{with shared}
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
+%endif
+
+%if ! %{with vhost_user}
+%preun eventfd_link
+dkms remove -m %{dkms_name} -v %{dkms_vers} %{?quiet} --all || :
+
+%post eventfd_link
+dkms add -m %{dkms_name} -v %{dkms_vers} %{?quiet} || :
+dkms build -m %{dkms_name} -v %{dkms_vers} %{?quiet} || :
+dkms install -m %{dkms_name} -v %{dkms_vers} %{?quiet} --force || :
 %endif
 
 %files
@@ -347,18 +356,16 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %{_bindir}/*.py
 %endif
 
-%if %{with kmods}
-%post -n %{kmodname}
-/usr/sbin/depmod -aeF "/boot/System.map-%{kunamer}" "%{kunamer}" > /dev/null ||:
-
-%postun -n %{kmodname}
-/usr/sbin/depmod -aeF "/boot/System.map-%{kunamer}" "%{kunamer}" > /dev/null ||:
-
-%files -n %{kmodname}
-%{kmoddir}/
+%if ! %{with vhost_user}
+%files eventfd_link
+%{dkms_dir}/
 %endif
 
 %changelog
+* Thu Apr 09 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-2
+- Remove the broken kmod stuff
+- Add a new dkms-based eventfd_link subpackage if vhost-cuse is enabled
+
 * Tue Apr 07 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-1
 - Update to 2.0 final (http://dpdk.org/doc/guides-2.0/rel_notes/index.html)
 
