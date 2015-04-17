@@ -17,7 +17,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 2
+%define rel 3
 # Define when building git snapshots
 #define snapver 2086.git263333bb
 
@@ -34,6 +34,7 @@ Provides: dpdk(vhost_user) = %{version}
 %else
 Provides: dpdk(vhost_cuse) = %{version}
 Requires: dpdk-eventfd_link = %{version}-%{release}
+BuildRequires: fuse-devel
 %endif
 
 # Only needed for creating snapshot tarballs, not used in build itself
@@ -67,8 +68,6 @@ ExclusiveArch: x86_64
 
 BuildRequires: kernel-headers, libpcap-devel
 BuildRequires: doxygen, python-sphinx
-# FIXME: fuse is required for building even if unused otherwise
-BuildRequires: fuse-devel
 
 %description
 The Data Plane Development Kit is a set of libraries and drivers for
@@ -362,6 +361,9 @@ dkms install -m %{dkms_name} -v %{dkms_vers} %{?quiet} --force || :
 %endif
 
 %changelog
+* Fri Apr 17 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-3
+- Dont depend on fuse when built for vhost-user support
+
 * Thu Apr 09 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-2
 - Remove the broken kmod stuff
 - Add a new dkms-based eventfd_link subpackage if vhost-cuse is enabled
