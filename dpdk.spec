@@ -201,7 +201,7 @@ make V=1 O=%{target}/examples T=%{target} %{?_smp_mflags} examples
 # DPDK's "make install" seems a bit broken -- do things manually...
 
 mkdir -p                     %{buildroot}%{_bindir}
-cp -a  %{target}/app/testpmd %{buildroot}%{_bindir}/testpmd-%{version}
+cp -a  %{target}/app/testpmd %{buildroot}%{_bindir}/testpmd
 mkdir -p                     %{buildroot}%{_includedir}/%{name}-%{version}
 cp -Lr  %{target}/include/*   %{buildroot}%{_includedir}/%{name}-%{version}
 mkdir -p                     %{buildroot}%{_libdir}
@@ -322,7 +322,7 @@ dkms install -m %{dkms_name} -v %{dkms_vers} %{?quiet} --force || :
 
 %files
 # BSD
-%{_bindir}/testpmd*
+%{_bindir}/testpmd
 %if %{with shared}
 %{_libdir}/*.so.*
 %{_libdir}/*_pmd_*.so
@@ -363,6 +363,7 @@ dkms install -m %{dkms_name} -v %{dkms_vers} %{?quiet} --force || :
 %changelog
 * Fri Apr 17 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-3
 - Dont depend on fuse when built for vhost-user support
+- Drop version from testpmd binary, we wont be parallel-installing that
 
 * Thu Apr 09 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-2
 - Remove the broken kmod stuff
