@@ -17,7 +17,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 3
+%define rel 4
 # Define when building git snapshots
 #define snapver 2086.git263333bb
 
@@ -42,9 +42,7 @@ Source100: dpdk-snapshot.sh
 
 Patch1: dpdk-2.0-eventlink.patch
 Patch2: dpdk-i40e-wformat.patch
-Patch3: dpdk-1.8-libext.patch
 Patch4: dpdk-dtneeded.patch
-Patch5: dpdk-vhost-make.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -127,13 +125,7 @@ Requires(post,preun): dkms
 %setup -q -n %{name}-%{srcver}
 %patch1 -p1 -z .eventlink-alias
 %patch2 -p1 -z .i40e-wformat
-%if 0%{!?snapver}
-%patch3 -p1 -b .libext
-%endif
 %patch4 -p1 -z .dtneeded
-%if 0%{!?snapver}
-%patch5 -p1 -z .vhost-make
-%endif
 
 %build
 function setconf()
@@ -361,6 +353,9 @@ dkms install -m %{dkms_name} -v %{dkms_vers} %{?quiet} --force || :
 %endif
 
 %changelog
+* Tue Apr 21 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-4
+- Drop unused pre-2.0 era patches
+
 * Fri Apr 17 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-3
 - Dont depend on fuse when built for vhost-user support
 - Drop version from testpmd binary, we wont be parallel-installing that
