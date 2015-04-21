@@ -1,3 +1,8 @@
+# For dpdk-cuse repo, behave as if --without vhost_user was given on cli
+%if "%{?copr_projectname}" == "dpdk-cuse"
+%define _without_vhost_user     --without-vhost_user
+%endif
+
 # Add option to disable combined library (--without combined)
 %bcond_without combined
 # Add option to build as static libraries (--without shared)
@@ -355,6 +360,7 @@ dkms install -m %{dkms_name} -v %{dkms_vers} %{?quiet} --force || :
 %changelog
 * Tue Apr 21 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-4
 - Drop unused pre-2.0 era patches
+- Handle vhost-user/cuse selection automatically based on the copr repo name
 
 * Fri Apr 17 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-3
 - Dont depend on fuse when built for vhost-user support
