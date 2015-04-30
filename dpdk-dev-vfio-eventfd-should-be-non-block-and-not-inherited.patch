@@ -1,0 +1,13 @@
+diff --git a/lib/librte_eal/linuxapp/eal/eal_pci_vfio.c b/lib/librte_eal/linuxapp/eal/eal_pci_vfio.c
+index aea1fb1..426953a 100644
+--- a/lib/librte_eal/linuxapp/eal/eal_pci_vfio.c
++++ b/lib/librte_eal/linuxapp/eal/eal_pci_vfio.c
+@@ -294,7 +294,7 @@ pci_vfio_setup_interrupts(struct rte_pci_device *dev, int vfio_dev_fd)
+ 		}
+ 
+ 		/* set up an eventfd for interrupts */
+-		fd = eventfd(0, 0);
++		fd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+ 		if (fd < 0) {
+ 			RTE_LOG(ERR, EAL, "  cannot set up eventfd, "
+ 					"error %i (%s)\n", errno, strerror(errno));

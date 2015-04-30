@@ -22,7 +22,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 5
+%define rel 6
 # Define when building git snapshots
 #define snapver 2086.git263333bb
 
@@ -49,6 +49,7 @@ Patch1: dpdk-2.0-eventlink.patch
 Patch2: dpdk-i40e-wformat.patch
 Patch4: dpdk-dtneeded.patch
 Patch5: dpdk-dev-vhost-flush-used--idx-update-before-reading-avail--flags.patch
+Patch6: dpdk-dev-vfio-eventfd-should-be-non-block-and-not-inherited.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -133,6 +134,7 @@ Requires(post,preun): dkms
 %patch2 -p1 -z .i40e-wformat
 %patch4 -p1 -z .dtneeded
 %patch5 -p1 -z .vhost-flush
+%patch6 -p1 -z .vfio-eventfd
 
 %build
 function setconf()
@@ -360,6 +362,9 @@ dkms install -m %{dkms_name} -v %{dkms_vers} %{?quiet} --force || :
 %endif
 
 %changelog
+* Thu Apr 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-6
+- Fix potential hang and thread issues with VFIO eventfd
+
 * Fri Apr 24 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-5
 - Fix a potential hang due to missed interrupt in vhost library
 
