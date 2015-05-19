@@ -310,12 +310,6 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 - Switch (back) to vhost-user, thus disabling vhost-cuse support
 - Build requires fuse-devel for now even when fuse is unused
 
-* Thu Apr 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2086.git263333bb.1
-- New snapshot
-
-* Tue Mar 31 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2081.gitf14db469.1
-- New snapshot
-
 * Mon Mar 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2049.git2f95a470.1
 - New snapshot
 - Add spec option for enabling vhost-user instead of vhost-cuse
@@ -330,10 +324,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 
 * Thu Mar 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2038.git91a8743e.1
 - Another day, another snapshot
-- Disable IVSHMEM support for now, it seems to break other stuff
-
-* Mon Mar 23 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2034.gitb79a038d.1
-- Another day, another snapshot
+- Disable IVSHMEM support for now
 
 * Fri Mar 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2022.gitfe4810a0.2
 - Dont fail build for array bounds warnings for now, gcc 5 is emitting a bunch
@@ -341,21 +332,6 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 * Fri Mar 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2022.gitfe4810a0.1
 - Another day, another snapshot
 - Avoid building pdf docs
-
-* Wed Mar 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.2014.git1a5994ac.1
-- Another day, another snapshot
-
-* Tue Mar 10 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1959.git4d2c67be.1
-- Another day, another snapshot
-
-* Mon Mar 09 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1955.gitf2552cd5.1
-- Another day, another snapshot
-
-* Thu Mar 05 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1933.gitf2cae314.1
-- Another day, another snapshot
-
-* Wed Mar 04 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1916.gita001589e.3
-- Fix yet another missing symbol export
 
 * Tue Mar 03 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1916.gita001589e.2
 - Add missing dependency to tools -subpackage
@@ -385,35 +361,8 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 - Move config changes from spec after "make config" to simplify things
 - Move config changes from dpdk-config patch to the spec
 
-* Thu Feb 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1903.gitb67578cc.1
-- New day, new snapshot...
-
-* Wed Feb 25 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1872.git1c29883c.1
-- New snapshot
-- Disable broken jobstats example, fix missing symbols
-
-* Tue Feb 24 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1842.git6052e07a.1
-- New snapshot
-- Upstreamable ixgbe build fix
-
-* Tue Feb 24 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1838.gite14b969a.1
-- New snapshot, including eg vhost-user support
-
-* Mon Feb 23 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1790.git7a18146d.1
-- New snapshot, including eg unified virtio support
-
-* Fri Feb 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1726.git3c210048.1
-- New snapshot
-
-* Fri Feb 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1720.gita8c50a37.1
-- New snapshot
-- Drop no longer needed symver patch
-
 * Thu Feb 19 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1717.gitd3aa5274.2
 - Fix warnings tripping up build with gcc 5, remove -Wno-error
-
-* Thu Feb 19 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1717.gitd3aa5274.1
-- New snapshot
 
 * Wed Feb 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-0.1698.gitc07691ae.1
 - Move the unversioned .so links for plugins into main package
