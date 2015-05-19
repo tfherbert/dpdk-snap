@@ -7,10 +7,6 @@
 # Add option to build with IVSHMEM support (breaks ABI and whatnot, watchout)
 %bcond_with ivshmem
 
-# Copr exhibits strange problems with parallel build. It also overrides
-# _smp_mflags with a version that doesn't grok _smp_ncpus_max. Grumble.
-%define _smp_mflags %{nil}
-
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
 %define rel 7
@@ -284,6 +280,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 - Drop pointless build conditional, the linker script is here to stay
 - Drop vhost-cuse build conditional, vhost-user is here to stay
 - Cleanup comments a bit
+- Enable parallel build again
 
 * Thu Apr 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-6
 - Fix potential hang and thread issues with VFIO eventfd
