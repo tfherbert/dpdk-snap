@@ -1,8 +1,3 @@
-# For dpdk-cuse repo, behave as if --without vhost_user was given on cli
-%if "%{?copr_projectname}" == "dpdk-cuse"
-%define _without_vhost_user     --without-vhost_user
-%endif
-
 # Add option to build as static libraries (--without shared)
 %bcond_without shared
 # Add option to build without examples
@@ -11,8 +6,6 @@
 %bcond_without tools
 # Add option to build with IVSHMEM support (clashes with other stuff?)
 %bcond_with ivshmem
-# Add option to build with vhost-user/vhost-cuse
-%bcond_without vhost_user
 
 # Copr exhibits strange problems with parallel build. It also overrides
 # _smp_mflags with a version that doesn't grok _smp_ncpus_max. Grumble.
@@ -31,14 +24,6 @@ Version: %{ver}
 Release: %{?snapver:0.%{snapver}.}%{rel}%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
-
-%if %{with vhost_user}
-Provides: dpdk(vhost_user) = %{version}
-%else
-Provides: dpdk(vhost_cuse) = %{version}
-Requires: dpdk-eventfd_link = %{version}-%{release}
-BuildRequires: fuse-devel
-%endif
 
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
@@ -113,15 +98,6 @@ Example applications utilizing the Data Plane Development Kit, such
 as L2 and L3 forwarding.
 %endif
 
-%if ! %{with vhost_user}
-%package eventfd_link
-Summary: Extra kernel module required for vhost-cuse
-Requires(post,preun): dkms
-
-%description eventfd_link
-%{summary}
-%endif
-
 %define sdkdir  %{_libdir}/%{name}-%{version}-sdk
 %define docdir  %{_docdir}/%{name}-%{version}
 
@@ -159,10 +135,6 @@ setconf CONFIG_RTE_MACHINE default
 # Enable pcap and vhost build, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
 setconf CONFIG_RTE_LIBRTE_VHOST y
-# Vhost-user and vhost-cuse are mutually exclusive, we default to vhost-user
-%if ! %{with vhost_user}
-setconf CONFIG_RTE_LIBRTE_VHOST_USER n
-%endif
 
 # If IVSHMEM enabled...
 %if %{with ivshmem}
@@ -272,47 +244,6 @@ find %{buildroot}/%{_libdir}/ -maxdepth 1 -name "*.${libext}" |\
 echo ")" >> ${comblib}
 install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 
-%if ! %{with vhost_user}
-%define dkms_name eventfd_link
-%define dkms_vers %{version}-%{release}
-%define dkms_dir %{_usrsrc}/%{dkms_name}-%{dkms_vers}
-%define quiet -q
-
-mkdir -p %{buildroot}%{dkms_dir}/
-cp -avp lib/librte_vhost/eventfd_link %{buildroot}%{dkms_dir}/
-# override the broken makefile
-cat << 'EOF' > %{buildroot}%{dkms_dir}/eventfd_link/Makefile
-obj-m += eventfd_link.o
-EOF
-
-# dkms config
-cat << 'EOF' > %{buildroot}%{dkms_dir}/dkms.conf
-PACKAGE_NAME=%{dkms_name}
-PACKAGE_VERSION=%{dkms_vers}
-MAKE[0]="make -C ${kernel_source_dir} M=%{dkms_dir}/eventfd_link modules"
-CLEAN[0]="make -C ${kernel_source_dir} M=%{dkms_dir}/eventfd_link clean"
-BUILT_MODULE_NAME[0]=eventfd_link
-BUILT_MODULE_LOCATION[0]=eventfd_link/
-DEST_MODULE_LOCATION[0]=/extra/dpdk/
-AUTOINSTALL="YES"
-EOF
-%endif
-
-%if %{with shared}
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
-%endif
-
-%if ! %{with vhost_user}
-%preun eventfd_link
-dkms remove -m %{dkms_name} -v %{dkms_vers} %{?quiet} --all || :
-
-%post eventfd_link
-dkms add -m %{dkms_name} -v %{dkms_vers} %{?quiet} || :
-dkms build -m %{dkms_name} -v %{dkms_vers} %{?quiet} || :
-dkms install -m %{dkms_name} -v %{dkms_vers} %{?quiet} --force || :
-%endif
-
 %files
 # BSD
 %{_bindir}/testpmd
@@ -348,14 +279,10 @@ dkms install -m %{dkms_name} -v %{dkms_vers} %{?quiet} --force || :
 %{_bindir}/*.py
 %endif
 
-%if ! %{with vhost_user}
-%files eventfd_link
-%{dkms_dir}/
-%endif
-
 %changelog
 * Tue May 19 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-7
 - Drop pointless build conditional, the linker script is here to stay
+- Drop vhost-cuse build conditional, vhost-user is here to stay
 - Cleanup comments a bit
 
 * Thu Apr 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-6
