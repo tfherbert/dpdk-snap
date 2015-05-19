@@ -4,7 +4,7 @@
 %bcond_without examples
 # Add option to build without tools
 %bcond_without tools
-# Add option to build with IVSHMEM support (clashes with other stuff?)
+# Add option to build with IVSHMEM support (breaks ABI and whatnot, watchout)
 %bcond_with ivshmem
 
 # Copr exhibits strange problems with parallel build. It also overrides
