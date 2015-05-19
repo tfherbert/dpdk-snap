@@ -61,8 +61,7 @@ License: BSD and LGPLv2 and GPLv2
 #
 # The DPDK is designed to optimize througput of network traffic using, among
 # other techniques, carefully crafted x86 assembly instructions.  As such it
-# currently (and likely never will) run on non-x86 platforms
-#
+# currently (and likely never will) run on non-x86 platforms. 
 ExclusiveArch: x86_64 
 
 %define machine native
@@ -151,26 +150,21 @@ unset RTE_SDK RTE_INCLUDE RTE_TARGET
 # disablers like per-file -Wno-strict-aliasing
 export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC -Wno-error=array-bounds"
 
-# DPDK defaults to using builder-specific compiler flags.  However,
-# the config has been changed by specifying CONFIG_RTE_MACHINE=default
-# in order to build for a more generic host.  NOTE: It is possible that
-# the compiler flags used still won't work for all Fedora-supported
-# machines, but runtime checks in DPDK will catch those situations.
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 
-# dont optimize for this particular machine
+# DPDK defaults to optimizing for the builder host we need generic binaries
 setconf CONFIG_RTE_MACHINE default
 
-# enable pcap and vhost build, the added deps are ok for us
+# Enable pcap and vhost build, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
 setconf CONFIG_RTE_LIBRTE_VHOST y
-# vhost-user and vhost-cuse are mutually exclusive, we need cuse for now
+# Vhost-user and vhost-cuse are mutually exclusive, we default to vhost-user
 %if ! %{with vhost_user}
 setconf CONFIG_RTE_LIBRTE_VHOST_USER n
 %endif
 
-# if IVSHMEM enabled...
+# If IVSHMEM enabled...
 %if %{with ivshmem}
     setconf CONFIG_RTE_LIBRTE_IVSHMEM y
     setconf CONFIG_RTE_LIBRTE_IVSHMEM_DEBUG n
@@ -184,11 +178,13 @@ setconf CONFIG_RTE_LIBRTE_VHOST_USER n
 setconf CONFIG_RTE_BUILD_SHARED_LIB y
 %endif
 
-# disable kernel modules
+# Disable kernel modules
 setconf CONFIG_RTE_EAL_IGB_UIO n
 setconf CONFIG_RTE_LIBRTE_KNI n
 
 make V=1 O=%{target} %{?_smp_mflags} 
+
+# Creating PDF's has excessive build-requirements, html docs suffice fine
 make V=1 O=%{target} %{?_smp_mflags} doc-api-html doc-guides-html
 
 %if %{with examples}
@@ -360,6 +356,7 @@ dkms install -m %{dkms_name} -v %{dkms_vers} %{?quiet} --force || :
 %changelog
 * Tue May 19 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-7
 - Drop pointless build conditional, the linker script is here to stay
+- Cleanup comments a bit
 
 * Thu Apr 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-6
 - Fix potential hang and thread issues with VFIO eventfd
