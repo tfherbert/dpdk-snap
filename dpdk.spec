@@ -1,7 +1,7 @@
 # Add option to build as static libraries (--without shared)
 %bcond_without shared
-# Add option to build without examples
-%bcond_without examples
+# Add option to build with examples
+%bcond_with examples
 # Add option to build without tools
 %bcond_without tools
 # Add option to build with IVSHMEM support (breaks ABI and whatnot, watchout)
@@ -281,6 +281,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 - Drop vhost-cuse build conditional, vhost-user is here to stay
 - Cleanup comments a bit
 - Enable parallel build again
+- Dont build examples by default
 
 * Thu Apr 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-6
 - Fix potential hang and thread issues with VFIO eventfd
