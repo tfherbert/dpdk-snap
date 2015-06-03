@@ -1,7 +1,7 @@
 # Add option to build as static libraries (--without shared)
 %bcond_without shared
-# Add option to build with examples
-%bcond_with examples
+# Add option to build without examples
+%bcond_without examples
 # Add option to build without tools
 %bcond_without tools
 # Add option to build with IVSHMEM support (breaks ABI and whatnot, watchout)
@@ -9,7 +9,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.0.0
-%define rel 7
+%define rel 9
 # Define when building git snapshots
 #define snapver 2086.git263333bb
 
@@ -276,6 +276,12 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Jun 03 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-9
+- Really enable example apps on the copr repos
+
+* Wed Jun 03 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-8
+- Re-enable example apps on the copr repos
+
 * Tue May 19 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-7
 - Drop pointless build conditional, the linker script is here to stay
 - Drop vhost-cuse build conditional, vhost-user is here to stay
