@@ -1,6 +1,6 @@
-diff -up dpdk-1.8.0/lib/librte_pmd_i40e/Makefile.i40e-wformat dpdk-1.8.0/lib/librte_pmd_i40e/Makefile
---- dpdk-1.8.0/lib/librte_pmd_i40e/Makefile.i40e-wformat	2015-01-29 13:50:02.378411649 +0200
-+++ dpdk-1.8.0/lib/librte_pmd_i40e/Makefile	2015-01-29 13:50:11.117389706 +0200
+diff -up dpdk-2.1.0/drivers/net/i40e/Makefile.i40e-wformat dpdk-1.8.0/lib/librte_pmd_i40e/Makefile
+--- dpdk-2.1.0/drivers/net/i40e/Makefile.i40e-wformat	2015-01-29 13:50:02.378411649 +0200
++++ dpdk-2.1.0/drivers/net/i40e/Makefile	2015-01-29 13:50:11.117389706 +0200
 @@ -50,7 +50,6 @@ CFLAGS_BASE_DRIVER += -Wno-sign-compare
  CFLAGS_BASE_DRIVER += -Wno-unused-value
  CFLAGS_BASE_DRIVER += -Wno-unused-parameter
@@ -18,6 +18,6 @@ diff -up dpdk-1.8.0/lib/librte_pmd_i40e/Makefile.i40e-wformat dpdk-1.8.0/lib/lib
  CFLAGS_BASE_DRIVER += -Wno-pointer-to-int-cast
  CFLAGS_BASE_DRIVER += -Wno-format-nonliteral
 -CFLAGS_BASE_DRIVER += -Wno-format-security
- 
+ CFLAGS_BASE_DRIVER += -Wno-unused-variable
+
  ifeq ($(shell test $(GCC_VERSION) -ge 44 && echo 1), 1)
- CFLAGS_BASE_DRIVER += -Wno-unused-but-set-variable

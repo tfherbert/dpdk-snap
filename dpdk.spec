@@ -8,10 +8,10 @@
 %bcond_with ivshmem
 
 # Dont edit Version: and Release: directly, only these:
-%define ver 2.0.0
-%define rel 9
+%define ver 2.1.0
+%define rel 1
 # Define when building git snapshots
-#define snapver 2086.git263333bb
+%define snapver 2320.gitc76ee0d0
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -25,10 +25,8 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 Source100: dpdk-snapshot.sh
 
 Patch1: dpdk-2.0-eventlink.patch
-Patch2: dpdk-i40e-wformat.patch
-Patch4: dpdk-dtneeded.patch
-Patch5: dpdk-dev-vhost-flush-used--idx-update-before-reading-avail--flags.patch
-Patch6: dpdk-dev-vfio-eventfd-should-be-non-block-and-not-inherited.patch
+Patch2: dpdk-2.1-i40e-wformat.patch
+Patch4: dpdk-2.1-dtneeded.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -102,8 +100,6 @@ as L2 and L3 forwarding.
 %patch1 -p1 -z .eventlink-alias
 %patch2 -p1 -z .i40e-wformat
 %patch4 -p1 -z .dtneeded
-%patch5 -p1 -z .vhost-flush
-%patch6 -p1 -z .vfio-eventfd
 
 %build
 function setconf()
@@ -276,6 +272,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Jun 15 2015 Panu Matilainen <pmatilai@redhat.com> - 2.1.0-0.2320.gitc76ee0d0
+- Update to pre-2.1.0 snapshot
+
 * Wed Jun 03 2015 Panu Matilainen <pmatilai@redhat.com> - 2.0.0-9
 - Really enable example apps on the copr repos
 
