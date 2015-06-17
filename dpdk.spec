@@ -11,7 +11,7 @@
 %define ver 2.1.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 2320.gitc76ee0d0
+%define snapver 2367.git790aa264
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -272,6 +272,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Jun 17 2015 Panu Matilainen <pmatilai@redhat.com> - 2.1.0-0.2367.git790aa264
+- New snapshot
+
 * Mon Jun 15 2015 Panu Matilainen <pmatilai@redhat.com> - 2.1.0-0.2320.gitc76ee0d0
 - Update to pre-2.1.0 snapshot
 
