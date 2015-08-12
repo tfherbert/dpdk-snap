@@ -146,7 +146,7 @@ setconf CONFIG_RTE_BUILD_SHARED_LIB y
 
 # Disable kernel modules
 setconf CONFIG_RTE_EAL_IGB_UIO n
-setconf CONFIG_RTE_LIBRTE_KNI n
+setconf CONFIG_RTE_KNI_KMOD n
 
 # Disable ABI-breaking code
 setconf CONFIG_RTE_NEXT_ABI n
@@ -283,6 +283,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 - Rebase patches as necessary
 - Fix build of ip_pipeline example
 - Drop no longer needed -Wno-error=array-bounds
+- Enable librte_kni build but disable the kernel module
 
 * Tue Jun 23 2015 Panu Matilainen <pmatilai@redhat.com> - 2.1.0-0.2429.gitc6a0fb5f
 - New snapshot
