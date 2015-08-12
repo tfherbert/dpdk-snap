@@ -2,7 +2,7 @@ diff -up dpdk-2.0.0/lib/librte_eal/linuxapp/eal/Makefile.dtneeded dpdk-2.0.0/lib
 --- dpdk-2.0.0/lib/librte_eal/linuxapp/eal/Makefile.dtneeded	2015-04-03 17:13:45.000000000 +0300
 +++ dpdk-2.0.0/lib/librte_eal/linuxapp/eal/Makefile	2015-04-17 15:23:38.267984467 +0300
 @@ -53,6 +53,8 @@ CFLAGS += -I$(RTE_SDK)/drivers/net/af_packet
- CFLAGS += -I$(RTE_SDK)/drivers/net/xenvirt
+ CFLAGS += -I$(RTE_SDK)/lib/librte_ivshmem
  CFLAGS += $(WERROR_FLAGS) -O3
  
 +LDLIBS += -ldl -lpthread
@@ -32,16 +32,4 @@ diff -up dpdk-2.0.0/lib/librte_vhost/Makefile.dtneeded dpdk-2.0.0/lib/librte_vho
 +LDLIBS += -lfuse
  endif
  
- # all source are stored in SRCS-y
-diff -up dpdk-2.0.0/mk/rte.lib.mk.dtneeded dpdk-2.0.0/mk/rte.lib.mk
---- dpdk-2.0.0/mk/rte.lib.mk.dtneeded	2015-04-03 17:13:45.000000000 +0300
-+++ dpdk-2.0.0/mk/rte.lib.mk	2015-04-17 15:23:38.267984467 +0300
-@@ -79,7 +79,7 @@ O_TO_A_DO = @set -e; \
- 	$(O_TO_A) && \
- 	echo $(O_TO_A_CMD) > $(call exe2cmd,$(@))
- 
--O_TO_S = $(LD) $(_CPU_LDFLAGS) -shared $(OBJS-y) -Wl,-soname,$(LIB) -o $(LIB)
-+O_TO_S = $(LD) $(_CPU_LDFLAGS) -shared $(LDLIBS) $(OBJS-y) -Wl,-soname,$(LIB) -o $(LIB)
- O_TO_S_STR = $(subst ','\'',$(O_TO_S)) #'# fix syntax highlight
- O_TO_S_DISP = $(if $(V),"$(O_TO_S_STR)","  LD $(@)")
- O_TO_S_DO = @set -e; \
+ ifeq ($(CONFIG_RTE_LIBRTE_VHOST_NUMA),y)

@@ -11,7 +11,7 @@
 %define ver 2.1.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 2429.gitc6a0fb5f
+%define snapver 2898.gitf1e779ec
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -27,6 +27,7 @@ Source100: dpdk-snapshot.sh
 Patch1: dpdk-2.0-eventlink.patch
 Patch2: dpdk-2.1-i40e-wformat.patch
 Patch4: dpdk-2.1-dtneeded.patch
+Patch5: dpdk-2.1-buildopts.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -100,6 +101,7 @@ as L2 and L3 forwarding.
 %patch1 -p1 -z .eventlink-alias
 %patch2 -p1 -z .i40e-wformat
 %patch4 -p1 -z .dtneeded
+%patch5 -p1 -z .buildopts
 
 %build
 function setconf()
@@ -116,7 +118,7 @@ unset RTE_SDK RTE_INCLUDE RTE_TARGET
 
 # Avoid appending second -Wall to everything, it breaks hand-picked
 # disablers like per-file -Wno-strict-aliasing
-export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC -Wno-error=array-bounds"
+export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
 
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
@@ -145,6 +147,9 @@ setconf CONFIG_RTE_BUILD_SHARED_LIB y
 # Disable kernel modules
 setconf CONFIG_RTE_EAL_IGB_UIO n
 setconf CONFIG_RTE_LIBRTE_KNI n
+
+# Disable ABI-breaking code
+setconf CONFIG_RTE_NEXT_ABI n
 
 make V=1 O=%{target} %{?_smp_mflags} 
 
@@ -272,6 +277,13 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Aug 12 2015 Panu Matilainen <pmatilai@redhat.com> - 2.1.0-0.2898.gitf1e779ec
+- New snapshot
+- Disable ABI_NEXT
+- Rebase patches as necessary
+- Fix build of ip_pipeline example
+- Drop no longer needed -Wno-error=array-bounds
+
 * Tue Jun 23 2015 Panu Matilainen <pmatilai@redhat.com> - 2.1.0-0.2429.gitc6a0fb5f
 - New snapshot
 
