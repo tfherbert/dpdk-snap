@@ -11,7 +11,7 @@
 %define ver 2.1.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 2898.gitf1e779ec
+#define snapver 2898.gitf1e779ec
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -277,6 +277,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Aug 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.1.0-1
+- Update to dpdk 2.1.0 final
+
 * Wed Aug 12 2015 Panu Matilainen <pmatilai@redhat.com> - 2.1.0-0.2898.gitf1e779ec
 - New snapshot
 - Disable ABI_NEXT
