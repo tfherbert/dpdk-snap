@@ -8,10 +8,10 @@
 %bcond_with ivshmem
 
 # Dont edit Version: and Release: directly, only these:
-%define ver 2.1.0
+%define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-#define snapver 2898.gitf1e779ec
+%define snapver 2947.gitc36a82f0
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -277,6 +277,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Sep 21 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-2947.gitc36a82f0
+- New snapshot
+
 * Tue Aug 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.1.0-1
 - Update to dpdk 2.1.0 final
 
