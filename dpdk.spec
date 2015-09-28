@@ -9,9 +9,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
-%define snapver 2947.gitc36a82f0
+%define snapver 2955.git9702b2b5
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -24,7 +24,6 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
 
-Patch1: dpdk-2.0-eventlink.patch
 Patch2: dpdk-2.1-i40e-wformat.patch
 Patch4: dpdk-2.1-dtneeded.patch
 Patch5: dpdk-2.1-buildopts.patch
@@ -98,7 +97,6 @@ as L2 and L3 forwarding.
 
 %prep
 %setup -q -n %{name}-%{srcver}
-%patch1 -p1 -z .eventlink-alias
 %patch2 -p1 -z .i40e-wformat
 %patch4 -p1 -z .dtneeded
 %patch5 -p1 -z .buildopts
@@ -184,6 +182,8 @@ libext=a
 mkdir -p                     %{buildroot}%{sdkdir}/lib
 mkdir -p                     %{buildroot}%{sdkdir}/%{target}
 cp -a  %{target}/.config     %{buildroot}%{sdkdir}/%{target}
+ln -s  ../lib %{buildroot}%{sdkdir}/%{target}/lib
+ln -s  ../../include/%{name}-%{version} %{buildroot}%{sdkdir}/include
 ln -s  ../../../include/%{name}-%{version} %{buildroot}%{sdkdir}/%{target}/include
 cp -a  mk/                   %{buildroot}%{sdkdir}
 mkdir -p                     %{buildroot}%{sdkdir}/scripts
@@ -277,7 +277,11 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
-* Mon Sep 21 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-2947.gitc36a82f0
+* Mon Sep 28 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.2955.git9702b2b5
+- New snapshot
+- Make lib and include available both ways in the SDK paths
+
+* Mon Sep 21 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.2947.gitc36a82f0
 - New snapshot
 
 * Tue Aug 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.1.0-1
