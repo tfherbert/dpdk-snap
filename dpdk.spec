@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
-%define rel 2
+%define rel 3
 # Define when building git snapshots
 %define snapver 2955.git9702b2b5
 
@@ -221,7 +221,7 @@ find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
 # linker script which avoids these issues. Linking against the script during
 # build resolves into links to the actual used libraries which is just fine
 # for us, so this combined library is a build-time only construct now.
-comblib=libintel_dpdk.${libext}
+comblib=libdpdk.${libext}
 
 echo "GROUP (" > ${comblib}
 find %{buildroot}/%{_libdir}/ -maxdepth 1 -name "*.${libext}" |\
@@ -265,6 +265,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Sep 29 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.2955.git9702b2b5.3
+- Oops, rename our linker script to match current upstream
+
 * Mon Sep 28 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.2955.git9702b2b5
 - New snapshot
 - Make lib and include available both ways in the SDK paths
