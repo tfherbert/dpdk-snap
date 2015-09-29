@@ -4,8 +4,6 @@
 %bcond_without examples
 # Add option to build without tools
 %bcond_without tools
-# Add option to build with IVSHMEM support (breaks ABI and whatnot, watchout)
-%bcond_with ivshmem
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
@@ -127,16 +125,6 @@ setconf CONFIG_RTE_MACHINE default
 # Enable pcap and vhost build, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
 setconf CONFIG_RTE_LIBRTE_VHOST y
-
-# If IVSHMEM enabled...
-%if %{with ivshmem}
-    setconf CONFIG_RTE_LIBRTE_IVSHMEM y
-    setconf CONFIG_RTE_LIBRTE_IVSHMEM_DEBUG n
-    setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_PCI_DEVS 4
-    setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_ENTRIES 128
-    setconf CONFIG_RTE_LIBRTE_IVSHMEM_MAX_METADATA_FILES 32
-    setconf CONFIG_RTE_EAL_SINGLE_FILE_SEGMENTS y
-%endif
 
 %if %{with shared}
 setconf CONFIG_RTE_BUILD_SHARED_LIB y
