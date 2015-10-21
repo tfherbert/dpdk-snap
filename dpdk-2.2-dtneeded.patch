@@ -1,0 +1,47 @@
+diff -up dpdk-2.2.0-3049.gitce8e1218/drivers/net/bnx2x/Makefile.dtneeded dpdk-2.2.0-3049.gitce8e1218/drivers/net/bnx2x/Makefile
+--- dpdk-2.2.0-3049.gitce8e1218/drivers/net/bnx2x/Makefile.dtneeded	2015-10-21 10:34:58.982836264 +0300
++++ dpdk-2.2.0-3049.gitce8e1218/drivers/net/bnx2x/Makefile	2015-10-21 10:36:16.027673110 +0300
+@@ -5,6 +5,8 @@ include $(RTE_SDK)/mk/rte.vars.mk
+ #
+ LIB = librte_pmd_bnx2x.a
+ 
++LDLIBS += -lz
++
+ CFLAGS += -O3 -g
+ CFLAGS += $(WERROR_FLAGS)
+ CFLAGS += -DZLIB_CONST
+diff -up dpdk-2.2.0-3049.gitce8e1218/drivers/net/pcap/Makefile.dtneeded dpdk-2.2.0-3049.gitce8e1218/drivers/net/pcap/Makefile
+--- dpdk-2.2.0-3049.gitce8e1218/drivers/net/pcap/Makefile.dtneeded	2015-10-21 00:29:37.000000000 +0300
++++ dpdk-2.2.0-3049.gitce8e1218/drivers/net/pcap/Makefile	2015-10-21 10:30:57.965343423 +0300
+@@ -37,6 +37,8 @@ include $(RTE_SDK)/mk/rte.vars.mk
+ #
+ LIB = librte_pmd_pcap.a
+ 
++LDLIBS += -lpcap
++
+ CFLAGS += -O3
+ CFLAGS += $(WERROR_FLAGS)
+ 
+diff -up dpdk-2.2.0-3049.gitce8e1218/lib/librte_eal/linuxapp/eal/Makefile.dtneeded dpdk-2.2.0-3049.gitce8e1218/lib/librte_eal/linuxapp/eal/Makefile
+--- dpdk-2.2.0-3049.gitce8e1218/lib/librte_eal/linuxapp/eal/Makefile.dtneeded	2015-10-21 00:29:37.000000000 +0300
++++ dpdk-2.2.0-3049.gitce8e1218/lib/librte_eal/linuxapp/eal/Makefile	2015-10-21 10:30:57.965343423 +0300
+@@ -47,6 +47,8 @@ CFLAGS += -I$(RTE_SDK)/lib/librte_mempoo
+ CFLAGS += -I$(RTE_SDK)/lib/librte_ivshmem
+ CFLAGS += $(WERROR_FLAGS) -O3
+ 
++LDLIBS += -ldl -lpthread
++
+ # specific to linuxapp exec-env
+ SRCS-$(CONFIG_RTE_LIBRTE_EAL_LINUXAPP) := eal.c
+ SRCS-$(CONFIG_RTE_LIBRTE_EAL_LINUXAPP) += eal_hugepage_info.c
+diff -up dpdk-2.2.0-3049.gitce8e1218/lib/librte_vhost/Makefile.dtneeded dpdk-2.2.0-3049.gitce8e1218/lib/librte_vhost/Makefile
+--- dpdk-2.2.0-3049.gitce8e1218/lib/librte_vhost/Makefile.dtneeded	2015-10-21 00:29:37.000000000 +0300
++++ dpdk-2.2.0-3049.gitce8e1218/lib/librte_vhost/Makefile	2015-10-21 10:30:57.965343423 +0300
+@@ -44,6 +44,7 @@ CFLAGS += -I vhost_user
+ else
+ CFLAGS += -I vhost_cuse -lfuse
+ LDFLAGS += -lfuse
++LDLIBS += -lfuse
+ endif
+ 
+ ifeq ($(CONFIG_RTE_LIBRTE_VHOST_NUMA),y)

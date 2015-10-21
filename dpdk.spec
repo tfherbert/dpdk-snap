@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
-%define rel 3
+%define rel 1
 # Define when building git snapshots
-%define snapver 2955.git9702b2b5
+%define snapver 3049.gitce8e1218
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -23,7 +23,7 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 Source100: dpdk-snapshot.sh
 
 Patch2: dpdk-2.1-i40e-wformat.patch
-Patch4: dpdk-2.1-dtneeded.patch
+Patch4: dpdk-2.2-dtneeded.patch
 Patch5: dpdk-2.1-buildopts.patch
 
 Summary: Set of libraries and drivers for fast packet processing
@@ -45,7 +45,7 @@ ExclusiveArch: x86_64
 
 %define target x86_64-%{machine}-linuxapp-gcc
 
-BuildRequires: kernel-headers, libpcap-devel
+BuildRequires: kernel-headers, libpcap-devel, zlib-devel
 BuildRequires: doxygen, python-sphinx
 
 %description
@@ -122,7 +122,8 @@ make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 # DPDK defaults to optimizing for the builder host we need generic binaries
 setconf CONFIG_RTE_MACHINE default
 
-# Enable pcap and vhost build, the added deps are ok for us
+# Enable bnx2x, pcap and vhost build, the added deps are ok for us
+setconf CONFIG_RTE_LIBRTE_BNX2X_PMD y
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
 setconf CONFIG_RTE_LIBRTE_VHOST y
 
@@ -265,6 +266,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Oct 21 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3049.gitce8e1218.1
+- New snapshot
+- Enable bnx2x pmd, which buildrequires zlib-devel
+
 * Tue Sep 29 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.2955.git9702b2b5.3
 - Oops, rename our linker script to match current upstream
 
