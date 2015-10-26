@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3049.gitce8e1218
+%define snapver 3064.gitfaefe229
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -266,6 +266,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Oct 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3064.gitfaefe229.1
+- New snapshot
+
 * Wed Oct 21 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3049.gitce8e1218.1
 - New snapshot
 - Enable bnx2x pmd, which buildrequires zlib-devel
