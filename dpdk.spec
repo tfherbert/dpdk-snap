@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3076.git19d4d7ef
+%define snapver 3111.git4c8db5f0
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -266,6 +266,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Oct 28 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3111.git4c8db5f0.1
+- New snapshot
+
 * Tue Oct 27 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3076.git19d4d7ef.1
 - New snapshot
 
