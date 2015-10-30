@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3111.git4c8db5f0
+%define snapver 3141.git92e689ce
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -25,6 +25,8 @@ Source100: dpdk-snapshot.sh
 Patch2: dpdk-2.1-i40e-wformat.patch
 Patch4: dpdk-2.2-dtneeded.patch
 Patch5: dpdk-2.1-buildopts.patch
+
+Patch10: dpdk-dev-v3-vhost-Fix-wrong-handling-of-virtqueue-array-index.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -98,6 +100,7 @@ as L2 and L3 forwarding.
 %patch2 -p1 -z .i40e-wformat
 %patch4 -p1 -z .dtneeded
 %patch5 -p1 -z .buildopts
+%patch10 -p1 -z .virtq-idx
 
 %build
 function setconf()
@@ -266,6 +269,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Oct 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3141.git92e689ce.1
+- New snapshot
+- Fix vhost-user segfault with multiqueue
+
 * Wed Oct 28 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3111.git4c8db5f0.1
 - New snapshot
 
