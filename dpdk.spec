@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3216.gitab3257e1
+%define snapver 3306.git4b90a3ff
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -73,7 +73,6 @@ API programming documentation for the Data Plane Development Kit.
 %if %{with tools}
 %package tools
 Summary: Tools for setting up Data Plane Development Kit environment
-Requires: %{name} = %{version}-%{release}
 Requires: kmod pciutils findutils iproute
 
 %description tools
@@ -133,6 +132,7 @@ setconf CONFIG_RTE_BUILD_SHARED_LIB y
 
 # Disable kernel modules
 setconf CONFIG_RTE_EAL_IGB_UIO n
+setconf CONFIG_RTE_LIBRTE_KNI n
 setconf CONFIG_RTE_KNI_KMOD n
 
 # Disable ABI-breaking code
@@ -266,6 +266,11 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Nov 04 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3306.git4b90a3ff.1
+- New snapshot
+- Drop librte_kni afterall, makes no sense without the kernel module
+- Drop main package dependency from -tools, its not strictly needed
+
 * Mon Nov 02 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3216.gitab3257e1.1
 - New snapshot
 
