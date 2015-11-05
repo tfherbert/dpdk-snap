@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3306.git4b90a3ff
+%define snapver 3321.gitc4d404d7
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -266,6 +266,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Nov 04 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3321.gitc4d404d7.1
+- New snapshot (2.2.0-rc1)
+
 * Wed Nov 04 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3306.git4b90a3ff.1
 - New snapshot
 - Drop librte_kni afterall, makes no sense without the kernel module
