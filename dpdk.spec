@@ -9,9 +9,11 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3321.gitc4d404d7
+%define snapver 3358.git5a1940f0
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
+
+%define pmddir %{_libdir}/%{name}-pmds
 
 Name: dpdk
 Version: %{ver}
@@ -121,6 +123,9 @@ make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 # DPDK defaults to optimizing for the builder host we need generic binaries
 setconf CONFIG_RTE_MACHINE default
 
+# Enable automatic driver loading from this path
+setconf CONFIG_RTE_EAL_PMD_PATH \"%{pmddir}\"
+
 # Enable bnx2x, pcap and vhost build, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_BNX2X_PMD y
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
@@ -196,6 +201,13 @@ for f in %{buildroot}/%{_libdir}/*.${libext}; do
     ln -s ../../${l} %{buildroot}/%{sdkdir}/lib/${l}
 done
 
+# Create a driver directory with symlinks to all pmds
+mkdir -p %{buildroot}/%{pmddir}
+for f in %{buildroot}/%{_libdir}/*_pmd_*.so; do
+    bn=$(basename ${f})
+    ln -s ../${bn} %{buildroot}%{pmddir}/${bn}
+done
+
 # Setup RTE_SDK environment as expected by apps etc
 mkdir -p %{buildroot}/%{_sysconfdir}/profile.d
 cat << EOF > %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk-%{_arch}.sh
@@ -235,7 +247,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %{_bindir}/testpmd
 %if %{with shared}
 %{_libdir}/*.so.*
-%{_libdir}/*_pmd_*.so
+%{pmddir}/
 %endif
 
 %files doc
@@ -249,7 +261,6 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %{_sysconfdir}/profile.d/dpdk-sdk-*.*
 %if %{with shared}
 %{_libdir}/*.so
-%exclude %{_libdir}/*_pmd_*.so
 %else
 %{_libdir}/*.a
 %endif
@@ -266,6 +277,11 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Nov 13 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3329.git695ae278.1
+- New snapshot
+- Move the unversioned pmd symlinks from libdir -devel
+- Establish a driver directory for automatic driver loading
+
 * Wed Nov 04 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3321.gitc4d404d7.1
 - New snapshot (2.2.0-rc1)
 
