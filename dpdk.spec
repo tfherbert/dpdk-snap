@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3358.git5a1940f0
+%define snapver 3371.git2d123257
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -277,6 +277,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Nov 16 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3371.git2d123257.1
+- New snapshot
+
 * Fri Nov 13 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3329.git695ae278.1
 - New snapshot
 - Move the unversioned pmd symlinks from libdir -devel
