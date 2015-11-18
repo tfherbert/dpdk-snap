@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
-%define rel 2
+%define rel 3
 # Define when building git snapshots
 %define snapver 3371.git2d123257
 
@@ -209,7 +209,7 @@ done
 
 # Create a driver directory with symlinks to all pmds
 mkdir -p %{buildroot}/%{pmddir}
-for f in %{buildroot}/%{_libdir}/*_pmd_*.so; do
+for f in %{buildroot}/%{_libdir}/*_pmd_*.so.*; do
     bn=$(basename ${f})
     ln -s ../${bn} %{buildroot}%{pmddir}/${bn}
 done
@@ -283,6 +283,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Nov 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3371.git2d123257.3
+- Make driver links to the actual pmd dso's, not their -devel symlinks
+
 * Wed Nov 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3371.git2d123257.2
 - Make plugin loading filesystem agnostic, sigh
 - Fix missing symbol export
