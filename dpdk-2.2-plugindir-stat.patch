@@ -1,0 +1,36 @@
+commit 923ebe527219fa16ca91e74b416b978803056d70
+Author: Panu Matilainen <pmatilai@redhat.com>
+Date:   Wed Nov 18 08:24:43 2015 +0200
+
+    eal: fix plugindir processing to be filesystem agnostic
+    
+    Not all filesystems supply struct dirent d_type field, in which case
+    everything in the specified directory would go ignored. One such
+    filesystem being XFS which RHEL 7 defaults to... stat() the entries
+    instead.
+    
+    Fixes: 9f8eb1d9ca0f ("eal: support driver loading from directory")
+    
+    Signed-off-by: Panu Matilainen <pmatilai@redhat.com>
+
+diff --git a/lib/librte_eal/common/eal_common_options.c b/lib/librte_eal/common/eal_common_options.c
+index bed7385..e51fa12 100644
+--- a/lib/librte_eal/common/eal_common_options.c
++++ b/lib/librte_eal/common/eal_common_options.c
+@@ -191,12 +191,14 @@ eal_plugindir_init(const char *path)
+ 	}
+ 
+ 	while ((dent = readdir(d)) != NULL) {
+-		if (dent->d_type != DT_REG && dent->d_type != DT_LNK)
+-			continue;
++		struct stat sb;
+ 
+ 		snprintf(sopath, PATH_MAX-1, "%s/%s", path, dent->d_name);
+ 		sopath[PATH_MAX-1] = 0;
+ 
++		if (!(stat(sopath, &sb) == 0 && S_ISREG(sb.st_mode)))
++			continue;
++
+ 		if (eal_plugin_add(sopath) == -1)
+ 			break;
+ 	}

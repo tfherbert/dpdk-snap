@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 %define snapver 3371.git2d123257
 
@@ -27,6 +27,9 @@ Source100: dpdk-snapshot.sh
 Patch2: dpdk-2.1-i40e-wformat.patch
 Patch4: dpdk-2.2-dtneeded.patch
 Patch5: dpdk-2.1-buildopts.patch
+
+Patch10: dpdk-2.2-plugindir-stat.patch
+Patch11: dpdk-2.2-symexport.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -99,6 +102,9 @@ as L2 and L3 forwarding.
 %patch2 -p1 -z .i40e-wformat
 %patch4 -p1 -z .dtneeded
 %patch5 -p1 -z .buildopts
+
+%patch10 -p1 -z .plugindir-stat
+%patch11 -p1 -z .symexport
 
 %build
 function setconf()
@@ -277,6 +283,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Nov 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3371.git2d123257.2
+- Make plugin loading filesystem agnostic, sigh
+- Fix missing symbol export
+
 * Mon Nov 16 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3371.git2d123257.1
 - New snapshot
 
