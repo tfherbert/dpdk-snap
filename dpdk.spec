@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
-%define rel 3
+%define rel 1
 # Define when building git snapshots
-%define snapver 3371.git2d123257
+%define snapver 3394.git4c02e453
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -283,6 +283,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Nov 19 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3394.git4c02e453.1
+- New snapshot
+
 * Wed Nov 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3371.git2d123257.3
 - Make driver links to the actual pmd dso's, not their -devel symlinks
 
