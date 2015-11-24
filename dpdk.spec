@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3399.gite64833f2
+%define snapver 3424.git4522eca1
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -27,9 +27,6 @@ Source100: dpdk-snapshot.sh
 Patch2: dpdk-2.1-i40e-wformat.patch
 Patch4: dpdk-2.2-dtneeded.patch
 Patch5: dpdk-2.1-buildopts.patch
-
-Patch10: dpdk-2.2-plugindir-stat.patch
-Patch11: dpdk-2.2-symexport.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -102,9 +99,6 @@ as L2 and L3 forwarding.
 %patch2 -p1 -z .i40e-wformat
 %patch4 -p1 -z .dtneeded
 %patch5 -p1 -z .buildopts
-
-%patch10 -p1 -z .plugindir-stat
-%patch11 -p1 -z .symexport
 
 %build
 function setconf()
@@ -283,6 +277,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Nov 24 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3424.git4522eca1.1
+- New snapshot
+
 * Fri Nov 20 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3399.gite64833f2.1
 - New snapshot
 
