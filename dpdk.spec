@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3424.git4522eca1
+%define snapver 3463.git61383240
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -122,6 +122,7 @@ make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 
 # DPDK defaults to optimizing for the builder host we need generic binaries
 setconf CONFIG_RTE_MACHINE default
+setconf CONFIG_RTE_SCHED_VECTOR n
 
 # Enable automatic driver loading from this path
 setconf CONFIG_RTE_EAL_PMD_PATH \"%{pmddir}\"
@@ -143,7 +144,7 @@ setconf CONFIG_RTE_KNI_KMOD n
 # Disable ABI-breaking code
 setconf CONFIG_RTE_NEXT_ABI n
 
-make V=1 O=%{target} %{?_smp_mflags} 
+make V=1 O=%{target} #%{?_smp_mflags} 
 
 # Creating PDF's has excessive build-requirements, html docs suffice fine
 make V=1 O=%{target} %{?_smp_mflags} doc-api-html doc-guides-html
@@ -277,6 +278,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Nov 25 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3463.git61383240.1
+- New snapshot
+- Disable CONFIG_RTE_SCHED_VECTOR, it conflicts with CONFIG_RTE_MACHINE default
+
 * Tue Nov 24 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3424.git4522eca1.1
 - New snapshot
 
