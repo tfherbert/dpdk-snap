@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3463.git61383240
+%define snapver 3496.git84fb2e67
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -141,8 +141,10 @@ setconf CONFIG_RTE_EAL_IGB_UIO n
 setconf CONFIG_RTE_LIBRTE_KNI n
 setconf CONFIG_RTE_KNI_KMOD n
 
-# Disable ABI-breaking code
+# Disable experimental and ABI-breaking code
 setconf CONFIG_RTE_NEXT_ABI n
+setconf CONFIG_RTE_LIBRTE_CRYPTODEV n
+setconf CONFIG_RTE_LIBRTE_MBUF_OFFLOAD n
 
 make V=1 O=%{target} #%{?_smp_mflags} 
 
@@ -278,6 +280,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Nov 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3496.git84fb2e67.1
+- New snapshot (2.2.0-rc2)
+- Disable experimental cryptodev library
+
 * Wed Nov 25 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3463.git61383240.1
 - New snapshot
 - Disable CONFIG_RTE_SCHED_VECTOR, it conflicts with CONFIG_RTE_MACHINE default
