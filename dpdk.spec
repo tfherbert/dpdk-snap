@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3496.git84fb2e67
+%define snapver 3504.git538020aa
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -280,6 +280,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Nov 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-3504.git538020aa
+- New snapshot
+
 * Thu Nov 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3496.git84fb2e67.1
 - New snapshot (2.2.0-rc2)
 - Disable experimental cryptodev library
