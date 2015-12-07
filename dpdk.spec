@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3592.git13318bbb
+%define snapver 3593.git3f3d6010
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -152,9 +152,6 @@ make V=1 O=%{target} #%{?_smp_mflags}
 make V=1 O=%{target} %{?_smp_mflags} doc-api-html doc-guides-html
 
 %if %{with examples}
-# ip_pipeline broken in this snapshot
-perl -pi -e 's:DIRS-y \+= ip_pipeline::g' examples/Makefile
-
 make V=1 O=%{target}/examples T=%{target} %{?_smp_mflags} examples
 %endif
 
@@ -283,6 +280,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Dec 07 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3593.git3f3d6010-1
+- New snapshot with fixed ip_pipeline
+
 * Mon Dec 07 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3592.git13318bbb-1
 - New snapshot
 - ip_pipeline example is broken, disable temporarily
