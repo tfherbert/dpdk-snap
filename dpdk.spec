@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3504.git538020aa
+%define snapver 3592.git13318bbb
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -24,7 +24,8 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
 
-Patch2: dpdk-2.1-i40e-wformat.patch
+# Some tweaking and tuning needed due to Fedora %optflags
+Patch2: dpdk-2.2-warningflags.patch
 Patch4: dpdk-2.2-dtneeded.patch
 Patch5: dpdk-2.1-buildopts.patch
 
@@ -96,7 +97,7 @@ as L2 and L3 forwarding.
 
 %prep
 %setup -q -n %{name}-%{srcver}
-%patch2 -p1 -z .i40e-wformat
+%patch2 -p1 -z .warningflags
 %patch4 -p1 -z .dtneeded
 %patch5 -p1 -z .buildopts
 
@@ -116,7 +117,6 @@ unset RTE_SDK RTE_INCLUDE RTE_TARGET
 # Avoid appending second -Wall to everything, it breaks hand-picked
 # disablers like per-file -Wno-strict-aliasing
 export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
-
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 
@@ -152,6 +152,9 @@ make V=1 O=%{target} #%{?_smp_mflags}
 make V=1 O=%{target} %{?_smp_mflags} doc-api-html doc-guides-html
 
 %if %{with examples}
+# ip_pipeline broken in this snapshot
+perl -pi -e 's:DIRS-y \+= ip_pipeline::g' examples/Makefile
+
 make V=1 O=%{target}/examples T=%{target} %{?_smp_mflags} examples
 %endif
 
@@ -280,7 +283,12 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
-* Mon Nov 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-3504.git538020aa
+* Mon Dec 07 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3592.git13318bbb-1
+- New snapshot
+- ip_pipeline example is broken, disable temporarily
+- upstream introduced new complications wrt our warning flags, adjust patches...
+
+* Mon Nov 30 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3504.git538020aa
 - New snapshot
 
 * Thu Nov 26 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3496.git84fb2e67.1
