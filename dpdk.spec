@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3593.git3f3d6010
+%define snapver 3614.git2616f497
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -280,6 +280,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Dec 08 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3614.git2616f497-1
+- New snapshot (2.2.0-rc3)
+
 * Mon Dec 07 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3593.git3f3d6010-1
 - New snapshot with fixed ip_pipeline
 

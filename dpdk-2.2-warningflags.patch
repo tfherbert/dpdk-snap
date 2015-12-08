@@ -22,16 +22,3 @@ index 033ee4a..3917b0c 100644
  CFLAGS_BASE_DRIVER += -Wno-unused-variable
  
  ifeq ($(shell test $(GCC_VERSION) -ge 44 && echo 1), 1)
-diff --git a/mk/rte.cpuflags.mk b/mk/rte.cpuflags.mk
-index c6bb8de..28f203b 100644
---- a/mk/rte.cpuflags.mk
-+++ b/mk/rte.cpuflags.mk
-@@ -33,7 +33,7 @@
- # used to set the RTE_CPUFLAG_* environment variables giving details
- # of what instruction sets the target cpu supports.
- 
--AUTO_CPUFLAGS := $(shell $(CC) $(MACHINE_CFLAGS) $(EXTRA_CFLAGS) -dM -E - < /dev/null)
-+AUTO_CPUFLAGS := $(shell $(CC) $(MACHINE_CFLAGS) $(WERROR_FLAGS) $(EXTRA_CFLAGS) -dM -E - < /dev/null)
- 
- # adding flags to CPUFLAGS
- 
