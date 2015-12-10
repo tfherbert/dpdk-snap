@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3614.git2616f497
+%define snapver 3624.git1befe9ca
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -24,7 +24,7 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
 
-# Some tweaking and tuning needed due to Fedora %optflags
+# Some tweaking and tuning needed due to Fedora %%optflags
 Patch2: dpdk-2.2-warningflags.patch
 Patch4: dpdk-2.2-dtneeded.patch
 Patch5: dpdk-2.1-buildopts.patch
@@ -280,6 +280,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Dec 10 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3624.git1befe9ca-1
+- New snapshot
+- More complete dtneeded patch which should fixes build on rawhide
+
 * Tue Dec 08 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3614.git2616f497-1
 - New snapshot (2.2.0-rc3)
 
