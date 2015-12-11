@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 %define snapver 3637.gitb700090c
 
@@ -94,6 +94,7 @@ as L2 and L3 forwarding.
 
 %define sdkdir  %{_libdir}/%{name}-%{version}-sdk
 %define docdir  %{_docdir}/%{name}-%{version}
+%define incdir  %{_includedir}/%{name}-%{version}
 
 %prep
 %setup -q -n %{name}-%{srcver}
@@ -161,8 +162,8 @@ make V=1 O=%{target}/examples T=%{target} %{?_smp_mflags} examples
 
 mkdir -p                     %{buildroot}%{_bindir}
 cp -a  %{target}/app/testpmd %{buildroot}%{_bindir}/testpmd
-mkdir -p                     %{buildroot}%{_includedir}/%{name}-%{version}
-cp -Lr  %{target}/include/*   %{buildroot}%{_includedir}/%{name}-%{version}
+mkdir -p                     %{buildroot}%{incdir}
+cp -Lr  %{target}/include/*   %{buildroot}%{incdir}
 mkdir -p                     %{buildroot}%{_libdir}
 cp -a  %{target}/lib/*       %{buildroot}%{_libdir}
 mkdir -p                     %{buildroot}%{docdir}
@@ -217,7 +218,7 @@ cat << EOF > %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk-%{_arch}.sh
 if [ -z "\${RTE_SDK}" ]; then
     export RTE_SDK="%{sdkdir}"
     export RTE_TARGET="%{target}"
-    export RTE_INCLUDE="%{_includedir}/%{name}-%{version}"
+    export RTE_INCLUDE="%{incdir}"
 fi
 EOF
 
@@ -225,12 +226,12 @@ cat << EOF > %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk-%{_arch}.csh
 if ( ! \$RTE_SDK ) then
     setenv RTE_SDK "%{sdkdir}"
     setenv RTE_TARGET "%{target}"
-    setenv RTE_INCLUDE "%{_includedir}/%{name}-%{version}"
+    setenv RTE_INCLUDE "%{incdir}"
 endif
 EOF
 
 # Fixup irregular modes in headers
-find %{buildroot}%{_includedir}/%{name}-%{version} -type f | xargs chmod 0644
+find %{buildroot}%{incdir} -type f | xargs chmod 0644
 
 # Upstream has an option to build a combined library but it's bloatware which
 # wont work at all when library versions start moving, replace it with a 
@@ -259,7 +260,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 
 %files devel
 #BSD
-%{_includedir}/*
+%{incdir}
 %{sdkdir}
 %{_sysconfdir}/profile.d/dpdk-sdk-*.*
 %if %{with shared}
@@ -280,6 +281,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Dec 11 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3637.gitb700090c-2
+- Define + use a local macro for include dir location
+
 * Fri Dec 11 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3637.gitb700090c-1
 - New snapshot
 
