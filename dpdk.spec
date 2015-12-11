@@ -206,10 +206,12 @@ done
 
 # Create a driver directory with symlinks to all pmds
 mkdir -p %{buildroot}/%{pmddir}
+%if %{with shared}
 for f in %{buildroot}/%{_libdir}/*_pmd_*.so.*; do
     bn=$(basename ${f})
     ln -s ../${bn} %{buildroot}%{pmddir}/${bn}
 done
+%endif
 
 # Setup RTE_SDK environment as expected by apps etc
 mkdir -p %{buildroot}/%{_sysconfdir}/profile.d
@@ -248,9 +250,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %files
 # BSD
 %{_bindir}/testpmd
+%dir %{pmddir}
 %if %{with shared}
 %{_libdir}/*.so.*
-%{pmddir}/
+%{pmddir}/*.so.*
 %endif
 
 %files doc
@@ -283,6 +286,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 * Fri Dec 11 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3637.gitb700090c-2
 - Define + use a local macro for include dir location
 - Group our directory macros together
+- Fix static (ie --without shared) build
 
 * Fri Dec 11 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3637.gitb700090c-1
 - New snapshot
