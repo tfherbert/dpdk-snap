@@ -13,8 +13,6 @@
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
-%define pmddir %{_libdir}/%{name}-pmds
-
 Name: dpdk
 Version: %{ver}
 Release: %{?snapver:0.%{snapver}.}%{rel}%{?dist}
@@ -47,6 +45,11 @@ ExclusiveArch: x86_64
 %define machine native
 
 %define target x86_64-%{machine}-linuxapp-gcc
+
+%define sdkdir  %{_libdir}/%{name}-%{version}-sdk
+%define docdir  %{_docdir}/%{name}-%{version}
+%define incdir  %{_includedir}/%{name}-%{version}
+%define pmddir  %{_libdir}/%{name}-pmds
 
 BuildRequires: kernel-headers, libpcap-devel, zlib-devel
 BuildRequires: doxygen, python-sphinx
@@ -91,10 +94,6 @@ BuildRequires: libvirt-devel
 Example applications utilizing the Data Plane Development Kit, such
 as L2 and L3 forwarding.
 %endif
-
-%define sdkdir  %{_libdir}/%{name}-%{version}-sdk
-%define docdir  %{_docdir}/%{name}-%{version}
-%define incdir  %{_includedir}/%{name}-%{version}
 
 %prep
 %setup -q -n %{name}-%{srcver}
@@ -283,6 +282,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %changelog
 * Fri Dec 11 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3637.gitb700090c-2
 - Define + use a local macro for include dir location
+- Group our directory macros together
 
 * Fri Dec 11 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3637.gitb700090c-1
 - New snapshot
