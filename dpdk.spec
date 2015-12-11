@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
-%define rel 2
+%define rel 3
 # Define when building git snapshots
 %define snapver 3637.gitb700090c
 
@@ -43,13 +43,12 @@ License: BSD and LGPLv2 and GPLv2
 ExclusiveArch: x86_64 
 
 %define machine native
-
 %define target x86_64-%{machine}-linuxapp-gcc
 
-%define sdkdir  %{_libdir}/%{name}-%{version}-sdk
-%define docdir  %{_docdir}/%{name}-%{version}
-%define incdir  %{_includedir}/%{name}-%{version}
-%define pmddir  %{_libdir}/%{name}-pmds
+%define sdkdir  %{_datadir}/%{name}
+%define docdir  %{_docdir}/%{name}
+%define incdir  %{_includedir}/%{name}
+%define pmddir %{_libdir}/%{name}-pmds
 
 BuildRequires: kernel-headers, libpcap-devel, zlib-devel
 BuildRequires: doxygen, python-sphinx
@@ -157,52 +156,7 @@ make V=1 O=%{target}/examples T=%{target} %{?_smp_mflags} examples
 
 %install
 
-# DPDK's "make install" seems a bit broken -- do things manually...
-
-mkdir -p                     %{buildroot}%{_bindir}
-cp -a  %{target}/app/testpmd %{buildroot}%{_bindir}/testpmd
-mkdir -p                     %{buildroot}%{incdir}
-cp -Lr  %{target}/include/*   %{buildroot}%{incdir}
-mkdir -p                     %{buildroot}%{_libdir}
-cp -a  %{target}/lib/*       %{buildroot}%{_libdir}
-mkdir -p                     %{buildroot}%{docdir}
-cp -a  %{target}/doc/*       %{buildroot}%{docdir}
-
-%if %{with shared}
-libext=so
-%else
-libext=a
-%endif
-
-# DPDK apps expect a particular (and somewhat peculiar) directory layout
-# for building, arrange for that
-mkdir -p                     %{buildroot}%{sdkdir}/lib
-mkdir -p                     %{buildroot}%{sdkdir}/%{target}
-cp -a  %{target}/.config     %{buildroot}%{sdkdir}/%{target}
-ln -s  ../lib %{buildroot}%{sdkdir}/%{target}/lib
-ln -s  ../../include/%{name}-%{version} %{buildroot}%{sdkdir}/include
-ln -s  ../../../include/%{name}-%{version} %{buildroot}%{sdkdir}/%{target}/include
-cp -a  mk/                   %{buildroot}%{sdkdir}
-mkdir -p                     %{buildroot}%{sdkdir}/scripts
-cp -a  scripts/*.sh          %{buildroot}%{sdkdir}/scripts
-
-%if %{with tools}
-cp -p  tools/*.py            %{buildroot}%{_bindir}
-%endif
-
-%if %{with examples}
-find %{target}/examples/ -name "*.map" | xargs rm -f
-for f in %{target}/examples/*/%{target}/app/*; do
-    bn=`basename ${f}`
-    cp -p ${f} %{buildroot}%{_bindir}/dpdk_${bn}
-done
-%endif
-
-# Create library symlinks for the "sdk"
-for f in %{buildroot}/%{_libdir}/*.${libext}; do
-    l=`basename ${f}`
-    ln -s ../../${l} %{buildroot}/%{sdkdir}/lib/${l}
-done
+%make_install O=%{target} prefix=%{_usr} libdir=%{_libdir}
 
 # Create a driver directory with symlinks to all pmds
 mkdir -p %{buildroot}/%{pmddir}
@@ -211,6 +165,21 @@ for f in %{buildroot}/%{_libdir}/*_pmd_*.so.*; do
     bn=$(basename ${f})
     ln -s ../${bn} %{buildroot}%{pmddir}/${bn}
 done
+%endif
+
+%if ! %{with tools}
+rm -rf %{buildroot}%{sdkdir}/tools
+rm -rf %{buildroot}%{_sbindir}/dpdk_nic_bind
+%endif
+
+%if %{with examples}
+find %{target}/examples/ -name "*.map" | xargs rm -f
+for f in %{target}/examples/*/%{target}/app/*; do
+    bn=`basename ${f}`
+    cp -p ${f} %{buildroot}%{_bindir}/dpdk_${bn}
+done
+%else
+rm -rf %{buildroot}%{sdkdir}/examples
 %endif
 
 # Setup RTE_SDK environment as expected by apps etc
@@ -231,14 +200,16 @@ if ( ! \$RTE_SDK ) then
 endif
 EOF
 
-# Fixup irregular modes in headers
-find %{buildroot}%{incdir} -type f | xargs chmod 0644
-
 # Upstream has an option to build a combined library but it's bloatware which
 # wont work at all when library versions start moving, replace it with a 
 # linker script which avoids these issues. Linking against the script during
 # build resolves into links to the actual used libraries which is just fine
 # for us, so this combined library is a build-time only construct now.
+%if %{with shared}
+libext=so
+%else
+libext=a
+%endif
 comblib=libdpdk.${libext}
 
 echo "GROUP (" > ${comblib}
@@ -250,6 +221,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %files
 # BSD
 %{_bindir}/testpmd
+%{_bindir}/dpdk_proc_info
 %dir %{pmddir}
 %if %{with shared}
 %{_libdir}/*.so.*
@@ -262,8 +234,14 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 
 %files devel
 #BSD
-%{incdir}
-%{sdkdir}
+%{incdir}/
+%{sdkdir}/
+%if %{with tools}
+%exclude %{sdkdir}/tools/
+%endif
+%if %{with examples}
+%exclude %{sdkdir}/examples/
+%endif
 %{_sysconfdir}/profile.d/dpdk-sdk-*.*
 %if %{with shared}
 %{_libdir}/*.so
@@ -273,16 +251,21 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 
 %if %{with examples}
 %files examples
+%exclude %{_bindir}/dpdk_proc_info
 %{_bindir}/dpdk_*
-%exclude %{_bindir}/*.py
+%doc %{sdkdir}/examples/
 %endif
 
 %if %{with tools}
 %files tools
-%{_bindir}/*.py
+%{sdkdir}/tools/
+%{_sbindir}/dpdk_nic_bind
 %endif
 
 %changelog
+* Fri Dec 11 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3637.gitb700090c-3
+- Adopt new upstream standard installation layout
+
 * Fri Dec 11 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3637.gitb700090c-2
 - Define + use a local macro for include dir location
 - Group our directory macros together
