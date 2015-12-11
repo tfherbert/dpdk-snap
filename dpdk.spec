@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3624.git1befe9ca
+%define snapver 3637.gitb700090c
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -280,6 +280,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Dec 11 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3637.gitb700090c-1
+- New snapshot
+
 * Thu Dec 10 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3624.git1befe9ca-1
 - New snapshot
 - More complete dtneeded patch which should fixes build on rawhide
