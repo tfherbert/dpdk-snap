@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
-%define rel 4
+%define rel 1
 # Define when building git snapshots
-%define snapver 3637.gitb700090c
+%define snapver 3688.gitbc31261c
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -26,7 +26,6 @@ Source100: dpdk-snapshot.sh
 Patch2: dpdk-2.2-warningflags.patch
 Patch4: dpdk-2.2-dtneeded.patch
 Patch5: dpdk-2.1-buildopts.patch
-Patch6: dpdk-2.2-relpath.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -100,7 +99,6 @@ as L2 and L3 forwarding.
 %patch2 -p1 -z .warningflags
 %patch4 -p1 -z .dtneeded
 %patch5 -p1 -z .buildopts
-%patch6 -p1 -z .relpath
 
 %build
 function setconf()
@@ -265,6 +263,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Dec 14 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3688.gitbc31261c-1
+- New snapshot (2.2.0-rc4)
+
 * Fri Dec 11 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3637.gitb700090c-4
 - Fix relpath.sh bug causing broken symlinks
 
