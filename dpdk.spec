@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 %define snapver 3688.gitbc31261c
 
@@ -155,6 +155,8 @@ make V=1 O=%{target}/examples T=%{target} %{?_smp_mflags} examples
 %endif
 
 %install
+# In case dpdk-devel is installed
+unset RTE_SDK RTE_INCLUDE RTE_TARGET
 
 %make_install O=%{target} prefix=%{_usr} libdir=%{_libdir}
 
@@ -199,6 +201,9 @@ if ( ! \$RTE_SDK ) then
     setenv RTE_INCLUDE "%{incdir}"
 endif
 EOF
+
+# Fixup target machine mismatch
+sed -ie 's:-%{machine}-:-default-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk*
 
 # Upstream has an option to build a combined library but it's bloatware which
 # wont work at all when library versions start moving, replace it with a 
@@ -263,6 +268,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Dec 14 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3688.gitbc31261c-2
+- Fixup target machine mismatch in profile.d environment
+- Fixup installed dpdk-devel affecting "make install" result
+
 * Mon Dec 14 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3688.gitbc31261c-1
 - New snapshot (2.2.0-rc4)
 
