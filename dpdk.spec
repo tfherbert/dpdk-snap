@@ -225,6 +225,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 
 %files
 # BSD
+%doc README MAINTAINERS
 %{_bindir}/testpmd
 %{_bindir}/dpdk_proc_info
 %dir %{pmddir}
@@ -271,6 +272,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 * Mon Dec 14 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3688.gitbc31261c-2
 - Fixup target machine mismatch in profile.d environment
 - Fixup installed dpdk-devel affecting "make install" result
+- Add README and MAINTAINERS docs
 
 * Mon Dec 14 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3688.gitbc31261c-1
 - New snapshot (2.2.0-rc4)
