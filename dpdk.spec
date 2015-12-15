@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.2.0
-%define rel 2
+%define rel 1
 # Define when building git snapshots
-%define snapver 3688.gitbc31261c
+%define snapver 3700.gitbd3cea78
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -269,6 +269,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Dec 15 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3700.gitbd3cea78-1
+- New snapshot
+
 * Mon Dec 14 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3688.gitbc31261c-2
 - Fixup target machine mismatch in profile.d environment
 - Fixup installed dpdk-devel affecting "make install" result
