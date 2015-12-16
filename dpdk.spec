@@ -9,7 +9,7 @@
 %define ver 2.2.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3711.git728c9e54
+#define snapver 3721.gita38e5ec1
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -269,6 +269,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Dec 16 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-1
+- Update to DPDK 2.2.0 final
+
 * Tue Dec 15 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-0.3711.git728c9e54-1
 - New snapshot
 
