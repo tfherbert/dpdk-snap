@@ -6,10 +6,10 @@
 %bcond_without tools
 
 # Dont edit Version: and Release: directly, only these:
-%define ver 2.2.0
+%define ver 2.3.0
 %define rel 1
 # Define when building git snapshots
-#define snapver 3721.gita38e5ec1
+%define snapver 3725.git3b60ce8c
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -269,6 +269,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Dec 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3725.git3b60ce8c.1
+- New 2.3-pre snapshot
+
 * Wed Dec 16 2015 Panu Matilainen <pmatilai@redhat.com> - 2.2.0-1
 - Update to DPDK 2.2.0 final
 
