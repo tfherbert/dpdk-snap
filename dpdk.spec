@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.3.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 %define snapver 3725.git3b60ce8c
 
@@ -104,7 +104,7 @@ as L2 and L3 forwarding.
 function setconf()
 {
     cf=%{target}/.config
-    if grep -q $1 $cf; then
+    if grep -q ^$1= $cf; then
         sed -i "s:^$1=.*$:$1=$2:g" $cf
     else
         echo $1=$2 >> $cf
@@ -269,6 +269,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Jan 07 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3725.git3b60ce8c.2
+- Make option matching stricter in spec setconf
+
 * Fri Dec 18 2015 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3725.git3b60ce8c.1
 - New 2.3-pre snapshot
 
