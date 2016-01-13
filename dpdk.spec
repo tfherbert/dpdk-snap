@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.3.0
-%define rel 2
+%define rel 3
 # Define when building git snapshots
 %define snapver 3725.git3b60ce8c
 
@@ -173,6 +173,7 @@ done
 rm -rf %{buildroot}%{sdkdir}/tools
 rm -rf %{buildroot}%{_sbindir}/dpdk_nic_bind
 %endif
+rm -f %{buildroot}%{sdkdir}/tools/setup.sh
 
 %if %{with examples}
 find %{target}/examples/ -name "*.map" | xargs rm -f
@@ -203,7 +204,7 @@ endif
 EOF
 
 # Fixup target machine mismatch
-sed -ie 's:-%{machine}-:-default-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk*
+sed -i -e 's:-%{machine}-:-default-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk*
 
 # Upstream has an option to build a combined library but it's bloatware which
 # wont work at all when library versions start moving, replace it with a 
@@ -269,6 +270,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Jan 13 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3725.git3b60ce8c.3
+- Fix extra junk being generated in profile.d
+- Never include setup.sh
+
 * Thu Jan 07 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3725.git3b60ce8c.2
 - Make option matching stricter in spec setconf
 
