@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.3.0
-%define rel 3
+%define rel 1
 # Define when building git snapshots
-%define snapver 3725.git3b60ce8c
+%define snapver 3742.gitff82e08a
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -270,6 +270,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Jan 18 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3742.gitff82e08a.1
+- New snapshot
+
 * Wed Jan 13 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3725.git3b60ce8c.3
 - Fix extra junk being generated in profile.d
 - Never include setup.sh
