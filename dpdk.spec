@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.3.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 %define snapver 3742.gitff82e08a
 
@@ -50,7 +50,7 @@ ExclusiveArch: x86_64
 %define incdir  %{_includedir}/%{name}
 %define pmddir %{_libdir}/%{name}-pmds
 
-BuildRequires: kernel-headers, libpcap-devel, zlib-devel
+BuildRequires: kernel-headers, libpcap-devel, zlib-devel, numactl-devel
 BuildRequires: doxygen, python-sphinx
 
 %description
@@ -126,10 +126,10 @@ setconf CONFIG_RTE_SCHED_VECTOR n
 # Enable automatic driver loading from this path
 setconf CONFIG_RTE_EAL_PMD_PATH \"%{pmddir}\"
 
-# Enable bnx2x, pcap and vhost build, the added deps are ok for us
+# Enable bnx2x, pcap and vhost-numa, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_BNX2X_PMD y
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
-setconf CONFIG_RTE_LIBRTE_VHOST y
+setconf CONFIG_RTE_LIBRTE_VHOST_NUMA y
 
 %if %{with shared}
 setconf CONFIG_RTE_BUILD_SHARED_LIB y
@@ -270,6 +270,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Jan 19 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3742.gitff82e08a.2
+- Enable librte_vhost NUMA-awareness
+
 * Mon Jan 18 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3742.gitff82e08a.1
 - New snapshot
 
