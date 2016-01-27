@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 2.3.0
-%define rel 2
+%define rel 1
 # Define when building git snapshots
-%define snapver 3742.gitff82e08a
+%define snapver 3746.gitc7985de0
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -270,6 +270,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Jan 27 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3746.gitc7985de0.1
+- New snapshot
+
 * Tue Jan 19 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3742.gitff82e08a.2
 - Enable librte_vhost NUMA-awareness
 
