@@ -120,11 +120,11 @@ export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 
 # DPDK defaults to optimizing for the builder host we need generic binaries
-setconf CONFIG_RTE_MACHINE default
+setconf CONFIG_RTE_MACHINE '"default"'
 setconf CONFIG_RTE_SCHED_VECTOR n
 
 # Enable automatic driver loading from this path
-setconf CONFIG_RTE_EAL_PMD_PATH \"%{pmddir}\"
+setconf CONFIG_RTE_EAL_PMD_PATH '"%{pmddir}"'
 
 # Enable bnx2x, pcap and vhost-numa, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_BNX2X_PMD y
@@ -272,6 +272,8 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %changelog
 * Wed Jan 27 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3746.gitc7985de0.1
 - New snapshot
+- Use a different quoting method to avoid messing up vim syntax highlighting
+- A string is expected as CONFIG_RTE_MACHINE value, quote it too
 
 * Tue Jan 19 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3742.gitff82e08a.2
 - Enable librte_vhost NUMA-awareness
