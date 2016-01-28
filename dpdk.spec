@@ -9,7 +9,7 @@
 %define ver 2.3.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3746.gitc7985de0
+%define snapver 3757.git2593612d
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -270,6 +270,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Jan 28 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3757.git2593612d.1
+- New snapshot
+
 * Wed Jan 27 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3746.gitc7985de0.1
 - New snapshot
 - Use a different quoting method to avoid messing up vim syntax highlighting
