@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.04.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 %define snapver 3783.git50810f09
 
@@ -115,7 +115,7 @@ unset RTE_SDK RTE_INCLUDE RTE_TARGET
 
 # Avoid appending second -Wall to everything, it breaks hand-picked
 # disablers like per-file -Wno-strict-aliasing
-export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
+export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC -Wno-error"
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 
@@ -270,6 +270,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Feb 11 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3783.git50810f09.2
+- Temporarily disable -Werror due to many new warnings from gcc 6
+
 * Thu Feb 11 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3783.git50810f09.1
 - New snapshot, with new upstream versioning scheme
 
