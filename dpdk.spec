@@ -6,10 +6,10 @@
 %bcond_without tools
 
 # Dont edit Version: and Release: directly, only these:
-%define ver 2.3.0
+%define ver 16.04.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3759.gitdd34ff1f
+%define snapver 3783.git50810f09
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -270,6 +270,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Feb 11 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3783.git50810f09.1
+- New snapshot, with new upstream versioning scheme
+
 * Fri Jan 29 2016 Panu Matilainen <pmatilai@redhat.com> - 2.3.0-0.3759.gitdd34ff1f.1
 - New snapshot
 
