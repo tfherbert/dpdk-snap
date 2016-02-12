@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.04.0
-%define rel 2
+%define rel 1
 # Define when building git snapshots
-%define snapver 3783.git50810f09
+%define snapver 3790.git5fa83b53
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -270,6 +270,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Fri Feb 12 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3790.git5fa83b53.1
+- New snapshot
+
 * Thu Feb 11 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3783.git50810f09.2
 - Temporarily disable -Werror due to many new warnings from gcc 6
 
