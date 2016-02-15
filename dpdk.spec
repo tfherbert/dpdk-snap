@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.04.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 %define snapver 3790.git5fa83b53
 
@@ -144,6 +144,7 @@ setconf CONFIG_RTE_KNI_KMOD n
 setconf CONFIG_RTE_NEXT_ABI n
 setconf CONFIG_RTE_LIBRTE_CRYPTODEV n
 setconf CONFIG_RTE_LIBRTE_MBUF_OFFLOAD n
+setconf CONFIG_RTE_LIBRTE_POWER n
 
 make V=1 O=%{target} #%{?_smp_mflags} 
 
@@ -270,6 +271,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Feb 15 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3790.git5fa83b53.2
+- Disable unmaintained librte_power as per upstream recommendation
+
 * Fri Feb 12 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3790.git5fa83b53.1
 - New snapshot
 
