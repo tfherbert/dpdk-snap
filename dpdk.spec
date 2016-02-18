@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.04.0
-%define rel 2
+%define rel 1
 # Define when building git snapshots
-%define snapver 3790.git5fa83b53
+%define snapver 3809.git9fd72e3c
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -115,7 +115,7 @@ unset RTE_SDK RTE_INCLUDE RTE_TARGET
 
 # Avoid appending second -Wall to everything, it breaks hand-picked
 # disablers like per-file -Wno-strict-aliasing
-export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC -Wno-error"
+export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC -fno-strict-aliasing -Wno-error"
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 
@@ -271,6 +271,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Thu Feb 18 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3809.git9fd72e3c.1
+- New snapshot
+- Temporarily disable strict aliasing to appease gcc 6
+
 * Mon Feb 15 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3790.git5fa83b53.2
 - Disable unmaintained librte_power as per upstream recommendation
 
