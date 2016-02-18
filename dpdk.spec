@@ -27,6 +27,8 @@ Patch2: dpdk-2.2-warningflags.patch
 Patch4: dpdk-2.2-dtneeded.patch
 Patch5: dpdk-2.1-buildopts.patch
 
+Patch10: dpdk-16.04-vhost-netdep.patch
+
 Summary: Set of libraries and drivers for fast packet processing
 
 #
@@ -99,6 +101,8 @@ as L2 and L3 forwarding.
 %patch2 -p1 -z .warningflags
 %patch4 -p1 -z .dtneeded
 %patch5 -p1 -z .buildopts
+
+%patch10 -p1 -z .vhost-netdep
 
 %build
 function setconf()

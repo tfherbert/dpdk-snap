@@ -1,0 +1,29 @@
+commit eef2b50186eea076a3a3ff9f10bd8c310a036549
+Author: Panu Matilainen <pmatilai@redhat.com>
+Date:   Thu Feb 18 11:36:02 2016 +0200
+
+    vhost: add missing build dependency on librte_net
+    
+    Commit d0cf91303d73 added dependency on librte_net headers to vhost
+    but did not add this to the Makefile, which makes builds
+    non-deterministic. Curiously it is non-parallel build that is
+    consistently broken by this missing dependency, usually it's the other
+    way around, but trying to build without -j(n) fails with:
+    
+    	dpdk/lib/librte_vhost/vhost_rxtx.c:41:20:
+    	fatal error: rte_ip.h: No such file or directory
+    
+    Fixes: d0cf91303d73 ("vhost: add Tx offload capabilities")
+    Signed-off-by: Panu Matilainen <pmatilai@redhat.com>
+
+diff --git a/lib/librte_vhost/Makefile b/lib/librte_vhost/Makefile
+index 035b569..ef9bbae 100644
+--- a/lib/librte_vhost/Makefile
++++ b/lib/librte_vhost/Makefile
+@@ -65,5 +65,6 @@ SYMLINK-$(CONFIG_RTE_LIBRTE_VHOST)-include += rte_virtio_net.h
+ DEPDIRS-$(CONFIG_RTE_LIBRTE_VHOST) += lib/librte_eal
+ DEPDIRS-$(CONFIG_RTE_LIBRTE_VHOST) += lib/librte_ether
+ DEPDIRS-$(CONFIG_RTE_LIBRTE_VHOST) += lib/librte_mbuf
++DEPDIRS-$(CONFIG_RTE_LIBRTE_VHOST) += lib/librte_net
+ 
+ include $(RTE_SDK)/mk/rte.lib.mk
