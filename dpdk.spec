@@ -150,7 +150,7 @@ setconf CONFIG_RTE_LIBRTE_CRYPTODEV n
 setconf CONFIG_RTE_LIBRTE_MBUF_OFFLOAD n
 setconf CONFIG_RTE_LIBRTE_POWER n
 
-make V=1 O=%{target} #%{?_smp_mflags} 
+make V=1 O=%{target} %{?_smp_mflags}
 
 # Creating PDF's has excessive build-requirements, html docs suffice fine
 make V=1 O=%{target} %{?_smp_mflags} doc-api-html doc-guides-html
@@ -278,6 +278,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 * Thu Feb 18 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3809.git9fd72e3c.1
 - New snapshot
 - Temporarily disable strict aliasing to appease gcc 6
+- Enable parallel build again
 
 * Mon Feb 15 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3790.git5fa83b53.2
 - Disable unmaintained librte_power as per upstream recommendation
