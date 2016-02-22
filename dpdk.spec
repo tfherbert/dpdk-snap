@@ -9,7 +9,7 @@
 %define ver 16.04.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3809.git9fd72e3c
+%define snapver 3825.gite277b239
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -26,8 +26,6 @@ Source100: dpdk-snapshot.sh
 Patch2: dpdk-2.2-warningflags.patch
 Patch4: dpdk-2.2-dtneeded.patch
 Patch5: dpdk-2.1-buildopts.patch
-
-Patch10: dpdk-16.04-vhost-netdep.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -101,8 +99,6 @@ as L2 and L3 forwarding.
 %patch2 -p1 -z .warningflags
 %patch4 -p1 -z .dtneeded
 %patch5 -p1 -z .buildopts
-
-%patch10 -p1 -z .vhost-netdep
 
 %build
 function setconf()
@@ -275,6 +271,7 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Mon Feb 22 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3825.gite277b239.1
 * Thu Feb 18 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3809.git9fd72e3c.1
 - New snapshot
 - Temporarily disable strict aliasing to appease gcc 6
