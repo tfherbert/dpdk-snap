@@ -9,7 +9,7 @@
 %define ver 16.04.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3825.gite277b239
+%define snapver 3843.gita3af38a1
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -271,7 +271,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
-* Mon Feb 22 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3825.gite277b239.1
+* Mon Feb 29 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3843.gita3af38a1.1
+- New snapshot
+
 * Thu Feb 18 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3809.git9fd72e3c.1
 - New snapshot
 - Temporarily disable strict aliasing to appease gcc 6
