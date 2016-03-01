@@ -9,7 +9,7 @@
 %define ver 16.04.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3843.gita3af38a1
+%define snapver 3850.git9ec201f5
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -271,6 +271,9 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Tue Mar 01 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3850.git9ec201f5.1
+- New snapshot
+
 * Mon Feb 29 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3843.gita3af38a1.1
 - New snapshot
 
