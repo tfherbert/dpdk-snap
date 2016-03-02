@@ -9,7 +9,7 @@
 %define ver 16.04.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3850.git9ec201f5
+%define snapver 3853.git948fd64b
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -24,7 +24,7 @@ Source100: dpdk-snapshot.sh
 
 # Some tweaking and tuning needed due to Fedora %%optflags
 Patch2: dpdk-2.2-warningflags.patch
-Patch4: dpdk-2.2-dtneeded.patch
+Patch4: dpdk-16.04-dtneeded.patch
 Patch5: dpdk-2.1-buildopts.patch
 
 Summary: Set of libraries and drivers for fast packet processing
@@ -207,24 +207,6 @@ EOF
 # Fixup target machine mismatch
 sed -i -e 's:-%{machine}-:-default-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk*
 
-# Upstream has an option to build a combined library but it's bloatware which
-# wont work at all when library versions start moving, replace it with a 
-# linker script which avoids these issues. Linking against the script during
-# build resolves into links to the actual used libraries which is just fine
-# for us, so this combined library is a build-time only construct now.
-%if %{with shared}
-libext=so
-%else
-libext=a
-%endif
-comblib=libdpdk.${libext}
-
-echo "GROUP (" > ${comblib}
-find %{buildroot}/%{_libdir}/ -maxdepth 1 -name "*.${libext}" |\
-	sed -e "s:^%{buildroot}/:  :g" >> ${comblib}
-echo ")" >> ${comblib}
-install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
-
 %files
 # BSD
 %doc README MAINTAINERS
@@ -271,6 +253,10 @@ install -m 644 ${comblib} %{buildroot}/%{_libdir}/${comblib}
 %endif
 
 %changelog
+* Wed Mar 02 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3853.git948fd64b.1
+- New snapshot
+- Adapt to upstream accepting the linker script approach, yay
+
 * Tue Mar 01 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3850.git9ec201f5.1
 - New snapshot
 
