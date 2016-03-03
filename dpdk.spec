@@ -9,7 +9,7 @@
 %define ver 16.04.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3853.git948fd64b
+%define snapver 3860.gitf4730aa6
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -25,7 +25,6 @@ Source100: dpdk-snapshot.sh
 # Some tweaking and tuning needed due to Fedora %%optflags
 Patch2: dpdk-2.2-warningflags.patch
 Patch4: dpdk-16.04-dtneeded.patch
-Patch5: dpdk-2.1-buildopts.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -98,7 +97,6 @@ as L2 and L3 forwarding.
 %setup -q -n %{name}-%{srcver}
 %patch2 -p1 -z .warningflags
 %patch4 -p1 -z .dtneeded
-%patch5 -p1 -z .buildopts
 
 %build
 function setconf()
@@ -115,7 +113,7 @@ unset RTE_SDK RTE_INCLUDE RTE_TARGET
 
 # Avoid appending second -Wall to everything, it breaks hand-picked
 # disablers like per-file -Wno-strict-aliasing
-export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC -fno-strict-aliasing -Wno-error"
+export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC -fno-strict-aliasing"
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 
@@ -253,6 +251,11 @@ sed -i -e 's:-%{machine}-:-default-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpd
 %endif
 
 %changelog
+* Thu Mar 03 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3860.gitf4730aa6.1
+- New snapshot
+- Drop ip_pipeline buildopts patch, should be fixed upstream for some time now
+- Drop no longer needed -Wno-error
+
 * Wed Mar 02 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3853.git948fd64b.1
 - New snapshot
 - Adapt to upstream accepting the linker script approach, yay
