@@ -9,7 +9,7 @@
 %define ver 16.04.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 3860.gitf4730aa6
+%define snapver 3875.git8f6f2434
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -251,6 +251,9 @@ sed -i -e 's:-%{machine}-:-default-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpd
 %endif
 
 %changelog
+* Mon Mar 07 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3875.git8f6f2434.1
+- New snapshot
+
 * Thu Mar 03 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3860.gitf4730aa6.1
 - New snapshot
 - Drop ip_pipeline buildopts patch, should be fixed upstream for some time now
