@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.04.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 %define snapver 3914.git4c387fcd
 
@@ -113,7 +113,7 @@ unset RTE_SDK RTE_INCLUDE RTE_TARGET
 
 # Avoid appending second -Wall to everything, it breaks hand-picked
 # disablers like per-file -Wno-strict-aliasing
-export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC -fno-strict-aliasing"
+export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 
@@ -251,6 +251,9 @@ sed -i -e 's:-%{machine}-:-default-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpd
 %endif
 
 %changelog
+* Thu Mar 10 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3914.git4c387fcd.2
+- Drop no longer needed -fno-strict-aliasing
+
 * Thu Mar 10 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3914.git4c387fcd.1
 - New snapshot
 
