@@ -39,10 +39,16 @@ License: BSD and LGPLv2 and GPLv2
 # The DPDK is designed to optimize througput of network traffic using, among
 # other techniques, carefully crafted x86 assembly instructions.  As such it
 # currently (and likely never will) run on non-x86 platforms. 
-ExclusiveArch: x86_64 
+ExclusiveArch: x86_64 i686
 
-%define machine native
-%define target x86_64-%{machine}-linuxapp-gcc
+# Name of the machine in the *template*, native for x86_64 and i686
+%define machine_tmpl native
+%define target %{_build_cpu}-%{machine_tmpl}-linuxapp-gcc
+
+# The actual machine name in dpdk make system
+%define machine_x86_64 default
+%define machine_i686 atm
+%define machine %{expand:%{machine_%{_build_cpu}}}
 
 %define sdkdir  %{_datadir}/%{name}
 %define docdir  %{_docdir}/%{name}
@@ -112,13 +118,15 @@ function setconf()
 unset RTE_SDK RTE_INCLUDE RTE_TARGET
 
 # Avoid appending second -Wall to everything, it breaks hand-picked
-# disablers like per-file -Wno-strict-aliasing
-export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g'` -fPIC"
+# disablers like per-file -Wno-strict-aliasing. Strip expclit -march=
+# from rpm optflags because they will just make builds fail, DPDK is
+# really picky about these things.
+export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g' -e 's:-march=[[:alnum:]]* ::g'` -fPIC"
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 
 # DPDK defaults to optimizing for the builder host we need generic binaries
-setconf CONFIG_RTE_MACHINE '"default"'
+setconf CONFIG_RTE_MACHINE '"%{machine}"'
 setconf CONFIG_RTE_SCHED_VECTOR n
 
 # Enable automatic driver loading from this path
@@ -203,7 +211,7 @@ endif
 EOF
 
 # Fixup target machine mismatch
-sed -i -e 's:-%{machine}-:-default-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk*
+sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk*
 
 %files
 # BSD
@@ -253,6 +261,7 @@ sed -i -e 's:-%{machine}-:-default-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpd
 %changelog
 * Fri Mar 11 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3934.git94b0ad8e.1
 - New snapshot
+- Generalize target/machine/etc macros to enable i686 builds too
 
 * Thu Mar 10 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3914.git4c387fcd.2
 - Drop no longer needed -fno-strict-aliasing
