@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.04.0
-%define rel 2
+%define rel 1
 # Define when building git snapshots
-%define snapver 3914.git4c387fcd
+%define snapver 3934.git94b0ad8e
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -141,7 +141,7 @@ setconf CONFIG_RTE_KNI_KMOD n
 # Disable experimental and ABI-breaking code
 setconf CONFIG_RTE_NEXT_ABI n
 setconf CONFIG_RTE_LIBRTE_CRYPTODEV n
-setconf CONFIG_RTE_LIBRTE_MBUF_OFFLOAD n
+setconf CONFIG_RTE_LIBRTE_PMD_NULL_CRYPTO n
 setconf CONFIG_RTE_LIBRTE_POWER n
 
 make V=1 O=%{target} %{?_smp_mflags}
@@ -251,6 +251,9 @@ sed -i -e 's:-%{machine}-:-default-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpd
 %endif
 
 %changelog
+* Fri Mar 11 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3934.git94b0ad8e.1
+- New snapshot
+
 * Thu Mar 10 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3914.git4c387fcd.2
 - Drop no longer needed -fno-strict-aliasing
 
