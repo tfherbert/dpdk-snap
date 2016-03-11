@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.04.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 %define snapver 3934.git94b0ad8e
 
@@ -135,7 +135,8 @@ setconf CONFIG_RTE_EAL_PMD_PATH '"%{pmddir}"'
 # Enable bnx2x, pcap and vhost-numa, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_BNX2X_PMD y
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
-setconf CONFIG_RTE_LIBRTE_VHOST_NUMA y
+# Disabled temporarily
+setconf CONFIG_RTE_LIBRTE_VHOST_NUMA n
 
 %if %{with shared}
 setconf CONFIG_RTE_BUILD_SHARED_LIB y
@@ -259,6 +260,9 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Fri Mar 11 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3934.git94b0ad8e.2
+- vhost numa code causes crashes, disable until upstream fixes
+
 * Fri Mar 11 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3934.git94b0ad8e.1
 - New snapshot
 - Generalize target/machine/etc macros to enable i686 builds too
