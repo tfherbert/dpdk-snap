@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.04.0
-%define rel 2
+%define rel 1
 # Define when building git snapshots
-%define snapver 3934.git94b0ad8e
+%define snapver 3984.git6b5a857f
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -24,7 +24,6 @@ Source100: dpdk-snapshot.sh
 
 # Some tweaking and tuning needed due to Fedora %%optflags
 Patch2: dpdk-2.2-warningflags.patch
-Patch4: dpdk-16.04-dtneeded.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -102,7 +101,6 @@ as L2 and L3 forwarding.
 %prep
 %setup -q -n %{name}-%{srcver}
 %patch2 -p1 -z .warningflags
-%patch4 -p1 -z .dtneeded
 
 %build
 function setconf()
@@ -260,6 +258,10 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Mon Mar 14 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3984.git6b5a857f.1
+- New snapshot
+- Drop upstreamed dtneeded patch
+
 * Fri Mar 11 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3934.git94b0ad8e.2
 - vhost numa code causes crashes, disable until upstream fixes
 
