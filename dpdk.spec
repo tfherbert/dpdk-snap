@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.04.0
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 %define snapver 3984.git6b5a857f
 
@@ -40,14 +40,19 @@ License: BSD and LGPLv2 and GPLv2
 # currently (and likely never will) run on non-x86 platforms. 
 ExclusiveArch: x86_64 i686
 
-# Name of the machine in the *template*, native for x86_64 and i686
+# machine_arch maps between rpm and dpdk arch name, often same as _target_cpu
+%define machine_arch %{_target_cpu}
+# machine_tmpl is the config template machine name, often "native"
 %define machine_tmpl native
-%define target %{_build_cpu}-%{machine_tmpl}-linuxapp-gcc
+# machine is the actual machine name used in the dpdk make system
+%ifarch x86_64
+%define machine default
+%endif
+%ifarch i686
+%define machine atm
+%endif
 
-# The actual machine name in dpdk make system
-%define machine_x86_64 default
-%define machine_i686 atm
-%define machine %{expand:%{machine_%{_build_cpu}}}
+%define target %{machine_arch}-%{machine_tmpl}-linuxapp-gcc
 
 %define sdkdir  %{_datadir}/%{name}
 %define docdir  %{_docdir}/%{name}
@@ -258,6 +263,9 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Wed Mar 16 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3984.git6b5a857f.2
+- Switch to ifarch-based solution for target/machine etc afterall
+
 * Mon Mar 14 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3984.git6b5a857f.1
 - New snapshot
 - Drop upstreamed dtneeded patch
