@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.04.0
-%define rel 2
+%define rel 1
 # Define when building git snapshots
-%define snapver 3984.git6b5a857f
+%define snapver 4172.git0549dd5c
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -263,6 +263,9 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Thu Mar 17 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3984.git6b5a857f.2
+- New snapshot (16.04.0-rc1)
+
 * Wed Mar 16 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.3984.git6b5a857f.2
 - Switch to ifarch-based solution for target/machine etc afterall
 
