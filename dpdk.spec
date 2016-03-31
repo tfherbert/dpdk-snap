@@ -9,7 +9,7 @@
 %define ver 16.04.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 4273.git6ac91f93
+%define snapver 4281.git5bcd7b5d
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -263,6 +263,9 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Thu Mar 31 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.4281.git5bcd7b5d.1
+- New snapshot
+
 * Tue Mar 29 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.4273.git6ac91f93.1
 - New snapshot (16.04.0-rc2)
 
