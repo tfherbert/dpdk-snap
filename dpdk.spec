@@ -9,7 +9,7 @@
 %define ver 16.04.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 4339.gitf887a6f8
+%define snapver 4370.gitb7d65109
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -138,8 +138,7 @@ setconf CONFIG_RTE_EAL_PMD_PATH '"%{pmddir}"'
 # Enable bnx2x, pcap and vhost-numa, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_BNX2X_PMD y
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
-# Disabled temporarily
-setconf CONFIG_RTE_LIBRTE_VHOST_NUMA n
+setconf CONFIG_RTE_LIBRTE_VHOST_NUMA y
 
 %if %{with shared}
 setconf CONFIG_RTE_BUILD_SHARED_LIB y
@@ -263,6 +262,10 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Thu Apr 07 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.4370.gitb7d65109.1
+- New snapshot
+- Re-enable vhost numa support (fixed in rc1 already)
+
 * Mon Apr 04 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.4339.gitf887a6f8.1
 - New snapshot (16.04.0-rc3)
 
