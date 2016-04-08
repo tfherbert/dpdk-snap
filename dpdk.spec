@@ -9,7 +9,7 @@
 %define ver 16.04.0
 %define rel 1
 # Define when building git snapshots
-%define snapver 4370.gitb7d65109
+%define snapver 4398.gitc0f81e90
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -262,6 +262,9 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Fri Apr 08 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.4398.gitc0f81e90.1
+- New snapshot (16.04.0-rc4)
+
 * Thu Apr 07 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.4370.gitb7d65109.1
 - New snapshot
 - Re-enable vhost numa support (fixed in rc1 already)
