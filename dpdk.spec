@@ -6,10 +6,10 @@
 %bcond_without tools
 
 # Dont edit Version: and Release: directly, only these:
-%define ver 16.04.0
+%define ver 16.04
 %define rel 1
 # Define when building git snapshots
-%define snapver 4398.gitc0f81e90
+#define snapver 4398.gitc0f81e90
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -262,6 +262,10 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Tue Apr 12 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04-1
+- Update to 16.04 final
+- Drop extra zero from version
+
 * Fri Apr 08 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-0.4398.gitc0f81e90.1
 - New snapshot (16.04.0-rc4)
 
