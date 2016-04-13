@@ -14,7 +14,7 @@
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
 Name: dpdk
-Version: %{ver}
+Version: %{ver}.0
 Release: %{?snapver:0.%{snapver}.}%{rel}%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
@@ -262,6 +262,9 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Wed Apr 13 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-1
+- Oops, bring back trailing zero, needed for rpm version compare...
+
 * Tue Apr 12 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04-1
 - Update to 16.04 final
 - Drop extra zero from version
