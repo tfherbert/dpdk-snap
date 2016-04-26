@@ -57,7 +57,7 @@ ExclusiveArch: x86_64 i686
 %define pmddir %{_libdir}/%{name}-pmds
 
 BuildRequires: kernel-headers, libpcap-devel, zlib-devel, numactl-devel
-BuildRequires: doxygen, python-sphinx
+BuildRequires: doxygen, python-sphinx, git
 
 %description
 The Data Plane Development Kit is a set of libraries and drivers for
@@ -101,7 +101,7 @@ as L2 and L3 forwarding.
 %endif
 
 %prep
-%setup -q -n %{name}-%{srcver}
+%autosetup -n %{name}-%{srcver} -S git_am
 
 %build
 function setconf()
@@ -260,6 +260,8 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %changelog
 * Tue Apr 26 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-2
 - Get rid of the fedora-specific patch, -Wformat in CFLAGS is a nicer solution
+- Switch to %autosetup to reduce fiddling with eventual patches
+- Buildrequire git for patch application
 
 * Wed Apr 13 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-1
 - Oops, bring back trailing zero, needed for rpm version compare...
