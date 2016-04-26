@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.04
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 #define snapver 4398.gitc0f81e90
 
@@ -21,9 +21,6 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
-
-# Some tweaking and tuning needed due to Fedora %%optflags
-Patch2: dpdk-2.2-warningflags.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -105,7 +102,6 @@ as L2 and L3 forwarding.
 
 %prep
 %setup -q -n %{name}-%{srcver}
-%patch2 -p1 -z .warningflags
 
 %build
 function setconf()
@@ -124,7 +120,7 @@ unset RTE_SDK RTE_INCLUDE RTE_TARGET
 # disablers like per-file -Wno-strict-aliasing. Strip expclit -march=
 # from rpm optflags because they will just make builds fail, DPDK is
 # really picky about these things.
-export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g' -e 's:-march=[[:alnum:]]* ::g'` -fPIC"
+export EXTRA_CFLAGS="`echo %{optflags} | sed -e 's:-Wall::g' -e 's:-march=[[:alnum:]]* ::g'` -Wformat -fPIC"
 
 make V=1 O=%{target} T=%{target} %{?_smp_mflags} config
 
@@ -262,6 +258,9 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Tue Apr 26 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-2
+- Get rid of the fedora-specific patch, -Wformat in CFLAGS is a nicer solution
+
 * Wed Apr 13 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-1
 - Oops, bring back trailing zero, needed for rpm version compare...
 
