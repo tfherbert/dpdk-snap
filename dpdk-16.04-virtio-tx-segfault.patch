@@ -1,0 +1,110 @@
+Return-Path: dev-bounces@dpdk.org
+Received: from zmta04.collab.prod.int.phx2.redhat.com (LHLO
+ zmta04.collab.prod.int.phx2.redhat.com) (10.5.81.11) by
+ zmail09.collab.prod.int.phx2.redhat.com with LMTP; Sun, 24 Apr 2016
+ 22:37:51 -0400 (EDT)
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com (int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by zmta04.collab.prod.int.phx2.redhat.com (Postfix) with ESMTP id 36DB6DA13B;
+	Sun, 24 Apr 2016 22:37:51 -0400 (EDT)
+Received: from mx1.redhat.com (ext-mx09.extmail.prod.ext.phx2.redhat.com [10.5.110.38])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP id u3P2boZY004917
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Sun, 24 Apr 2016 22:37:50 -0400
+Received: from dpdk.org (dpdk.org [92.243.14.124])
+	by mx1.redhat.com (Postfix) with ESMTP id 326DF627DD;
+	Mon, 25 Apr 2016 02:37:50 +0000 (UTC)
+Received: from [92.243.14.124] (localhost [IPv6:::1])
+	by dpdk.org (Postfix) with ESMTP id 44BB52B8E;
+	Mon, 25 Apr 2016 04:37:48 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by dpdk.org (Postfix) with ESMTP id EFDAB2904
+ for <dev@dpdk.org>; Mon, 25 Apr 2016 04:37:46 +0200 (CEST)
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga104.fm.intel.com with ESMTP; 24 Apr 2016 19:37:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.24,530,1455004800"; d="scan'208";a="939359898"
+Received: from dpdk06.sh.intel.com ([10.239.128.225])
+ by orsmga001.jf.intel.com with ESMTP; 24 Apr 2016 19:37:44 -0700
+From: Jianfeng Tan <jianfeng.tan@intel.com>
+To: dev@dpdk.org
+Cc: huawei.xie@intel.com, yuanhan.liu@linux.intel.com,
+        Jianfeng Tan <jianfeng.tan@intel.com>
+Date: Mon, 25 Apr 2016 02:37:45 +0000
+Message-Id: <1461551865-15930-1-git-send-email-jianfeng.tan@intel.com>
+In-Reply-To: <1461242170-146337-1-git-send-email-jianfeng.tan@intel.com>
+References: <1461242170-146337-1-git-send-email-jianfeng.tan@intel.com>
+Subject: [dpdk-dev] [PATCH v2] virtio: fix segfault when transmit pkts
+X-BeenThere: dev@dpdk.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+List-Id: patches and discussions about DPDK <dev.dpdk.org>
+List-Unsubscribe: <http://dpdk.org/ml/options/dev>,
+ <mailto:dev-request@dpdk.org?subject=unsubscribe>
+List-Archive: <http://dpdk.org/ml/archives/dev/>
+List-Post: <mailto:dev@dpdk.org>
+List-Help: <mailto:dev-request@dpdk.org?subject=help>
+List-Subscribe: <http://dpdk.org/ml/listinfo/dev>,
+ <mailto:dev-request@dpdk.org?subject=subscribe>
+Errors-To: dev-bounces@dpdk.org
+Sender: "dev" <dev-bounces@dpdk.org>
+X-Greylist: Sender IP whitelisted by DNSRBL, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Mon, 25 Apr 2016 02:37:50 +0000 (UTC)
+X-Greylist: inspected by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Mon, 25 Apr 2016 02:37:50 +0000 (UTC) for IP:'92.243.14.124' DOMAIN:'dpdk.org' HELO:'dpdk.org' FROM:'dev-bounces@dpdk.org' RCPT:''
+X-RedHat-Spam-Score: -0.607  (BAYES_50,DCC_REPUT_00_12,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RP_MATCHES_RCVD,SPF_HELO_PASS,SPF_PASS) 92.243.14.124 dpdk.org 92.243.14.124 dpdk.org <dev-bounces@dpdk.org>
+X-Scanned-By: MIMEDefang 2.68 on 10.5.11.23
+X-Scanned-By: MIMEDefang 2.78 on 10.5.110.38
+
+Issue: when using virtio nic to transmit pkts, it causes segment fault.
+
+How to reproduce:
+Basically, we need to construct a case with vm send packets to vhost-user,
+and this issue does not happen when transmitting packets using indirect
+desc. Besides, make sure all descriptors are exhausted before vhost
+dequeues any packets.
+
+a. start testpmd with vhost.
+  $ testpmd -c 0x3 -n 4 --socket-mem 1024,0 --no-pci \
+    --vdev 'eth_vhost0,iface=/tmp/sock0,queues=1' -- -i --nb-cores=1
+
+b. start a qemu with a virtio nic connected with the vhost-user port, just
+make sure mrg_rxbuf is enabled.
+
+c. enable testpmd on the host.
+  testpmd> set fwd io
+  testpmd> start (better without start vhost-user)
+
+d. start testpmd in VM.
+  $testpmd -c 0x3 -n 4 -m 1024 -- -i --disable-hw-vlan-filter --txqflags=0xf01
+  testpmd> set fwd txonly
+  testpmd> start
+
+How to fix: this bug is because inside virtqueue_enqueue_xmit(), the flag of
+desc has been updated inside the do {} while (), not necessary to update after
+the loop. (And if we do that after the loop, if all descs could have run out,
+idx is VQ_RING_DESC_CHAIN_END (32768), use this idx to reference the start_dp
+array will lead to segment fault.)
+
+Fixes: dd856dfcb9e ("virtio: use any layout on Tx")
+
+Signed-off-by: Jianfeng Tan <jianfeng.tan@intel.com>
+---
+ v2: refine the commit message.
+
+ drivers/net/virtio/virtio_rxtx.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/net/virtio/virtio_rxtx.c b/drivers/net/virtio/virtio_rxtx.c
+index ef21d8e..432aeab 100644
+--- a/drivers/net/virtio/virtio_rxtx.c
++++ b/drivers/net/virtio/virtio_rxtx.c
+@@ -271,8 +271,6 @@ virtqueue_enqueue_xmit(struct virtqueue *txvq, struct rte_mbuf *cookie,
+ 		idx = start_dp[idx].next;
+ 	} while ((cookie = cookie->next) != NULL);
+ 
+-	start_dp[idx].flags &= ~VRING_DESC_F_NEXT;
+-
+ 	if (use_indirect)
+ 		idx = txvq->vq_ring.desc[head_idx].next;
+ 
+-- 
+2.1.4
+

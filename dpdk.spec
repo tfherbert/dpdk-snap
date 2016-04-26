@@ -22,6 +22,9 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
 
+# Fix segfault on virtio tx
+Patch1: dpdk-16.04-virtio-tx-segfault.patch
+
 Summary: Set of libraries and drivers for fast packet processing
 
 #
@@ -262,6 +265,7 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 - Get rid of the fedora-specific patch, -Wformat in CFLAGS is a nicer solution
 - Switch to %autosetup to reduce fiddling with eventual patches
 - Buildrequire git for patch application
+- Upstream patch to fix segfault on virtio tx
 
 * Wed Apr 13 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-1
 - Oops, bring back trailing zero, needed for rpm version compare...
