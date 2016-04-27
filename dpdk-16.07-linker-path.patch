@@ -1,0 +1,83 @@
+Return-Path: dev-bounces@dpdk.org
+Received: from zmta04.collab.prod.int.phx2.redhat.com (LHLO
+ zmta04.collab.prod.int.phx2.redhat.com) (10.5.81.11) by
+ zmail09.collab.prod.int.phx2.redhat.com with LMTP; Wed, 27 Apr 2016
+ 07:02:22 -0400 (EDT)
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com (int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by zmta04.collab.prod.int.phx2.redhat.com (Postfix) with ESMTP id C5644DA117;
+	Wed, 27 Apr 2016 07:02:22 -0400 (EDT)
+Received: from mx1.redhat.com (ext-mx01.extmail.prod.ext.phx2.redhat.com [10.5.110.25])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP id u3RB2MOS002888
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Wed, 27 Apr 2016 07:02:22 -0400
+Received: from dpdk.org (dpdk.org [92.243.14.124])
+	by mx1.redhat.com (Postfix) with ESMTP id F079381F07;
+	Wed, 27 Apr 2016 11:02:20 +0000 (UTC)
+Received: from [92.243.14.124] (localhost [IPv6:::1])
+	by dpdk.org (Postfix) with ESMTP id BDC0D37B1;
+	Wed, 27 Apr 2016 13:02:18 +0200 (CEST)
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by dpdk.org (Postfix) with ESMTP id A3B9337AF
+ for <dev@dpdk.org>; Wed, 27 Apr 2016 13:02:17 +0200 (CEST)
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+ (int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mx1.redhat.com (Postfix) with ESMTPS id BBF1A78224;
+ Wed, 27 Apr 2016 11:02:16 +0000 (UTC)
+Received: from sopuli.koti.laiskiainen.org.com (vpn1-4-157.ams2.redhat.com
+ [10.36.4.157])
+ by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP id
+ u3RB2E2v002780; Wed, 27 Apr 2016 07:02:14 -0400
+From: Panu Matilainen <pmatilai@redhat.com>
+To: dev@dpdk.org
+Cc: thomas.monjalon@6wind.com, Tetsuya Mukawa <mukawa@igel.co.jp>,
+        yuanhan.liu@linux.intel.com, huawei.xie@intel.com
+Date: Wed, 27 Apr 2016 14:02:09 +0300
+Message-Id: <d2db848a33ed5bd541fbaa062878a10c77977b93.1461754929.git.pmatilai@redhat.com>
+X-Scanned-By: MIMEDefang 2.68 on 10.5.11.24
+X-Scanned-By: MIMEDefang 2.68 on 10.5.11.24
+Subject: [dpdk-dev] [PATCH] mk: add build-time library directory to linker
+	path
+X-BeenThere: dev@dpdk.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+List-Id: patches and discussions about DPDK <dev.dpdk.org>
+List-Unsubscribe: <http://dpdk.org/ml/options/dev>,
+ <mailto:dev-request@dpdk.org?subject=unsubscribe>
+List-Archive: <http://dpdk.org/ml/archives/dev/>
+List-Post: <mailto:dev@dpdk.org>
+List-Help: <mailto:dev-request@dpdk.org?subject=help>
+List-Subscribe: <http://dpdk.org/ml/listinfo/dev>,
+ <mailto:dev-request@dpdk.org?subject=subscribe>
+Errors-To: dev-bounces@dpdk.org
+Sender: "dev" <dev-bounces@dpdk.org>
+X-RedHat-Spam-Score: -0.607  (BAYES_50,DCC_REPUT_00_12,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RP_MATCHES_RCVD,SPF_HELO_PASS,SPF_PASS) 92.243.14.124 dpdk.org 92.243.14.124 dpdk.org <dev-bounces@dpdk.org>
+X-Scanned-By: MIMEDefang 2.75 on 10.5.110.25
+
+This is a pre-requisite for adding DT_NEEDED dependencies
+between internal libraries.
+
+Signed-off-by: Panu Matilainen <pmatilai@redhat.com>
+---
+ mk/rte.lib.mk | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mk/rte.lib.mk b/mk/rte.lib.mk
+index 8f7e021..b420280 100644
+--- a/mk/rte.lib.mk
++++ b/mk/rte.lib.mk
+@@ -86,8 +86,8 @@ O_TO_A_DO = @set -e; \
+ 	$(O_TO_A) && \
+ 	echo $(O_TO_A_CMD) > $(call exe2cmd,$(@))
+ 
+-O_TO_S = $(LD) $(_CPU_LDFLAGS) $(EXTRA_LDFLAGS) -shared $(OBJS-y) $(LDLIBS) \
+-	 -Wl,-soname,$(LIB) -o $(LIB)
++O_TO_S = $(LD) -L$(RTE_OUTPUT)/lib $(_CPU_LDFLAGS) $(EXTRA_LDFLAGS) \
++	  -shared $(OBJS-y) $(LDLIBS) -Wl,-soname,$(LIB) -o $(LIB)
+ O_TO_S_STR = $(subst ','\'',$(O_TO_S)) #'# fix syntax highlight
+ O_TO_S_DISP = $(if $(V),"$(O_TO_S_STR)","  LD $(@)")
+ O_TO_S_DO = @set -e; \
+-- 
+2.5.5
+

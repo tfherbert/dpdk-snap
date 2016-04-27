@@ -6,15 +6,15 @@
 %bcond_without tools
 
 # Dont edit Version: and Release: directly, only these:
-%define ver 16.04
-%define rel 2
+%define ver 16.07
+%define rel 1
 # Define when building git snapshots
-#define snapver 4398.gitc0f81e90
+%define snapver 4433.gitd9ba0b2c
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
 Name: dpdk
-Version: %{ver}.0
+Version: %{ver}
 Release: %{?snapver:0.%{snapver}.}%{rel}%{?dist}
 URL: http://dpdk.org
 Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
@@ -24,6 +24,9 @@ Source100: dpdk-snapshot.sh
 
 # Fix segfault on virtio tx
 Patch1: dpdk-16.04-virtio-tx-segfault.patch
+# More missing DT_NEEDED business...
+Patch2: dpdk-16.07-linker-path.patch
+Patch3: dpdk-16.07-vhost-dtneeded.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -261,6 +264,11 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Wed Apr 27 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4433.gitd9ba0b2c.1
+- New 16.07-based snapshot
+- Drop the trailing zero from version for good
+- Add missing DT_NEEDED on librte_vhost to vhost pmd
+
 * Tue Apr 26 2016 Panu Matilainen <pmatilai@redhat.com> - 16.04.0-2
 - Get rid of the fedora-specific patch, -Wformat in CFLAGS is a nicer solution
 - Switch to %autosetup to reduce fiddling with eventual patches
