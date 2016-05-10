@@ -9,7 +9,7 @@
 %define ver 16.07
 %define rel 1
 # Define when building git snapshots
-%define snapver 4433.gitd9ba0b2c
+%define snapver 4481.gitdb340cf2
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -264,6 +264,9 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Tue May 10 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4481.gitdb340cf2.1
+- New snapshot
+
 * Wed Apr 27 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4433.gitd9ba0b2c.1
 - New 16.07-based snapshot
 - Drop the trailing zero from version for good
