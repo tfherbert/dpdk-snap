@@ -7,9 +7,9 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.07
-%define rel 2
+%define rel 1
 # Define when building git snapshots
-%define snapver 4481.gitdb340cf2
+%define snapver 4499.gita5e20775
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -22,11 +22,6 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
 
-# Fix segfault on virtio tx
-Patch1: dpdk-16.04-virtio-tx-segfault.patch
-# More missing DT_NEEDED business...
-Patch2: dpdk-16.07-linker-path.patch
-Patch3: dpdk-16.07-vhost-dtneeded.patch
 Patch4: 0001-qede-fix-build-with-gcc-6.0.patch
 
 Summary: Set of libraries and drivers for fast packet processing
@@ -265,6 +260,9 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Wed May 11 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4499.gita5e20775.1
+- New snapshot
+
 * Tue May 10 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4481.gitdb340cf2.2
 - Fix build with gcc >= 6.0
 
