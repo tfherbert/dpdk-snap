@@ -9,7 +9,7 @@
 %define ver 16.07
 %define rel 1
 # Define when building git snapshots
-%define snapver 4499.gita5e20775
+%define snapver 4518.git213af31e
 
 %define srcver %{ver}%{?snapver:-%{snapver}}
 
@@ -21,8 +21,6 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
-
-Patch4: 0001-qede-fix-build-with-gcc-6.0.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -260,6 +258,9 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Tue May 17 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4518.git213af31e.1
+- New snapshot
+
 * Wed May 11 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4499.gita5e20775.1
 - New snapshot
 
