@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.07
-%define rel 1
+%define rel 2
 # Define when building git snapshots
 %define snapver 4560.git587d684d
 
@@ -212,6 +212,10 @@ EOF
 # Fixup target machine mismatch
 sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profile.d/dpdk-sdk*
 
+# workaround https://bugzilla.redhat.com/show_bug.cgi?id=1337864 for now
+rm -f %{buildroot}/%{_bindir}/*.map
+rm -f %{buildroot}/%{_bindir}/{cmdline_test,test,testacl,testpipeline}
+
 %files
 # BSD
 %doc README MAINTAINERS
@@ -258,6 +262,9 @@ sed -i -e 's:-%{machine_tmpl}-:-%{machine}-:g' %{buildroot}/%{_sysconfdir}/profi
 %endif
 
 %changelog
+* Fri May 20 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4560.git587d684d.2
+- Workaround #1337864
+
 * Fri May 20 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4560.git587d684d.1
 - New snapshot
 
