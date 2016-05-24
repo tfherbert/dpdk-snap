@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.07
-%define rel 2
+%define rel 3
 # Define when building git snapshots
 %define snapver 4560.git587d684d
 
@@ -147,8 +147,6 @@ setconf CONFIG_RTE_KNI_KMOD n
 
 # Disable experimental and ABI-breaking code
 setconf CONFIG_RTE_NEXT_ABI n
-setconf CONFIG_RTE_LIBRTE_CRYPTODEV n
-setconf CONFIG_RTE_LIBRTE_PMD_NULL_CRYPTO n
 setconf CONFIG_RTE_LIBRTE_POWER n
 
 make V=1 O=%{target} %{?_smp_mflags}
@@ -262,6 +260,9 @@ rm -f %{buildroot}/%{_bindir}/{cmdline_test,test,testacl,testpipeline}
 %endif
 
 %changelog
+* Tue May 24 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4560.git587d684d.3
+- Enable crypto library + null driver, it is no longer experimental in 16.04
+
 * Fri May 20 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4560.git587d684d.2
 - Workaround #1337864
 
