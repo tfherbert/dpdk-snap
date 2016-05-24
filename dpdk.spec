@@ -7,7 +7,7 @@
 
 # Dont edit Version: and Release: directly, only these:
 %define ver 16.07
-%define rel 3
+%define rel 4
 # Define when building git snapshots
 %define snapver 4560.git587d684d
 
@@ -21,6 +21,9 @@ Source: http://dpdk.org/browse/dpdk/snapshot/dpdk-%{srcver}.tar.gz
 
 # Only needed for creating snapshot tarballs, not used in build itself
 Source100: dpdk-snapshot.sh
+
+Patch1: 0001-mk-populate-LDLIBS-automatically-from-DEPDIRS-y.patch
+Patch2: 0001-qede-add-missing-external-dependency-and-disable-by-.patch
 
 Summary: Set of libraries and drivers for fast packet processing
 
@@ -131,8 +134,9 @@ setconf CONFIG_RTE_SCHED_VECTOR n
 # Enable automatic driver loading from this path
 setconf CONFIG_RTE_EAL_PMD_PATH '"%{pmddir}"'
 
-# Enable bnx2x, pcap and vhost-numa, the added deps are ok for us
+# Enable bnx2x, qede, pcap and vhost-numa, the added deps are ok for us
 setconf CONFIG_RTE_LIBRTE_BNX2X_PMD y
+setconf CONFIG_RTE_LIBRTE_QEDE_PMD y
 setconf CONFIG_RTE_LIBRTE_PMD_PCAP y
 setconf CONFIG_RTE_LIBRTE_VHOST_NUMA y
 
@@ -260,6 +264,10 @@ rm -f %{buildroot}/%{_bindir}/{cmdline_test,test,testacl,testpipeline}
 %endif
 
 %changelog
+* Tue May 24 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4560.git587d684d.4
+- Create DT_NEEDED entries for internal library dependencies
+- Fix missing zlib dependency on qede driver
+
 * Tue May 24 2016 Panu Matilainen <pmatilai@redhat.com> - 16.07-0.4560.git587d684d.3
 - Enable crypto library + null driver, it is no longer experimental in 16.04
 

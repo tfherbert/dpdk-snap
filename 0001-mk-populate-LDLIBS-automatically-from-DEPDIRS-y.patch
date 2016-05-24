@@ -1,0 +1,31 @@
+From 29cfe3766700792e112a1a8c4d1060ab41e19a40 Mon Sep 17 00:00:00 2001
+Message-Id: <29cfe3766700792e112a1a8c4d1060ab41e19a40.1464083571.git.pmatilai@redhat.com>
+From: Panu Matilainen <pmatilai@redhat.com>
+Date: Tue, 24 May 2016 12:52:17 +0300
+Subject: [PATCH] mk: populate LDLIBS automatically from DEPDIRS-y
+
+Signed-off-by: Panu Matilainen <pmatilai@redhat.com>
+---
+ mk/rte.lib.mk | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/mk/rte.lib.mk b/mk/rte.lib.mk
+index b420280..88b4e98 100644
+--- a/mk/rte.lib.mk
++++ b/mk/rte.lib.mk
+@@ -77,6 +77,12 @@ else
+ _CPU_LDFLAGS := $(CPU_LDFLAGS)
+ endif
+ 
++# Translate DEPDIRS-y into LDLIBS
++IGNORE_DEPS = -lrte_eal/% -lrte_net -lrte_compat
++_LDDIRS = $(subst librte_ether,libethdev,$(DEPDIRS-y))
++_LDDEPS = $(subst lib/lib,-l,$(_LDDIRS))
++LDLIBS += $(filter-out $(IGNORE_DEPS), $(_LDDEPS))
++
+ O_TO_A = $(AR) crDs $(LIB) $(OBJS-y)
+ O_TO_A_STR = $(subst ','\'',$(O_TO_A)) #'# fix syntax highlight
+ O_TO_A_DISP = $(if $(V),"$(O_TO_A_STR)","  AR $(@)")
+-- 
+2.5.5
+
